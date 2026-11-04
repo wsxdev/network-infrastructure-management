@@ -1,0 +1,24 @@
+{
+  "name": "network-infrastructure-management",
+  "version": "1.0.0",
+  "description": "Sistema de Monitoreo de Infraestructura de Red - ESPOCH FIE",
+  "author": "William Chisag, Karen Maje, Licet Ibarra, Alejandro Rodríguez",
+  "license": "ISC",
+  "private": true,
+  "workspaces": [
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "install:all": "npm install && npm install --prefix server && npm install --prefix client",
+    "dev": "concurrently -n \"SERVER,CLIENT\" -c \"bgBlue.bold,bgGreen.bold\" \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "dev:server": "npm run dev --prefix server",
+    "dev:client": "npm run dev --prefix client",
+    "build": "npm run build --prefix client",
+    "seed": "npm run seed --prefix server",
+    "start": "npm run start --prefix server"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
