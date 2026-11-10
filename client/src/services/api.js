@@ -40,8 +40,20 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    // Si el error es 401 y no hemos reintentado todavía
-    if (error.response?.status === 401 && !originalRequest._retry && !originalRequest.url.includes('/auth/login')) {
+    // Si no hay configuración de la petición o ya fue reintentada, rechazar
+    if (!originalRequest || originalRequest._retry) {
+      return Promise.reject(error);
+    }
+
+    // No interceptar ni reintentar llamadas de autenticación para evitar bucles de recarga
+    if (originalRequest.url?.includes('/auth/')) {
+      return Promise.reject(error);
+    }
+
+    const currentToken = localStorage.getItem('espoch_noc_token');
+
+    // Si es 401 y teníamos una sesión previa con token, intentar refresh token
+    if (error.response?.status === 401 && currentToken) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
@@ -70,7 +82,12 @@ api.interceptors.response.use(
         processQueue(refreshError, null);
         localStorage.removeItem('espoch_noc_token');
         localStorage.removeItem('espoch_noc_user');
-        window.location.href = '/login';
+
+        // Solo redirigir si no estamos ya en la página de login para evitar bucles infinitos de recarga
+        if (typeof window !== 'undefined' && window.location.pathname !== '/login') {
+          window.location.href = '/login';
+        }
+
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;

@@ -1,10 +1,12 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { getSocket } from '../services/socket';
 import api from '../services/api';
+import { useAuth } from './AuthContext';
 
 const AlertContext = createContext(null);
 
 export function AlertProvider({ children }) {
+  const { isAuthenticated } = useAuth();
   const [toasts, setToasts] = useState([]);
   const [activeAlertsCount, setActiveAlertsCount] = useState(0);
   const [soundEnabled, setSoundEnabled] = useState(true);
@@ -56,17 +58,23 @@ export function AlertProvider({ children }) {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   };
 
-  // Cargar estadísticas iniciales de alertas
+  // Cargar estadísticas iniciales de alertas solo cuando esté autenticado
   const fetchAlertStats = async () => {
+    if (!isAuthenticated) return;
     try {
       const { data } = await api.get('/alerts/stats');
       setActiveAlertsCount(data.data.totalOpen);
     } catch (e) {
-      // Ignorar si no está autenticado aún
+      // Ignorar silenciosamente si hay error de red
     }
   };
 
   useEffect(() => {
+    if (!isAuthenticated) {
+      setActiveAlertsCount(0);
+      return;
+    }
+
     fetchAlertStats();
     const socket = getSocket();
 
@@ -113,7 +121,7 @@ export function AlertProvider({ children }) {
       socket.off('switch:quorumAlert', handleQuorumAlert);
       socket.off('device:discovered', handleDiscovered);
     };
-  }, []);
+  }, [isAuthenticated]);
 
   return (
     <AlertContext.Provider
