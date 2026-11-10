@@ -13,7 +13,7 @@ export async function seedDatabase() {
   const adminExists = await User.findOne({ email: 'admin@espoch.edu.ec' });
   if (!adminExists) {
     await User.create({
-      name: 'William Chisag (Tech Lead)',
+      name: 'Licet Ibarra (QA & DB Lead)',
       email: 'admin@espoch.edu.ec',
       password: 'AdminPassword123!',
       role: USER_ROLES.ADMINISTRATOR,
@@ -36,8 +36,9 @@ export async function seedDatabase() {
 
   // 2. Inventario y Topología del Laboratorio de Telecomunicaciones
   const devicesCount = await Device.countDocuments();
-  if (devicesCount === 0) {
-    console.log('🌐 Sembrando inventario y topología inicial de red...');
+  if (devicesCount <= 1) {
+    await Device.deleteMany({});
+    console.log('🌐 Sembrando inventario y topología inicial de red con campos normalizados...');
 
     // Nivel 1: Router de Borde / Gateway
     const router = await Device.create({
@@ -45,7 +46,10 @@ export async function seedDatabase() {
       ipAddress: '192.168.1.1',
       macAddress: 'CC:2D:E0:11:22:33',
       type: DEVICE_TYPES.ROUTER,
-      location: 'Rack Principal - Laboratorio Telecomunicaciones',
+      vendor: 'MikroTik',
+      model: 'RB4011iGS+5HacQ2HnD-IN',
+      location: 'Laboratorio 1 - Rack A',
+      notes: 'Gateway principal de salida a internet y enrutamiento perimetral',
       status: DEVICE_STATUS.UP,
       isManaged: true,
       responseTimeMs: 2
@@ -57,7 +61,10 @@ export async function seedDatabase() {
       ipAddress: '192.168.1.2',
       macAddress: '00:1E:13:44:55:66',
       type: DEVICE_TYPES.SWITCH,
-      location: 'Rack Principal - Laboratorio Telecomunicaciones',
+      vendor: 'Cisco Systems',
+      model: 'Catalyst 2960-X 24TS-L',
+      location: 'Laboratorio 1 - Rack A',
+      notes: 'Switch de conmutación troncal para los laboratorios',
       parentId: router._id,
       status: DEVICE_STATUS.UP,
       isManaged: true,
@@ -70,7 +77,10 @@ export async function seedDatabase() {
       ipAddress: '192.168.1.3',
       macAddress: '98:48:27:77:88:99',
       type: DEVICE_TYPES.SWITCH,
-      location: 'Rack Secundario - Mesas de Laboratorio',
+      vendor: 'TP-Link',
+      model: 'TL-SG1024D',
+      location: 'Laboratorio 1 - Rack B',
+      notes: 'Switch no administrable de distribución a terminales',
       parentId: switchCore._id,
       status: DEVICE_STATUS.UP,
       isManaged: true,
@@ -78,24 +88,30 @@ export async function seedDatabase() {
     });
 
     // Servidores (conectados al Core)
-    const debianServer = await Device.create({
+    await Device.create({
       name: 'Servidor Debian 12 (NOC & Base de Datos)',
       ipAddress: '192.168.1.10',
       macAddress: '52:54:00:AA:BB:01',
       type: DEVICE_TYPES.SERVER,
-      location: 'Rack Principal - Servidor FIE',
+      vendor: 'Dell Technologies',
+      model: 'PowerEdge R640',
+      location: 'Laboratorio 1 - Rack A',
+      notes: 'Host central del sistema de monitoreo de red y MongoDB Atlas Sync',
       parentId: switchCore._id,
       status: DEVICE_STATUS.UP,
       isManaged: true,
       responseTimeMs: 1
     });
 
-    const dnsServer = await Device.create({
+    await Device.create({
       name: 'Servidor DNS & DHCP Local',
       ipAddress: '192.168.1.11',
       macAddress: '52:54:00:AA:BB:02',
       type: DEVICE_TYPES.SERVER,
-      location: 'Rack Principal - Servidor FIE',
+      vendor: 'HP Enterprise',
+      model: 'ProLiant DL360 Gen10',
+      location: 'Laboratorio 1 - Rack A',
+      notes: 'Resolución de nombres y concesión dinámica de direcciones LAN',
       parentId: switchCore._id,
       status: DEVICE_STATUS.UP,
       isManaged: true,
@@ -108,7 +124,10 @@ export async function seedDatabase() {
       ipAddress: '192.168.1.20',
       macAddress: '70:6D:15:CC:DD:01',
       type: DEVICE_TYPES.ACCESS_POINT,
-      location: 'Techo Central Laboratorio',
+      vendor: 'Cisco Systems',
+      model: 'Aironet 2802I',
+      location: 'Laboratorio 1 - Techo Central',
+      notes: 'Punto de acceso para conexiones inalámbricas estudiantiles',
       parentId: switchAccess._id,
       status: DEVICE_STATUS.UP,
       isManaged: true,
@@ -120,7 +139,10 @@ export async function seedDatabase() {
       ipAddress: '192.168.1.100',
       macAddress: '00:25:90:EE:FF:01',
       type: DEVICE_TYPES.WORKSTATION,
-      location: 'Módulo Central Docente',
+      vendor: 'HP',
+      model: 'EliteDesk 800 G5',
+      location: 'Laboratorio 1 - Módulo Docente',
+      notes: 'Equipo principal para el catedrático',
       parentId: switchAccess._id,
       status: DEVICE_STATUS.UP,
       isManaged: true,
@@ -132,7 +154,10 @@ export async function seedDatabase() {
       ipAddress: '192.168.1.101',
       macAddress: '00:25:90:EE:FF:02',
       type: DEVICE_TYPES.WORKSTATION,
-      location: 'Mesa 1 - Puesto A',
+      vendor: 'Lenovo',
+      model: 'ThinkCentre M720s',
+      location: 'Laboratorio 1 - Mesa 1 Puesto A',
+      notes: 'Puesto de estudiante para prácticas de redes',
       parentId: switchAccess._id,
       status: DEVICE_STATUS.UP,
       isManaged: true,
@@ -144,7 +169,10 @@ export async function seedDatabase() {
       ipAddress: '192.168.1.102',
       macAddress: '00:25:90:EE:FF:03',
       type: DEVICE_TYPES.WORKSTATION,
-      location: 'Mesa 1 - Puesto B',
+      vendor: 'Lenovo',
+      model: 'ThinkCentre M720s',
+      location: 'Laboratorio 1 - Mesa 1 Puesto B',
+      notes: 'Puesto de estudiante para prácticas de redes',
       parentId: switchAccess._id,
       status: DEVICE_STATUS.PENDING,
       isManaged: true,
@@ -156,14 +184,17 @@ export async function seedDatabase() {
       ipAddress: '192.168.1.150',
       macAddress: '18:60:24:99:AA:BB',
       type: DEVICE_TYPES.OTHER,
-      location: 'Rincón de Impresión Docente',
+      vendor: 'HP',
+      model: 'LaserJet Pro M404dw',
+      location: 'Laboratorio 1 - Rack A',
+      notes: 'Impresora compartida del laboratorio',
       parentId: switchAccess._id,
       status: DEVICE_STATUS.UP,
       isManaged: true,
       responseTimeMs: 12
     });
 
-    console.log('✅ 10 Dispositivos de topología del laboratorio creados exitosamente.');
+    console.log('✅ 10 Dispositivos de topología del laboratorio creados con todos los campos normalizados.');
   }
 
   console.log('🎉 Sembrado completado.');
