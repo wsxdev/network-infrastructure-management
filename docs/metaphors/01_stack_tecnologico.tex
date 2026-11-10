@@ -1,0 +1,342 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-nodecimaldot,es-tabla,es-noquoting]{babel}
+
+% Paquetes de graficos y diagramas
+\usepackage{graphicx}
+\graphicspath{{../img/}{img/}}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric,shapes.misc,arrows.meta,positioning,calc,fit,backgrounds,shadows.blur}
+
+% Tipografia Times New Roman estandar en 12pt
+\usepackage{newtxtext,newtxmath}
+
+% Margenes estandar normalizados (3cm izq, 2.5cm der/sup/inf)
+\usepackage{geometry}
+\geometry{
+  top=2.5cm,
+  bottom=2.5cm,
+  left=3.0cm,
+  right=2.5cm,
+  headheight=15pt,
+  headsep=20pt,
+  footskip=25pt
+}
+
+% Espaciado e interlineado
+\usepackage{setspace}
+\setstretch{1.15}
+\setlength{\parskip}{6pt}
+\setlength{\parindent}{0pt}
+
+% Viñetas redondas formales
+\usepackage{enumitem}
+\setlist[itemize,1]{label=\textbullet, leftmargin=1.5em, itemsep=2pt, parsep=0pt}
+\setlist[itemize,2]{label=\normalfont\bfseries\textperiodcentered, leftmargin=1.5em, itemsep=2pt, parsep=0pt}
+\setlist[enumerate]{leftmargin=1.5em, itemsep=2pt, parsep=0pt}
+
+% Color del texto y paleta institucional
+\usepackage{xcolor}
+\definecolor{espochBlue}{RGB}{0,51,102}
+\definecolor{espochRed}{RGB}{192,0,0}
+\definecolor{techGray}{RGB}{245,247,250}
+\definecolor{borderGray}{RGB}{209,213,219}
+
+% Tablas profesionales segun estandares ISO/APA
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{caption}
+\captionsetup[table]{position=top,skip=6pt,font={small,bf},labelfont=bf}
+
+% Listados de codigo preformateado
+\usepackage{listings}
+\lstset{
+  basicstyle=\small\ttfamily,
+  frame=single,
+  rulecolor=\color{black},
+  framerule=0.5pt,
+  breaklines=true,
+  numbers=none,
+  backgroundcolor=\color{white},
+  tabsize=2,
+  inputencoding=utf8,
+  extendedchars=true,
+  literate=
+    {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'{\i}}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+    {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+    {ñ}{{\~n}}1 {Ñ}{{\~N}}1 {ü}{{\"u}}1 {Ü}{{\"U}}1
+}
+
+% Encabezados y pies de pagina formales
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\nouppercase{\leftmark}}
+\fancyhead[R]{\small ESPOCH - Metáfora y Stack Tecnológico}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% Formato de titulos
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+  {\normalfont\Large\bfseries}{\chaptertitlename\ \thechapter}{10pt}{\huge\bfseries}
+\titlespacing*{\chapter}{0pt}{-10pt}{15pt}
+
+\titleformat{\section}
+  {\normalfont\large\bfseries}{\thesection}{1em}{}
+\titlespacing*{\section}{0pt}{12pt}{4pt}
+
+\titleformat{\subsection}
+  {\normalfont\normalsize\bfseries}{\thesubsection}{1em}{}
+\titlespacing*{\subsection}{0pt}{10pt}{3pt}
+
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\bfseries}{\thesubsubsection}{1em}{}
+\titlespacing*{\subsubsection}{0pt}{8pt}{2pt}
+
+% Enlaces sin color pero navegables
+\usepackage{hyperref}
+\hypersetup{
+  hidelinks=true,
+  pdfauthor={William Chisag, Licet Ibarra, Karen Maje, Alejandro Rodríguez},
+  pdftitle={Documento de Metáfora y Stack Tecnológico - ESPOCH},
+  pdfsubject={Proyecto Integrador de Saberes - Quinto Semestre}
+}
+
+\begin{document}
+
+% PORTADA ACADEMICA INSTITUCIONAL
+\begin{titlepage}
+  \centering
+  \thispagestyle{empty}
+  \vspace*{0.3cm}
+
+  \includegraphics[width=3.2cm]{LogoESPOCH.png}\\[0.4cm]
+
+  {\normalsize\bfseries ESCUELA SUPERIOR POLITÉCNICA DE CHIMBORAZO}\\[0.2cm]
+  {\small\bfseries FACULTAD DE INFORMÁTICA Y ELECTRÓNICA}\\[0.1cm]
+  {\small\bfseries CARRERA DE TECNOLOGÍAS DE LA INFORMACIÓN}\\[1.0cm]
+
+  {\large\bfseries SISTEMA WEB DE MONITOREO Y GESTIÓN\\[0.15cm]
+  DE LA INFRAESTRUCTURA DE REDES - ESPOCH}\\[0.7cm]
+
+  {\normalsize\bfseries DOCUMENTO DE METÁFORA Y STACK TECNOLÓGICO}\\[0.15cm]
+  {\small Arquitectura de Software, Ecosistema de Herramientas y Justificación Técnica}\\[1.0cm]
+
+  \begin{minipage}[t]{0.45\textwidth}
+    {\small\textbf{Integrantes del Equipo:}}\\[0.25cm]
+    \begin{itemize}[leftmargin=1.2em,itemsep=2pt,parsep=0pt]
+      \small
+      \item William Chisag
+      \item Licet Ibarra
+      \item Karen Maje
+      \item Alejandro Rodríguez
+    \end{itemize}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.50\textwidth}
+    {\small\textbf{Asignaturas y Docentes Responsables:}}\\[0.25cm]
+    \begin{itemize}[leftmargin=1.2em,itemsep=2pt,parsep=0pt]
+      \small
+      \item Infraestructura TI: Ing. Tatiana Landivar
+      \item Tecnología Web: Ing. Pedro Aguilar
+      \item Conmutación y Enrutamiento: Ing. Juan Pazmiño
+      \item Big Data: Ing. Geovanny Silva
+      \item Diseño y Multimedia: Ing. Ramiro Bonilla
+    \end{itemize}
+  \end{minipage}
+
+  \vfill
+
+  {\small\textbf{Período Académico:} Quinto Semestre (PAO 5)}\\[0.05cm]
+  {\small\textbf{Documento Oficial de Ingeniería de Software (Versión 1.0)}}\\[0.6cm]
+
+  {\small Orellana - Ecuador}\\[0.15cm]
+  {\small Octubre de 2026}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\listoftables
+\newpage
+
+\chapter{Metáfora Arquitectural del Sistema}
+
+\section{Concepto de la Metáfora: La Torre de Control de Red y el Centinela}
+En las metodologías ágiles de ingeniería de software (como eXtreme Programming y Scrum), la \textit{metáfora del sistema} es una visión compartida de alto nivel que permite a todos los desarrolladores, evaluadores y usuarios comprender intuitivamente cómo opera el software, sus componentes y su flujo de datos sin perderse en detalles de bajo nivel.
+
+Para el presente proyecto, la metáfora rectora seleccionada es:
+\begin{center}
+  \textbf{\large ``La Torre de Control de Tráfico Aéreo y el Escuadrón Centinela''}
+\end{center}
+
+Bajo esta analogía operativa:
+\begin{itemize}
+  \item \textbf{La Torre de Control (Frontend React):} Es la cabina panorámica donde los controladores (Administradores y Operadores de red) supervisan en tiempo real la posición, altura y estado de cada aeronave mediante pantallas gráficas intuitivas, radares de topología y un panel de alertas. La torre no sale a volar ni interroga directamente a los aviones en el aire; simplemente consume la telemetría depurada que recibe del centro de radar.
+  \item \textbf{El Centro de Operaciones y Despacho (Backend Node.js / Express API):} Es la central de procesamiento que aplica las reglas de seguridad, valida autorizaciones de despegue y aterrizaje, procesa las peticiones de los controladores y expone interfaces estandarizadas (API REST) para entregar datos consolidados sin sobrecargar los sistemas de vuelo.
+  \item \textbf{El Escuadrón Centinela de Radar (Daemon de Monitoreo en Segundo Plano):} Es un servicio autónomo que patrulla incansablemente el espacio aéreo (la red de área local). Emite pulsos periódicos de radar (pings ICMP y barridos ARP/Nmap) para descubrir nuevas naves en el perímetro y verificar que los aviones autorizados sigan respondiendo. Si una nave no responde tras tres pulsos sucesivos, el radar no asume que se desintegró físicamente, sino que emite una notificación de emergencia a la torre.
+  \item \textbf{La Bitácora de Vuelo y Caja Negra (Base de Datos MongoDB):} Es el registro inalterable donde se almacenan las coordenadas de cada aeronave, los planes de vuelo históricos, los eventos de aproximación y las incidencias detectadas para auditoría posterior y análisis estadístico a largo plazo.
+\end{itemize}
+
+Esta metáfora resuelve de forma natural la separación de responsabilidades exigida en el requerimiento RNF-03: \textit{el radar centinela continúa vigilando el espacio aéreo incluso cuando los operadores de la torre de control cierran sus ventanas de visualización}.
+
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[
+    box/.style={rectangle, draw=black, thick, fill=white, rounded corners=3pt, align=center, minimum height=1.3cm, minimum width=3.8cm, font=\small},
+    daemon/.style={rectangle, draw=espochRed, thick, fill=techGray, rounded corners=3pt, align=center, minimum height=1.3cm, minimum width=3.8cm, font=\small},
+    db/.style={cylinder, draw=espochBlue, thick, fill=techGray, shape border rotate=90, aspect=0.25, minimum height=1.4cm, minimum width=3.5cm, align=center, font=\small},
+    arrow/.style={-{Stealth[scale=1.1]}, thick}
+  ]
+    % Nodos
+    \node[box] (ui) at (0,4.5) {\textbf{Torre de Control}\\[2pt]Frontend React 18};
+    \node[box] (api) at (0,2.2) {\textbf{Centro de Despacho}\\[2pt]Backend Node.js / Express};
+    \node[daemon] (daemon) at (-4.5,0) {\textbf{Escuadrón Centinela}\\[2pt]Daemon Linux (ICMP/ARP)};
+    \node[db] (db) at (4.5,0) {\textbf{Bitácora de Vuelo}\\[2pt]MongoDB 7.0};
+    \node[box, fill=techGray] (lan) at (-4.5,-2.5) {\textbf{Espacio Aéreo (LAN)}\\[2pt]Routers, Switches, PCs};
+
+    % Conexiones
+    \draw[arrow] (ui) -- node[right, font=\footnotesize] {HTTP/REST (Cada 5s)} (api);
+    \draw[arrow] (api) -- node[above, font=\footnotesize] {Mongoose BSON} (db);
+    \draw[arrow] (daemon) -- node[above, font=\footnotesize] {Eventos y Checks} (db);
+    \draw[arrow] (daemon) -- node[left, font=\footnotesize] {Pulsos de Radar} (lan);
+    \draw[arrow] (lan) -- node[right, font=\footnotesize] {Respuestas Eco} (daemon);
+
+  \end{tikzpicture}
+  \caption{Diagrama esquemático de la metáfora arquitectural del sistema}\label{fig:metafora_diagrama}
+\end{figure}
+
+\newpage
+\chapter{Desglose Exhaustivo del Stack Tecnológico}
+
+El sistema implementa una arquitectura modular de tres niveles desacoplados más un servicio de fondo nativo en el sistema operativo del servidor, alineándose con las directrices de la norma ISO/IEC 25010 en cuanto a modularidad, mantenibilidad y eficiencia del desempeño.
+
+\section{Capa de Presentación: Frontend Web}
+La interfaz gráfica de usuario está orientada a la operación intuitiva en salas de control y centros de soporte de laboratorio (NOC). Debe responder fluidamente en pantallas de escritorio con resolución igual o superior a $1366 \times 768$ píxeles (RNF-10).
+
+\begin{itemize}
+  \item \textbf{Librería Base:} \textbf{React 18.2+}. Permite la reactividad instantánea del estado mediante su modelo de Virtual DOM concurrente, facilitando actualizaciones selectivas del panel de control sin provocar parpadeos ni recargas completas de la página web.
+  \item \textbf{Herramienta de Construcción y Empaquetado:} \textbf{Vite 5.x}. Se selecciona Vite en reemplazo del obsoleto Create React App (CRA). Vite utiliza \textit{esbuild} basado en Go para proporcionar un arranque en desarrollo prácticamente instantáneo y empaqueta el código de producción con \textit{Rollup}, reduciendo drásticamente el tamaño del bundle Javascript descargado por el navegador.
+  \item \textbf{Enrutamiento del Cliente:} \textbf{React Router DOM v6}. Permite la navegación desacoplada mediante rutas protegidas por rol (\texttt{ProtectedRoute}), redirigiendo a los operadores lejos de las vistas exclusivas de administración sin requerir solicitudes adicionales de páginas HTML al servidor.
+  \item \textbf{Renderizado del Grafo de Topología:} \textbf{React Flow (xyflow)}. Librería especializada en diagramación de grafos dinámicos e interactivos en React. Permite representar nodos con íconos personalizados de hardware (switches, routers, terminales), dibujar aristas con enlaces continuos (confirmados físicamente) o discontinuos (inferidos lógicamente), soportando controles de zoom, arrastre y selección rápida para inspección de fichas.
+  \item \textbf{Estilizado y Sistema de Diseño:} \textbf{Tailwind CSS v3.4}. Framework utilitario que garantiza consistencia visual absoluta, cumplimiento riguroso de la paleta de colores del proyecto sin colisiones de nombres de clase, y fácil implementación de diseño responsivo adaptado a las pantallas de los laboratorios.
+  \item \textbf{Iconografía Profesional:} \textbf{Lucide React}. Set moderno, limpio y vectorial de íconos que garantizan que el estado de cada nodo no se transmita únicamente mediante color, sino acompañado de símbolos inequívocos de comprobación, advertencia y fallo (RNF-11).
+  \item \textbf{Cliente de Comunicación HTTP y Caché:} \textbf{Axios y TanStack Query (React Query)}. Gestiona el sondeo periódico (\textit{polling}) del panel cada 5 segundos de forma controlada, evitando fugas de memoria, manejando cancelaciones automáticas ante desmontaje de componentes e interceptando respuestas HTTP 401 para la renovación transparente de tokens.
+\end{itemize}
+
+\section{Capa de Servicios y Lógica de Negocio: Backend API REST}
+El servidor de aplicaciones procesa las transacciones, gestiona la seguridad de acceso y sirve como pasarela formal entre la interfaz de usuario y la persistencia de datos.
+
+\begin{itemize}
+  \item \textbf{Entorno de Ejecución:} \textbf{Node.js v20 LTS (Iron)}. Plataforma basada en el motor V8 de Google que maneja la concurrencia mediante un bucle de eventos asíncrono no bloqueante (\textit{Event Loop}). Resulta idóneo para aplicaciones orientadas a E/S intensiva de red, donde múltiples peticiones de consulta coexisten con escrituras concurrentes de monitoreo.
+  \item \textbf{Framework de Enrutamiento:} \textbf{Express.js v4.19+}. Microframework ligero y minimalista que ofrece una capa robusta de middlewares para la autenticación, control de accesos basados en roles (RBAC), registro de peticiones (\textit{Morgan}) y manejo centralizado de excepciones.
+  \item \textbf{Seguridad Criptográfica de Credenciales:} \textbf{bcrypt (12 rondas de salting)}. Algoritmo de hash adaptativo que protege las contraseñas contra ataques de fuerza bruta y tablas arcoíris. No se almacenan contraseñas en texto plano bajo ninguna circunstancia (RNF-05).
+  \item \textbf{Gestión de Sesiones Seguras:} \textbf{jsonwebtoken (JWT)}. Arquitectura dual de autenticación:
+  \begin{itemize}
+    \item \textit{Access Token:} JWT de corta vigencia (15 minutos), firmado con HMAC-SHA256, transportado en la cabecera HTTP \texttt{Authorization: Bearer}.
+    \item \textit{Refresh Token:} Credencial de larga duración (8 horas), persistida en base de datos y entregada al cliente exclusivamente mediante una cookie con banderas \texttt{HttpOnly}, \texttt{Secure} y \texttt{SameSite=Lax}, mitigando de raíz ataques XSS y CSRF (Sección 8.3 de la especificación).
+  \end{itemize}
+  \item \textbf{Validación de Datos de Entrada:} \textbf{Zod / Joi}. Validación rigurosa de esquemas en servidor. Impide la inyección de tipos arbitrarios y garantiza que los parámetros de configuración (umbrales, timeouts, intervalos) se mantengan estrictamente dentro de los límites seguros (\textit{guardrails}) definidos en la especificación RF-10.
+\end{itemize}
+
+\section{Capa de Monitoreo y Exploración de Red: Daemon Centinela}
+El proceso de monitoreo opera de forma totalmente independiente del servidor web y de las sesiones activas en el navegador (RNF-03).
+
+\begin{itemize}
+  \item \textbf{Arquitectura del Proceso:} Servicio nativo en segundo plano orquestado mediante \textbf{Systemd} en el servidor Debian del laboratorio. Si el proceso sufriera una falla inesperada, Systemd lo reinicia automáticamente en menos de 5 segundos con política \texttt{Restart=always}.
+  \item \textbf{Mecanismos de Descubrimiento de Red (Capa 2 y Capa 3):}
+  \begin{itemize}
+    \item \textbf{arp-scan:} Herramienta nativa de Linux que envía tramas ARP a nivel de Capa de Enlace (Ethernet). Permite mapear instantáneamente todos los dispositivos activos en el segmento local del laboratorio, obteniendo su dirección IP y su dirección MAC física real de hardware, incluso si el dispositivo tiene activado un firewall personal que bloquea paquetes ICMP.
+    \item \textbf{Nmap (Network Mapper):} Empleado para barridos de subred configurados (\texttt{nmap -sn}) y para resolución pasiva de fabricantes mediante consultas a la base de datos de identificadores OUI del IEEE.
+  \end{itemize}
+  \item \textbf{Mecanismos de Comprobación de Disponibilidad:}
+  \begin{itemize}
+    \item \textbf{Pings ICMP de baja sobrecarga:} Ejecución de comprobaciones de eco con tiempo de espera configurable (predeterminado 3 segundos, timeout estricto de 1 paquete).
+    \item \textbf{Sondeo de puertos TCP (Layer 4 fallback):} Comprobación de sockets TCP a puertos estándar (ej. 80, 443, 22) para servidores que no responden a eco ICMP pero prestan servicios de red activos.
+  \end{itemize}
+  \item \textbf{Control de Concurrencia y Consumo de Recursos (RNF-15):} Limitación estricta de concurrencia mediante un pool de trabajadores asíncronos (\texttt{p-limit}) configurado a un máximo de 15 comprobaciones simultáneas. Esto impide la saturación de sockets de red y el agotamiento de descriptores de archivos en el núcleo de Linux.
+\end{itemize}
+
+\section{Capa de Persistencia: Base de Datos NoSQL}
+La capa de datos utiliza un motor flexible para acomodar la naturaleza heterogénea de los equipos de red (hosts con IP, switches no administrables sin IP, puntos de acceso con múltiples clientes).
+
+\begin{itemize}
+  \item \textbf{Motor de Base de Datos:} \textbf{MongoDB 7.0 Community Edition}. Sistema de base de datos documental orientado a JSON/BSON. Permite almacenar atributos dinámicos por tipo de hardware sin requerir complejas migraciones de esquema relacional.
+  \item \textbf{Mapeador Objeto-Documento (ODM):} \textbf{Mongoose v8}. Facilita la declaración de esquemas estrictos, validación de tipos a nivel de aplicación, definición de hooks (\textit{pre-save} y \textit{post-save}) para auditoría y tipado consistente.
+  \item \textbf{Índices TTL (Time-To-Live) para Gestión de Capacidad:} Mecanismo automático nativo de MongoDB para depurar datos de alta frecuencia y prevenir el desbordamiento de disco en el servidor Debian (Sección 8.4 de la especificación):
+  \begin{itemize}
+    \item Colección \texttt{checks}: Expira automáticamente a los 30 días.
+    \item Colección \texttt{events}: Expira automáticamente a los 90 días (semestre académico).
+    \item Colección \texttt{sessions}: Expira automáticamente a las 24 horas tras caducar el token.
+  \end{itemize}
+  \item \textbf{Módulo de Agregación para Big Data:} Consultas analíticas diarias mediante el \textit{Aggregation Pipeline} de MongoDB para computar estadísticas consolidadas de disponibilidad (RF-11), resumiendo miles de pings en un único registro diario por dispositivo.
+\end{itemize}
+
+\section{Capa de Infraestructura, Red y Despliegue en Laboratorio}
+\begin{itemize}
+  \item \textbf{Sistema Operativo del Servidor:} \textbf{Debian GNU/Linux 12 (Bookworm) x86\_64}. Reconocido por su estabilidad inquebrantable, bajo consumo de memoria RAM y paquetes de red nativos maduros.
+  \item \textbf{Servidor Web y Proxy Inverso:} \textbf{Nginx 1.22+}. Actúa como puerta de enlace frontal en el puerto 80/443 del servidor. Entrega los archivos estáticos optimizados del frontend React y redirige las rutas \texttt{/api/*} hacia el backend de Node.js en \texttt{localhost:5000}. Aísla completamente la base de datos MongoDB en el puerto local \texttt{127.0.0.1:27017}, impidiendo cualquier acceso directo desde el exterior.
+  \item \textbf{Acceso Remoto Seguro (Fase 2):} \textbf{WireGuard VPN}. Protocolo de red privada virtual criptográfica de última generación que opera en el espacio de kernel de Linux. Permite a los docentes y evaluadores acceder al panel de control desde fuera del laboratorio a través de un túnel cifrado ChaCha20-Poly1305, sin exponer puertos del sistema a Internet ni comprometer la seguridad institucional.
+\end{itemize}
+
+\newpage
+\chapter{Matriz de Justificación Técnica y Alternativas Descartadas}
+
+Para cumplir con los estándares de rigor técnico en la toma de decisiones de ingeniería de software, se documenta la evaluación comparativa frente a tecnologías alternativas.
+
+\begin{table}[htbp]
+\centering
+\caption{Matriz comparativa de selección tecnológica}\label{tab:comparativa_tech}
+\small
+\begin{tabularx}{\textwidth}{p{2.8cm} p{2.8cm} p{4.0cm} X}
+\toprule
+\textbf{Capa / Componente} & \textbf{Tecnología Elegida} & \textbf{Alternativas Evaluadas} & \textbf{Criterio y Justificación de Decisión} \\
+\midrule
+\textbf{Frontend Web} & \textbf{React 18 + Vite} & Angular, Vue.js, Django Templates & React cuenta con el ecosistema de visualización de grafos más maduro (React Flow). Vite ofrece compilaciones ultrarrápidas y menor consumo de memoria que Angular o Webpack. \\
+\midrule
+\textbf{Backend \& API} & \textbf{Node.js + Express} & Python (Django/FastAPI), Java (Spring Boot) & El modelo de I/O asíncrono no bloqueante de Node.js es superior al manejar cientos de pings y comprobaciones concurrentes de red sin levantar hilos pesados de sistema operativo. Permite compartir tipos y modelos en Javascript con el frontend. \\
+\midrule
+\textbf{Base de Datos} & \textbf{MongoDB 7.0} & PostgreSQL, MySQL, SQLite & La estructura de los dispositivos de red es altamente polimórfica (un router tiene tablas de rutas; un switch tiene puertos y VLANs; una PC no). Los documentos BSON permiten modelar esta jerarquía sin tablas puente artificiales. Índices TTL automáticos nativos. \\
+\midrule
+\textbf{Daemon de Red} & \textbf{Node.js Daemon + arp-scan/ping} & Python Scapy, C/C++ raw sockets & `arp-scan` y `ping` son binarios del sistema altamente optimizados por el kernel de Linux. Integrarlos con Node.js proporciona equilibrio perfecto entre velocidad de ejecución en bajo nivel y facilidad de lógica de negocio. \\
+\midrule
+\textbf{Despliegue} & \textbf{Systemd + Nginx en Debian} & Docker Compose en VM, Kubernetes & En la máquina física del laboratorio asignada para el proyecto, la virtualización o capas de abstracción pesadas de contenedores consumen memoria RAM innecesaria. La ejecución como servicio nativo Systemd garantiza el 100\% del rendimiento del hardware. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\newpage
+\chapter{Articulación con las Asignaturas del Semestre (PAO 5)}
+
+El stack tecnológico seleccionado no es fortuito; ha sido diseñado de manera interdisciplinaria para integrar las competencias prácticas exigidas por las asignaturas de la carrera:
+
+\begin{table}[htbp]
+\centering
+\caption{Mapeo de tecnologías con asignaturas curriculares}\label{tab:articulacion_curricular}
+\small
+\begin{tabularx}{\textwidth}{p{3.5cm} p{4.0cm} X}
+\toprule
+\textbf{Asignatura y Docente} & \textbf{Componentes del Stack Aplicados} & \textbf{Aporte Específico al Proyecto} \\
+\midrule
+\textbf{Infraestructura TI}\newline (Ing. Tatiana Landivar) & Servidor Debian 12, Daemon Systemd, Nginx, Gobernanza de Servidores & Despliegue de servicios en Linux, gestión de dependencias, automatización de tareas en segundo plano y políticas de seguridad perimetral del host. \\
+\midrule
+\textbf{Tecnología Web}\newline (Ing. Pedro Aguilar) & React 18, Vite, Node.js, Express, REST API, JWT dual tokens & Arquitectura cliente-servidor desacoplada, consumo reactivo de endpoints, protección de sesiones web y diseño modular en capas. \\
+\midrule
+\textbf{Conmutación y Enrutamiento}\newline (Ing. Juan Pazmiño) & arp-scan, ICMP, sondeos TCP, Capa 2/3, Nodos Parent-Child & Comprensión de tramas Ethernet broadcast, direccionamiento IP, pasarelas por defecto, tablas de conmutación y correlación de fallos de red. \\
+\midrule
+\textbf{Big Data}\newline (Ing. Geovanny Silva) & MongoDB, Índices TTL, Agregación Downsampling, Métricas históricas & Procesamiento de grandes volúmenes de telemetría de red, agregación diaria de disponibilidad y retención eficiente sin desbordamiento de almacenamiento. \\
+\midrule
+\textbf{Diseño y Tecnología Multimedia}\newline (Ing. Ramiro Bonilla) & React Flow, Tailwind CSS, Lucide Icons, WCAG 2.1 AA & Visualización de grafos interactivos de topología, ergonomía visual, centro de notificaciones con accesibilidad cromática y acústica. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\chapter{Conclusiones}
+La selección del stack tecnológico presentado responde a criterios de ingeniería rigurosos: rendimiento en tiempo real, mínimo consumo de recursos en hardware local, modularidad estricta y cumplimiento integral de las normas de calidad ISO/IEC 25010 y de seguridad ISO/IEC 27001. Este documento constituye la base técnica vinculante sobre la cual se desarrollará la solución durante el período académico.
+
+\end{document}

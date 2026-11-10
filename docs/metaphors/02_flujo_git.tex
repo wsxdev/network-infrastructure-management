@@ -1,0 +1,538 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-nodecimaldot,es-tabla,es-noquoting]{babel}
+
+% Graficos y diagramas
+\usepackage{graphicx}
+\graphicspath{{../img/}{img/}}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric,shapes.misc,arrows.meta,positioning,calc,fit,backgrounds,shadows.blur}
+
+% Tipografia Times New Roman estandar en 12pt
+\usepackage{newtxtext,newtxmath}
+
+% Margenes estandar (3cm izq, 2.5cm der/sup/inf)
+\usepackage{geometry}
+\geometry{
+  top=2.5cm,
+  bottom=2.5cm,
+  left=3.0cm,
+  right=2.5cm,
+  headheight=15pt,
+  headsep=20pt,
+  footskip=25pt
+}
+
+% Espaciado e interlineado
+\usepackage{setspace}
+\setstretch{1.15}
+\setlength{\parskip}{6pt}
+\setlength{\parindent}{0pt}
+
+% Viñetas redondas formales
+\usepackage{enumitem}
+\setlist[itemize,1]{label=\textbullet, leftmargin=1.5em, itemsep=2pt, parsep=0pt}
+\setlist[itemize,2]{label=\normalfont\bfseries\textperiodcentered, leftmargin=1.5em, itemsep=2pt, parsep=0pt}
+\setlist[enumerate]{leftmargin=1.5em, itemsep=2pt, parsep=0pt}
+
+% Color del texto y paleta
+\usepackage{xcolor}
+\definecolor{espochBlue}{RGB}{0,51,102}
+\definecolor{espochRed}{RGB}{192,0,0}
+\definecolor{techGray}{RGB}{245,247,250}
+\definecolor{gitMain}{RGB}{31,41,55}
+\definecolor{gitDev}{RGB}{16,185,129}
+\definecolor{gitFeat}{RGB}{59,130,246}
+\definecolor{gitFix}{RGB}{239,68,68}
+
+% Tablas profesionales segun estandares ISO/APA
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{caption}
+\captionsetup[table]{position=top,skip=6pt,font={small,bf},labelfont=bf}
+
+% Listados de codigo preformateado
+\usepackage{listings}
+\lstset{
+  basicstyle=\small\ttfamily,
+  frame=single,
+  rulecolor=\color{black},
+  framerule=0.5pt,
+  breaklines=true,
+  numbers=none,
+  backgroundcolor=\color{white},
+  tabsize=2,
+  inputencoding=utf8,
+  extendedchars=true,
+  literate=
+    {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'{\i}}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+    {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+    {ñ}{{\~n}}1 {Ñ}{{\~N}}1 {ü}{{\"u}}1 {Ü}{{\"U}}1
+}
+
+% Encabezados y pies de pagina
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\nouppercase{\leftmark}}
+\fancyhead[R]{\small ESPOCH - Gestión y Flujo de Git}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% Formato de titulos
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+  {\normalfont\Large\bfseries}{\chaptertitlename\ \thechapter}{10pt}{\huge\bfseries}
+\titlespacing*{\chapter}{0pt}{-10pt}{15pt}
+
+\titleformat{\section}
+  {\normalfont\large\bfseries}{\thesection}{1em}{}
+\titlespacing*{\section}{0pt}{12pt}{4pt}
+
+\titleformat{\subsection}
+  {\normalfont\normalsize\bfseries}{\thesubsection}{1em}{}
+\titlespacing*{\subsection}{0pt}{10pt}{3pt}
+
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\bfseries}{\thesubsubsection}{1em}{}
+\titlespacing*{\subsubsection}{0pt}{8pt}{2pt}
+
+\usepackage{hyperref}
+\hypersetup{
+  hidelinks=true,
+  pdfauthor={William Chisag, Licet Ibarra, Karen Maje, Alejandro Rodríguez},
+  pdftitle={Estándar de Manejo de Git y Colaboración - ESPOCH},
+  pdfsubject={Proyecto Integrador de Saberes - Quinto Semestre}
+}
+
+\begin{document}
+
+% PORTADA ACADEMICA
+\begin{titlepage}
+  \centering
+  \thispagestyle{empty}
+  \vspace*{0.3cm}
+
+  \includegraphics[width=3.2cm]{LogoESPOCH.png}\\[0.4cm]
+
+  {\normalsize\bfseries ESCUELA SUPERIOR POLITÉCNICA DE CHIMBORAZO}\\[0.2cm]
+  {\small\bfseries FACULTAD DE INFORMÁTICA Y ELECTRÓNICA}\\[0.1cm]
+  {\small\bfseries CARRERA DE TECNOLOGÍAS DE LA INFORMACIÓN}\\[1.0cm]
+
+  {\large\bfseries SISTEMA WEB DE MONITOREO Y GESTIÓN\\[0.15cm]
+  DE LA INFRAESTRUCTURA DE REDES - ESPOCH}\\[0.7cm]
+
+  {\normalsize\bfseries DOCUMENTO DE ESTÁNDAR Y METÁFORA DE MANEJO DE GIT}\\[0.15cm]
+  {\small Flujo de Trabajo Colaborativo, Asignación de Roles por Desarrollador y Convenciones}\\[1.0cm]
+
+  \begin{minipage}[t]{0.45\textwidth}
+    {\small\textbf{Integrantes del Equipo:}}\\[0.25cm]
+    \begin{itemize}[leftmargin=1.2em,itemsep=2pt,parsep=0pt]
+      \small
+      \item William Chisag
+      \item Licet Ibarra
+      \item Karen Maje
+      \item Alejandro Rodríguez
+    \end{itemize}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.50\textwidth}
+    {\small\textbf{Asignaturas y Docentes Responsables:}}\\[0.25cm]
+    \begin{itemize}[leftmargin=1.2em,itemsep=2pt,parsep=0pt]
+      \small
+      \item Infraestructura TI: Ing. Tatiana Landivar
+      \item Tecnología Web: Ing. Pedro Aguilar
+      \item Conmutación y Enrutamiento: Ing. Juan Pazmiño
+      \item Big Data: Ing. Geovanny Silva
+      \item Diseño y Multimedia: Ing. Ramiro Bonilla
+    \end{itemize}
+  \end{minipage}
+
+  \vfill
+
+  {\small\textbf{Período Académico:} Quinto Semestre (PAO 5)}\\[0.05cm]
+  {\small\textbf{Documento Oficial de Ingeniería de Software (Versión 1.0)}}\\[0.6cm]
+
+  {\small Orellana - Ecuador}\\[0.15cm]
+  {\small Octubre de 2026}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\listoftables
+\newpage
+
+\chapter{Metáfora del Control de Versiones: El Patio Ferroviario}
+
+\section{Concepto de la Metáfora: El Patio Ferroviario Central}
+Para organizar el desarrollo concurrente de cuatro ingenieros de software sin provocar colisiones de código, pérdidas de trabajo ni ramas rotas, se adopta la metáfora operativa de:
+\begin{center}
+  \textbf{\large ``La Red Ferroviaria y el Taller Central de Ensamblaje''}
+\end{center}
+
+Bajo esta perspectiva:
+\begin{itemize}
+  \item \textbf{La Vía Principal de Pasajeros (\texttt{main}):} Representa la línea férrea de alta velocidad en servicio comercial activo. Por aquí solo transitan trenes inspeccionados, certificados y listos para la demostración a los docentes y usuarios finales. Ningún mecánico puede realizar soldaduras ni pruebas directamente sobre la vía principal.
+  \item \textbf{El Patio Central de Maniobras (\texttt{develop}):} Es la estación de pruebas integradas donde convergen los vagones terminados. Todo nuevo módulo se engancha primero aquí para verificar que los frenos, la energía y las señales electrónicas se sincronicen armónicamente entre todos los componentes.
+  \item \textbf{Los Talleres de Construcción Individual (\texttt{feature/*}):} Son vías laterales cerradas donde cada maquinista ensambla una pieza específica (un motor, un panel de instrumentos o un sistema de radar). En su taller, el desarrollador puede desarmar y volver a armar su pieza con absoluta libertad sin descarrilar a los demás trenes.
+  \item \textbf{La Inspección Técnica Obligatoria (\textit{Pull Request \& Code Review}):} Antes de que un vagón nuevo salga de su taller lateral hacia el patio central de maniobras, debe ser revisado por un jefe de taller (otro compañero del equipo) que comprueba que la soldadura cumpla los estándares de calidad y no existan fallas estructurales.
+\end{itemize}
+
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[
+    branch/.style={circle, draw=black, thick, fill=white, minimum size=0.7cm, font=\footnotesize\bfseries},
+    mainNode/.style={circle, draw=gitMain, thick, fill=gitMain!20, minimum size=0.7cm, font=\footnotesize\bfseries},
+    devNode/.style={circle, draw=gitDev, thick, fill=gitDev!20, minimum size=0.7cm, font=\footnotesize\bfseries},
+    featNode/.style={circle, draw=gitFeat, thick, fill=gitFeat!20, minimum size=0.7cm, font=\footnotesize\bfseries},
+    arrow/.style={-{Stealth[scale=1.1]}, thick}
+  ]
+    % Línea Main
+    \node[mainNode] (m1) at (0,3) {v1.0};
+    \node[mainNode] (m2) at (6,3) {v2.0};
+    \node[mainNode] (m3) at (9,3) {v3.0};
+    \draw[arrow] (m1) -- (m2);
+    \draw[arrow] (m2) -- (m3);
+    \node[left=0.2cm of m1, font=\bfseries] {\texttt{main}};
+
+    % Línea Develop
+    \node[devNode] (d1) at (1,1.5) {d1};
+    \node[devNode] (d2) at (3,1.5) {d2};
+    \node[devNode] (d3) at (5,1.5) {d3};
+    \node[devNode] (d4) at (8,1.5) {d4};
+    \draw[arrow] (m1) -- (d1);
+    \draw[arrow] (d1) -- (d2);
+    \draw[arrow] (d2) -- (d3);
+    \draw[arrow] (d3) -- (d4);
+    \draw[arrow] (d3) -- (m2);
+    \draw[arrow] (d4) -- (m3);
+    \node[left=0.2cm of d1, font=\bfseries, text=gitDev] {\texttt{develop}};
+
+    % Línea Feature 1 (Backend)
+    \node[featNode] (f1) at (2,0) {f1};
+    \node[featNode] (f2) at (4,0) {f2};
+    \draw[arrow] (d1) -- (f1);
+    \draw[arrow] (f1) -- (f2);
+    \draw[arrow] (f2) -- (d3);
+    \node[left=0.2cm of f1, font=\bfseries, text=gitFeat] {\texttt{feature/backend-api}};
+
+    % Línea Feature 2 (Frontend)
+    \node[featNode] (f3) at (6,-1.2) {f3};
+    \node[featNode] (f4) at (7,-1.2) {f4};
+    \draw[arrow] (d3) -- (f3);
+    \draw[arrow] (f3) -- (f4);
+    \draw[arrow] (f4) -- (d4);
+    \node[left=0.2cm of f3, font=\bfseries, text=gitFeat] {\texttt{feature/ui-topology}};
+
+  \end{tikzpicture}
+  \caption{Topología del modelo de ramas Git adaptado para el equipo}\label{fig:git_branches}
+\end{figure}
+
+\newpage
+\chapter{Asignación de Roles y Responsabilidades por Desarrollador}
+
+Para maximizar la eficiencia y evitar solapamientos de código, se definen áreas de propiedad exclusiva (\textit{Code Ownership}) según las competencias de cada integrante y los módulos del proyecto:
+
+\begin{table}[htbp]
+\centering
+\caption{Matriz de asignación de responsabilidades y ramas por usuario}\label{tab:roles_git}
+\small
+\begin{tabularx}{\textwidth}{p{3.2cm} p{3.2cm} p{3.0cm} X}
+\toprule
+\textbf{Desarrollador} & \textbf{Rol Principal} & \textbf{Módulos Asignados} & \textbf{Prefijos de Rama Autorizados} \\
+\midrule
+\textbf{William Chisag} & Líder Técnico \& Backend Lead & RF-01, RF-02, RF-05, RF-07, RF-10 & \texttt{feature/auth-*}, \texttt{feature/daemon-ping}, \texttt{feature/api-config} \\
+\midrule
+\textbf{Karen Maje} & Frontend \& UI/UX Lead & RF-08, RF-09, RF-12, RNF-02, RNF-11 & \texttt{feature/ui-dashboard}, \texttt{feature/ui-topology}, \texttt{feature/ui-inventory} \\
+\midrule
+\textbf{Licet Ibarra} & Big Data, Base de Datos \& QA Lead & RF-03, RF-04, RF-06, RF-11, RNF-08 & \texttt{feature/db-models}, \texttt{feature/db-ttl-downsampling}, \texttt{feature/db-audit} \\
+\midrule
+\textbf{Alejandro Rodríguez} & DevOps, Redes \& Infraestructura Lead & RNF-01, RNF-03, RNF-07, RNF-14, RNF-15 & \texttt{feature/devops-debian}, \texttt{feature/daemon-arpscan}, \texttt{feature/nginx-wireguard} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Responsabilidades Específicas de Cada Integrante}
+
+\subsection{William Chisag (Líder Técnico \& Backend Lead)}
+\begin{itemize}
+  \item \textbf{Gobernanza del Repositorio:} Administrador principal del repositorio en GitHub/GitLab. Es responsable de proteger las ramas \texttt{main} y \texttt{develop}, asegurando que ninguna persona pueda realizar un \texttt{git push --force} que reescriba el historial compartido.
+  \item \textbf{Capa de Negocio y Seguridad:} Desarrolla los endpoints de la API de Express, la autenticación dual con JWT (Access y Refresh tokens), el control de acceso basado en roles (RBAC) y la orquestación del daemon de disponibilidad (RF-01, RF-02, RF-05).
+  \item \textbf{Aprobación Final de Merges:} Revisa y valida la arquitectura de los Pull Requests hacia \texttt{develop} antes de su integración definitiva.
+\end{itemize}
+
+\subsection{Karen Maje (Frontend \& UI/UX Lead)}
+\begin{itemize}
+  \item \textbf{Arquitectura de la Interfaz Web:} Estructura el proyecto React con Vite, configurando Tailwind CSS y el sistema de componentes modulares reutilizables.
+  \item \textbf{Topología y Dashboard de Monitoreo:} Implementa el lienzo interactivo con React Flow para visualizar los enlaces físicos confirmados y las inferencias de red (RF-08), el centro de notificaciones in-app y el catálogo de filtros avanzados del inventario (RF-09, RF-12).
+  \item \textbf{Verificación de Accesibilidad (RNF-11):} Garantiza que la interfaz cumpla con el estándar WCAG 2.1 AA, verificando contrastes de color, etiquetas de estado legibles para daltónicos e iconografía inequívoca.
+\end{itemize}
+
+\subsection{Licet Ibarra (Big Data, Base de Datos \& QA Lead)}
+\begin{itemize}
+  \item \textbf{Arquitectura de Persistencia NoSQL:} Diseña los esquemas y modelos de Mongoose en MongoDB, asegurando la consistencia entre dispositivos, eventos y alertas (RF-03, RF-06).
+  \item \textbf{Retención y Analítica de Disponibilidad (Big Data):} Configura los índices TTL automáticos (30 días para comprobaciones brutas, 90 días para eventos) y programa los pipelines de agregación para el resumen diario (\textit{downsampling}) de disponibilidad histórica (RF-11, Sección 8.4).
+  \item \textbf{Control de Calidad (QA):} Diseña y ejecuta los planes de prueba de aceptación funcional, validando que los criterios de aceptación de cada historia de usuario se cumplan a cabalidad antes del cierre de cada sprint.
+\end{itemize}
+
+\subsection{Alejandro Rodríguez (DevOps, Redes \& Infraestructura Lead)}
+\begin{itemize}
+  \item \textbf{Infraestructura y Automatización del Servidor:} Administra la máquina Debian 12 en el laboratorio, configurando Nginx como proxy inverso, la segregación de puertos locales y la gestión de procesos con Systemd (\texttt{network-monitoring.service}).
+  \item \textbf{Integración de Herramientas de Red de Bajo Nivel:} Desarrolla los módulos de ejecución nativa de \texttt{arp-scan} y \texttt{nmap} en Debian, gestionando permisos seguros de superusuario (\textit{capabilities} de Linux sin exponer \texttt{sudo} generalizado) para el descubrimiento periódico de la subred (RF-04).
+  \item \textbf{Acceso Remoto Criptográfico:} Configura el túnel de acceso seguro mediante WireGuard VPN para pruebas docentes externas seguras (Sección 8.8).
+\end{itemize}
+
+\newpage
+\chapter{Estrategia de Ramas y Ciclo de Vida del Software}
+
+\section{Estructura Jerárquica de Ramas}
+El equipo utilizará una variación pragmática y disciplinada de \textbf{GitFlow}:
+
+\begin{enumerate}
+  \item \textbf{Rama \texttt{main} (Producción / Entregable Oficial):}
+  \begin{itemize}
+    \item Contiene únicamente código estable, compilable y probado que corresponde a los hitos de entrega académica para los docentes.
+    \item Todo commit en \texttt{main} debe estar etiquetado con un tag semántico formal (ejemplo: \texttt{v1.0.0}, \texttt{v2.0.0}, \texttt{v3.0.0}).
+    \item \textbf{Regla estricta:} Nadie hace push directo a \texttt{main}. Los cambios únicamente ingresan mediante Pull Request desde \texttt{develop} tras la aprobación del equipo.
+  \end{itemize}
+
+  \item \textbf{Rama \texttt{develop} (Integración Continua de Desarrollo):}
+  \begin{itemize}
+    \item Es el tronco de trabajo activo. Refleja el estado del sprint en curso con todas las características validadas hasta la fecha.
+    \item Sirve de punto de partida para cualquier nueva característica y destino de todos los Pull Requests de desarrollo.
+  \end{itemize}
+
+  \item \textbf{Ramas de Característica (\texttt{feature/<modulo>-<nombre-descriptivo>}):}
+  \begin{itemize}
+    \item Se crean siempre a partir de \texttt{develop}.
+    \item Tienen una vida útil corta (idealmente entre 1 y 4 días de trabajo).
+    \item No deben contener trabajo de múltiples requerimientos desvinculados.
+    \item \textbf{Ejemplos válidos:}
+    \begin{itemize}
+      \item \texttt{feature/auth-jwt-refresh} (William Chisag)
+      \item \texttt{feature/ui-network-topology} (Karen Maje)
+      \item \texttt{feature/db-ttl-aggregation} (Licet Ibarra)
+      \item \texttt{feature/daemon-arp-discovery} (Alejandro Rodríguez)
+    \end{itemize}
+  \end{itemize}
+
+  \item \textbf{Ramas de Corrección de Defectos (\texttt{bugfix/<descripcion>}):}
+  \begin{itemize}
+    \item Se desprenden de \texttt{develop} para solucionar fallos identificados durante las pruebas internas de integración.
+    \item Ejemplo: \texttt{bugfix/fix-ping-timeout-calculation}.
+  \end{itemize}
+
+  \item \textbf{Ramas de Parche Crítico (\texttt{hotfix/<version>}):}
+  \begin{itemize}
+    \item Se originan directamente desde \texttt{main} únicamente ante una falla catastrófica descubierta en plena evaluación o demostración en vivo.
+    \item Una vez corregido el problema, se integran tanto a \texttt{main} como a \texttt{develop}.
+    \item Ejemplo: \texttt{hotfix/v1.0.1-crash-on-empty-mac}.
+  \end{itemize}
+\end{enumerate}
+
+\newpage
+\chapter{Estándar de Commits y Trazabilidad (Conventional Commits)}
+
+Para garantizar la trazabilidad exigida por la norma ISO/IEC/IEEE 29148 y facilitar la generación automatizada de bitácoras de cambio (\textit{Changelog}), todos los commits deben adherirse estrictamente a la especificación \textbf{Conventional Commits v1.0.0}.
+
+\section{Estructura Obligatoria del Mensaje}
+\begin{lstlisting}[language=bash]
+<tipo>(<alcance>): <descripcion concisa en imperativo> [#<id_requerimiento>]
+
+[Cuerpo opcional que explica el porqué del cambio y alternativas consideradas]
+
+[Pie opcional: Referencias a incidencias o avisos de cambios incompatibles]
+\end{lstlisting}
+
+\section{Tipos de Commit Permitidos}
+\begin{table}[htbp]
+\centering
+\caption{Tipos estándar de commit y su aplicabilidad}\label{tab:commit_types}
+\small
+\begin{tabularx}{\textwidth}{p{2.2cm} p{4.2cm} X}
+\toprule
+\textbf{Prefijo} & \textbf{Significado Semántico} & \textbf{Ejemplo Aplicado al Proyecto} \\
+\midrule
+\texttt{feat} & Incorporación de una nueva funcionalidad o requerimiento & \texttt{feat(auth): agregar rotacion dual con refresh tokens [\#RF-01]} \\
+\midrule
+\texttt{fix} & Corrección de un defecto o error de software & \texttt{fix(daemon): resolver falso positivo por timeout en WiFi [\#RF-05]} \\
+\midrule
+\texttt{perf} & Optimización de rendimiento o consumo de recursos & \texttt{perf(db): agregar indice TTL para depurar comprobaciones [\#RNF-15]} \\
+\midrule
+\texttt{refactor} & Reestructuración de código sin alterar su comportamiento & \texttt{refactor(api): modularizar controladores de inventario [\#RNF-12]} \\
+\midrule
+\texttt{style} & Ajustes de formato, espaciado o interfaz sin cambio lógico & \texttt{style(ui): estandarizar bordes y badges de estado [\#RNF-11]} \\
+\midrule
+\texttt{docs} & Modificaciones en documentación técnica o comentarios & \texttt{docs(api): documentar endpoints con OpenAPI/Swagger} \\
+\midrule
+\texttt{test} & Incorporación o corrección de pruebas automatizadas & \texttt{test(auth): anadir pruebas de bloqueo tras 3 fallos [\#RF-01.07]} \\
+\midrule
+\texttt{chore} & Mantenimiento de dependencias, scripts de build o CI/CD & \texttt{chore(deps): actualizar Tailwind CSS y dependencias Vite} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Reglas de Redacción de Commits}
+\begin{itemize}
+  \item \textbf{Modo imperativo:} Escribir en tiempo presente (ej. ``agregar'', ``corregir'', ``eliminar''), nunca en pasado (``agregado'', ``corregí'').
+  \item \textbf{Primera letra en minúscula:} Después de los dos puntos del prefijo, la descripción inicia en minúscula.
+  \item \textbf{Sin punto final:} La línea principal no debe terminar con punto.
+  \item \textbf{Trazabilidad vinculante:} Siempre que el commit satisfaga o modifique un requerimiento del backlog, se debe incluir su identificador entre corchetes (ej. \texttt{[\#RF-05.02]}).
+\end{itemize}
+
+\newpage
+\chapter{Flujo de Trabajo Paso a Paso y Comandos Prácticos}
+
+A continuación se detalla la guía operativa que cada desarrollador ejecutará en su terminal de Linux para trabajar colaborativamente de manera segura:
+
+\section{Paso 1: Configuración Inicial de la Identidad del Desarrollador}
+Al clonar el repositorio en su computadora personal o en el laboratorio, cada integrante debe verificar que su nombre y correo institucional estén registrados:
+\begin{lstlisting}[language=bash]
+# Ejemplo para William Chisag:
+git config --global user.name "William Chisag"
+git config --global user.email "william.chisag@espoch.edu.ec"
+
+# Configuracion recomendada de ayuda de merge y estilo:
+git config --global pull.rebase true
+git config --global core.autocrlf input
+\end{lstlisting}
+
+\section{Paso 2: Inicio de una Nueva Característica (Branching)}
+Antes de crear una rama, siempre se debe sincronizar \texttt{develop} con el servidor remoto:
+\begin{lstlisting}[language=bash]
+git checkout develop
+git pull origin develop
+git checkout -b feature/daemon-icmp-ping
+\end{lstlisting}
+
+\section{Paso 3: Desarrollo Local y Commits Atómicos}
+El desarrollador programa su solución y realiza commits pequeños y autocontenidos:
+\begin{lstlisting}[language=bash]
+git status
+git add src/services/pingService.js
+git commit -m "feat(daemon): implementar sondeo ICMP con timeout de 3s [#RF-05.03]"
+\end{lstlisting}
+
+\section{Paso 4: Sincronización Continua contra Develop}
+Para evitar acumulaciones masivas de conflictos, antes de publicar la rama se debe rebasar contra los últimos cambios de los compañeros en \texttt{develop}:
+\begin{lstlisting}[language=bash]
+git fetch origin
+git rebase origin/develop
+\end{lstlisting}
+\textit{Si existen conflictos:} Git pausará el proceso. El desarrollador edita los archivos en conflicto, guarda las versiones correctas y continúa:
+\begin{lstlisting}[language=bash]
+git add src/services/pingService.js
+git rebase --continue
+\end{lstlisting}
+
+\section{Paso 5: Publicación y Creación del Pull Request (PR)}
+\begin{lstlisting}[language=bash]
+git push -u origin feature/daemon-icmp-ping
+\end{lstlisting}
+El desarrollador ingresa a GitHub/GitLab y abre un Pull Request dirigido estrictamente hacia la rama \textbf{\texttt{develop}}.
+
+\section{Paso 6: Plantilla Obligatoria de Pull Request (Code Review)}
+Todo PR debe incluir en su descripción la siguiente información estandarizada:
+\begin{lstlisting}[language=bash]
+### Descripcion del Cambio:
+Se implemento el servicio de comprobacion ICMP en segundo plano con
+limite de concurrencia de 15 hilos mediante p-limit.
+
+### Requerimientos Asociados:
+- RF-05.01 (Servicio independiente)
+- RF-05.03 (Timeout de 3 segundos)
+- RNF-15 (Uso eficiente de recursos)
+
+### Verificacion y Pruebas Realizadas:
+- [x] Prueba de ping exitosa sobre 192.168.1.1 (Router).
+- [x] Prueba de caida simulada desconectando host (3 fallos -> No disponible).
+- [x] Verificado que no existen fugas de sockets en Debian.
+
+### Revisor Asignado:
+@WilliamChisag / @AlejandroRodriguez
+\end{lstlisting}
+
+\section{Paso 7: Integración y Limpieza Local}
+Una vez que el revisor aprueba el PR y se ejecuta el merge hacia \texttt{develop}, el autor elimina la rama local para mantener limpio su entorno:
+\begin{lstlisting}[language=bash]
+git checkout develop
+git pull origin develop
+git branch -d feature/daemon-icmp-ping
+\end{lstlisting}
+
+\newpage
+\chapter{Seguridad del Repositorio y Gestión de Archivos Ignorados}
+
+\section{Regla de Oro: Cero Secretos en el Repositorio}
+Bajo las recomendaciones de ISO/IEC 27001, está terminantemente prohibido subir al control de versiones credenciales, contraseñas de bases de datos, claves maestras de JWT o certificados privados.
+
+\section{Archivo \texttt{.gitignore} Obligatorio}
+En la raíz del proyecto debe existir un archivo \texttt{.gitignore} con la siguiente configuración mínima obligatoria:
+\begin{lstlisting}[language=bash]
+# Dependencias de paquetes
+node_modules/
+dist/
+build/
+
+# Archivos de entorno y secretos
+.env
+.env.local
+.env.production
+*.pem
+*.key
+
+# Logs del sistema operativo y herramientas
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# Archivos generados por el compilador LaTeX
+*.aux
+*.lot
+*.toc
+*.log
+*.out
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+
+# Archivos temporales de sistemas operativos y editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+\end{lstlisting}
+
+\section{Plantilla de Variables de Entorno (\texttt{.env.example})}
+Para que cualquier integrante del equipo pueda configurar su entorno de desarrollo local sin comprometer la seguridad, se versiona un archivo público \texttt{.env.example} con valores ficticios:
+\begin{lstlisting}[language=bash]
+# Configuracion del Servidor API
+PORT=5000
+NODE_ENV=development
+
+# Base de Datos MongoDB
+MONGO_URI=mongodb://127.0.0.1:27017/network_monitoring
+
+# Seguridad Criptografica JWT
+JWT_ACCESS_SECRET=clave_secreta_super_segura_de_desarrollo_access_token_123
+JWT_REFRESH_SECRET=clave_secreta_super_segura_de_desarrollo_refresh_token_456
+JWT_ACCESS_EXPIRES_IN=15m
+JWT_REFRESH_EXPIRES_IN=8h
+
+# Parametros de Red y Monitoreo Predeterminados
+DEFAULT_PING_INTERVAL_SEC=30
+DEFAULT_DISCOVERY_INTERVAL_MIN=10
+DEFAULT_PING_TIMEOUT_MS=3000
+MAX_CONCURRENT_PINGS=15
+\end{lstlisting}
+
+\chapter{Conclusiones}
+La disciplina en el control de versiones constituye el pilar que garantiza la integridad, la autoría y el progreso continuo del proyecto integrador. El cumplimiento riguroso de este estándar de Git permitirá al equipo de cuatro integrantes desarrollar de forma paralela sin bloqueos ni retrasos, entregando a la ESPOCH una solución de calidad profesional.
+
+\end{document}

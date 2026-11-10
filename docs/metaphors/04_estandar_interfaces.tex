@@ -1,0 +1,466 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-nodecimaldot,es-tabla,es-noquoting]{babel}
+
+% Graficos y diagramas TikZ
+\usepackage{graphicx}
+\graphicspath{{../../img/}{../img/}{img/}}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric,shapes.misc,arrows.meta,positioning,calc,fit,backgrounds,shadows.blur}
+
+% Tipografia Times New Roman estandar en 12pt
+\usepackage{newtxtext,newtxmath}
+
+% Margenes estandar (3cm izq, 2.5cm der/sup/inf)
+\usepackage{geometry}
+\geometry{
+  top=2.5cm,
+  bottom=2.5cm,
+  left=3.0cm,
+  right=2.5cm,
+  headheight=15pt,
+  headsep=20pt,
+  footskip=25pt
+}
+
+% Espaciado e interlineado
+\usepackage{setspace}
+\setstretch{1.15}
+\setlength{\parskip}{6pt}
+\setlength{\parindent}{0pt}
+
+% Viñetas redondas formales
+\usepackage{enumitem}
+\setlist[itemize,1]{label=\textbullet, leftmargin=1.5em, itemsep=2pt, parsep=0pt}
+\setlist[itemize,2]{label=\normalfont\bfseries\textperiodcentered, leftmargin=1.5em, itemsep=2pt, parsep=0pt}
+\setlist[enumerate]{leftmargin=1.5em, itemsep=2pt, parsep=0pt}
+
+% Paleta de colores formal en xcolor
+\usepackage{xcolor}
+% Paleta Oficial del Sistema: Mineral Green
+\definecolor{colorMineralGreen50}{RGB}{245,248,246}
+\definecolor{colorMineralGreen100}{RGB}{221,234,226}
+\definecolor{colorMineralGreen200}{RGB}{187,212,198}
+\definecolor{colorMineralGreen300}{RGB}{146,182,163}
+\definecolor{colorMineralGreen400}{RGB}{107,150,129}
+\definecolor{colorMineralGreen500}{RGB}{81,123,103}
+\definecolor{colorMineralGreen600}{RGB}{63,98,82}
+\definecolor{colorMineralGreen700}{RGB}{57,86,73}   % COLOR PRIMARIO OFICIAL
+\definecolor{colorMineralGreen800}{RGB}{45,66,57}
+\definecolor{colorMineralGreen900}{RGB}{41,56,49}
+\definecolor{colorMineralGreen950}{RGB}{20,31,27}
+% Alias de compatibilidad institucional
+\definecolor{colorEspochBlue}{RGB}{57,86,73}        % Mineral Green 700 (#395649) como primario
+\definecolor{colorPrimary}{RGB}{57,86,73}          % Mineral Green 700
+\definecolor{colorEspochRed}{RGB}{192,0,0}          % Rojo destructivo institucional
+% Estados de red
+\definecolor{colorUp}{RGB}{16,185,129}
+\definecolor{colorUpBg}{RGB}{236,253,245}
+\definecolor{colorDown}{RGB}{239,68,68}
+\definecolor{colorDownBg}{RGB}{254,242,242}
+\definecolor{colorUnreachable}{RGB}{245,158,11}
+\definecolor{colorUnreachableBg}{RGB}{255,251,235}
+\definecolor{colorPending}{RGB}{107,114,128}
+\definecolor{colorPendingBg}{RGB}{243,244,246}
+% Neutros
+\definecolor{colorCanvas}{RGB}{245,248,246}         % mineral-green-50 para canvas suave
+\definecolor{colorSurface}{RGB}{255,255,255}
+\definecolor{colorBorder}{RGB}{221,234,226}         % mineral-green-100 para bordes armónicos
+\definecolor{colorTextMain}{RGB}{20,31,27}          % mineral-green-950 para texto de máxima legibilidad
+\definecolor{colorTextMuted}{RGB}{81,123,103}       % mineral-green-500 para microcopia y etiquetas secundarias
+
+% Tablas profesionales segun estandares ISO/APA
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{caption}
+\captionsetup[table]{position=top,skip=6pt,font={small,bf},labelfont=bf}
+
+% Listados de codigo preformateado
+\usepackage{listings}
+\lstset{
+  basicstyle=\small\ttfamily,
+  frame=single,
+  rulecolor=\color{black},
+  framerule=0.5pt,
+  breaklines=true,
+  numbers=none,
+  backgroundcolor=\color{white},
+  tabsize=2,
+  inputencoding=utf8,
+  extendedchars=true,
+  literate=
+    {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'{\i}}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+    {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+    {ñ}{{\~n}}1 {Ñ}{{\~N}}1 {ü}{{\"u}}1 {Ü}{{\"U}}1
+}
+
+% Encabezados y pies de pagina
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\nouppercase{\leftmark}}
+\fancyhead[R]{\small ESPOCH - Estándar de Interfaces y UI/UX}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% Formato de titulos
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+  {\normalfont\Large\bfseries}{\chaptertitlename\ \thechapter}{10pt}{\huge\bfseries}
+\titlespacing*{\chapter}{0pt}{-10pt}{15pt}
+
+\titleformat{\section}
+  {\normalfont\large\bfseries}{\thesection}{1em}{}
+\titlespacing*{\section}{0pt}{12pt}{4pt}
+
+\titleformat{\subsection}
+  {\normalfont\normalsize\bfseries}{\thesubsection}{1em}{}
+\titlespacing*{\subsection}{0pt}{10pt}{3pt}
+
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\bfseries}{\thesubsubsection}{1em}{}
+\titlespacing*{\subsubsection}{0pt}{8pt}{2pt}
+
+\usepackage{hyperref}
+\hypersetup{
+  hidelinks=true,
+  pdfauthor={William Chisag, Licet Ibarra, Karen Maje, Alejandro Rodríguez},
+  pdftitle={Estándar de Interfaces y Guía de Estilo UI/UX - ESPOCH},
+  pdfsubject={Proyecto Integrador de Saberes - Quinto Semestre}
+}
+
+\begin{document}
+
+% PORTADA ACADEMICA
+\begin{titlepage}
+  \centering
+  \thispagestyle{empty}
+  \vspace*{0.3cm}
+
+  \includegraphics[width=3.2cm]{LogoESPOCH.png}\\[0.4cm]
+
+  {\normalsize\bfseries ESCUELA SUPERIOR POLITÉCNICA DE CHIMBORAZO}\\[0.2cm]
+  {\small\bfseries FACULTAD DE INFORMÁTICA Y ELECTRÓNICA}\\[0.1cm]
+  {\small\bfseries CARRERA DE TECNOLOGÍAS DE LA INFORMACIÓN}\\[1.0cm]
+
+  {\large\bfseries SISTEMA WEB DE MONITOREO Y GESTIÓN\\[0.15cm]
+  DE LA INFRAESTRUCTURA DE REDES - ESPOCH}\\[0.7cm]
+
+  {\normalsize\bfseries DOCUMENTO DE ESTÁNDAR DE INTERFACES Y GUÍA DE ESTILO UI/UX}\\[0.15cm]
+  {\small Sistema de Diseño, Paleta Cromática Accesible, Tipografía y Ergonomía Visual (RNF-11)}\\[1.0cm]
+
+  \begin{minipage}[t]{0.45\textwidth}
+    {\small\textbf{Integrantes del Equipo:}}\\[0.25cm]
+    \begin{itemize}[leftmargin=1.2em,itemsep=2pt,parsep=0pt]
+      \small
+      \item William Chisag
+      \item Licet Ibarra
+      \item Karen Maje
+      \item Alejandro Rodríguez
+    \end{itemize}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.50\textwidth}
+    {\small\textbf{Asignaturas y Docentes Responsables:}}\\[0.25cm]
+    \begin{itemize}[leftmargin=1.2em,itemsep=2pt,parsep=0pt]
+      \small
+      \item Infraestructura TI: Ing. Tatiana Landivar
+      \item Tecnología Web: Ing. Pedro Aguilar
+      \item Conmutación y Enrutamiento: Ing. Juan Pazmiño
+      \item Big Data: Ing. Geovanny Silva
+      \item Diseño y Multimedia: Ing. Ramiro Bonilla
+    \end{itemize}
+  \end{minipage}
+
+  \vfill
+
+  {\small\textbf{Período Académico:} Quinto Semestre (PAO 5)}\\[0.05cm]
+  {\small\textbf{Documento Oficial de Ingeniería de Software (Versión 1.0)}}\\[0.6cm]
+
+  {\small Orellana - Ecuador}\\[0.15cm]
+  {\small Octubre de 2026}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\listoftables
+\newpage
+
+\chapter{Metáfora de la Interfaz: La Consola del Centro de Operaciones (NOC)}
+
+\section{Concepto de la Metáfora: El Centro de Operaciones de Red (NOC)}
+En la ingeniería de interfaces y diseño multimedia (articulado con la asignatura impartida por el Ing. Ramiro Bonilla), la interfaz de usuario debe traducir flujos de datos abstractos y paquetes de red en una experiencia visual estructurada, predecible y ergonómica.
+
+Para este proyecto se adopta la metáfora rectora de:
+\begin{center}
+  \textbf{\large ``La Consola de Mando del Centro de Operaciones de Red (NOC)''}
+\end{center}
+
+Bajo este modelo conceptual:
+\begin{itemize}
+  \item \textbf{Visión Situacional Inmediata (\textit{At-a-Glance Awareness}):} Un administrador o técnico de laboratorio que ingresa al aula debe comprender el estado global de la infraestructura en menos de \textbf{3 segundos}. Si todos los indicadores están en verde esmeralda y el cielo de la red está despejado, no hay tensión cognitiva; si un nodo central falla, la consola emite señales visuales y jerárquicas directas hacia el punto de falla.
+  \item \textbf{Densidad de Información sin Ruido:} Una consola de monitoreo profesional no es un portal comercial ni un blog decorativo. Cada píxel, margen y tabla tiene una justificación operativa. Los datos secundarios se agrupan en paneles expandibles y fichas de detalle (RF-12), manteniendo el panel principal limpio y enfocado en la disponibilidad.
+  \item \textbf{Diseño Inclusivo y Accesibilidad Universal (RNF-11):} En una sala de operaciones con iluminación variable o para operadores con daltonismo (deuteranopía o protanopía), \textbf{el color jamás debe ser el único vehículo de información}. Todo indicador cromático está acompañado indefectiblemente de texto explícito y símbolos gráficos inequívocos.
+\end{itemize}
+
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[
+    wireframe/.style={rectangle, draw=black, thick, fill=white, rounded corners=2pt, minimum height=0.9cm, font=\footnotesize},
+    card/.style={rectangle, draw=colorBorder, thick, fill=colorSurface, rounded corners=3pt, minimum height=1.3cm, font=\footnotesize, align=center}
+  ]
+    % Barra Superior
+    \node[wireframe, fill=colorEspochBlue, text=white, minimum width=13cm] (navbar) at (0,4) {\textbf{ESPOCH NOC} \hfill Panel General \quad Topología \quad Inventario \quad Configuración \hfill [Campana (2)] \quad Admin};
+
+    % Tarjetas KPI Resumen
+    \node[card, draw=colorUp, fill=colorUpBg, minimum width=2.9cm] (kpi1) at (-4.5,2.4) {\textbf{DISPONIBLES}\\[2pt]\large 26 / 30 (86.7\%)};
+    \node[card, draw=colorDown, fill=colorDownBg, minimum width=2.9cm] (kpi2) at (-1.5,2.4) {\textbf{NO DISPONIBLES}\\[2pt]\large 2 (Críticas)};
+    \node[card, draw=colorUnreachable, fill=colorUnreachableBg, minimum width=2.9cm] (kpi3) at (1.5,2.4) {\textbf{INACCESIBLES}\\[2pt]\large 2 (Falla Padre)};
+    \node[card, draw=colorPending, fill=colorPendingBg, minimum width=2.9cm] (kpi4) at (4.5,2.4) {\textbf{PENDIENTES}\\[2pt]\large 0};
+
+    % Contenedor Principal
+    \node[card, minimum width=8.5cm, minimum height=3.5cm] (topo) at (-2.2,-0.5) {\textbf{Grafo de Topología Interactivo (React Flow)}\\[4pt]\footnotesize Representación visual de enlaces confirmados (línea sólida) e inferidos (discontinua)};
+    \node[card, minimum width=4.2cm, minimum height=3.5cm] (feed) at (4.4,-0.5) {\textbf{Actividad Reciente (5s)}\\[4pt]\footnotesize $\bullet$ 15:20 Ping PC-04 OK\\$\bullet$ 15:19 Falla Switch SW-01\\$\bullet$ 15:18 Alerta Crítica (SMTP)};
+
+  \end{tikzpicture}
+  \caption{Estructura esquemática (Wireframe conceptual) de la consola de monitoreo}\label{fig:wireframe_dashboard}
+\end{figure}
+
+\newpage
+\chapter{Paleta Cromática Oficial y Semántica de Estados}
+
+El sistema de color se divide en dos dimensiones complementarias: la identidad formal de la Escuela Superior Politécnica de Chimborazo y la semántica operativa de red adaptada a la norma ISO/IEC 25010 y las pautas WCAG 2.1 AA.
+
+\section{Paleta Oficial del Sistema: Mineral Green}
+La identidad cromática principal de la aplicación está construida sobre la familia tonal \textbf{Mineral Green}, complementada con acentos institucionales y semánticos. El color rector y primario de la interfaz es estrictamente \textbf{Mineral Green 700 (\texttt{\#395649})}.
+
+\begin{table}[htbp]
+\centering
+\caption{Paleta cromática oficial Mineral Green (Tokens Tailwind)}\label{tab:mineral_green}
+\small
+\begin{tabularx}{\textwidth}{p{2.3cm} p{2.2cm} p{3.2cm} X}
+\toprule
+\textbf{Muestra Visual} & \textbf{Tono / Token} & \textbf{Código Hex / RGB} & \textbf{Función en el Sistema de Diseño} \\
+\midrule
+\tikz{\fill[colorMineralGreen50] (0,0) rectangle (1.8,0.45);} & \texttt{50} & \texttt{\#f5f8f6} \newline RGB(245, 248, 246) & Fondo global del canvas, tarjetas inactivas, filas alternadas en tablas. \\
+\midrule
+\tikz{\fill[colorMineralGreen100] (0,0) rectangle (1.8,0.45);} & \texttt{100} & \texttt{\#ddeae2} \newline RGB(221, 234, 226) & Bordes sutiles de contenedores, fondos de hover en menús y selects. \\
+\midrule
+\tikz{\fill[colorMineralGreen200] (0,0) rectangle (1.8,0.45);} & \texttt{200} & \texttt{\#bbd4c6} \newline RGB(187, 212, 198) & Bordes de campos de entrada (inputs) en estado reposo, divisores de lista. \\
+\midrule
+\tikz{\fill[colorMineralGreen300] (0,0) rectangle (1.8,0.45);} & \texttt{300} & \texttt{\#92b6a3} \newline RGB(146, 182, 163) & Elementos decorativos secundarios, líneas guía en grafos de topología. \\
+\midrule
+\tikz{\fill[colorMineralGreen400] (0,0) rectangle (1.8,0.45);} & \texttt{400} & \texttt{\#6b9681} \newline RGB(107, 150, 129) & Íconos inactivos, placeholders en formularios, badges informativos suaves. \\
+\midrule
+\tikz{\fill[colorMineralGreen500] (0,0) rectangle (1.8,0.45);} & \texttt{500} & \texttt{\#517b67} \newline RGB(81, 123, 103) & Texto secundario/muted, bordes de elementos activos, estados intermedios. \\
+\midrule
+\tikz{\fill[colorMineralGreen600] (0,0) rectangle (1.8,0.45);} & \texttt{600} & \texttt{\#3f6252} \newline RGB(63, 98, 82) & Estado hover de botones primarios, enlaces visitados, cabeceras secundarias. \\
+\midrule
+\tikz{\fill[colorMineralGreen700] (0,0) rectangle (1.8,0.45);} & \textbf{\texttt{700} (Principal)} & \textbf{\texttt{\#395649}} \newline RGB(57, 86, 73) & \textbf{Color primario de la aplicación}. Barra superior (Navbar), botones primarios, cabeceras de tablas y acentos principales. \\
+\midrule
+\tikz{\fill[colorMineralGreen800] (0,0) rectangle (1.8,0.45);} & \texttt{800} & \texttt{\#2d4239} \newline RGB(45, 66, 57) & Estado activo/pressed de botones primarios, títulos H1/H2 destacados. \\
+\midrule
+\tikz{\fill[colorMineralGreen900] (0,0) rectangle (1.8,0.45);} & \texttt{900} & \texttt{\#293831} \newline RGB(41, 56, 49) & Fondo de menús laterales oscuros, barras de herramientas especializadas. \\
+\midrule
+\tikz{\fill[colorMineralGreen950] (0,0) rectangle (1.8,0.45);} & \texttt{950} & \texttt{\#141f1b} \newline RGB(20, 31, 27) & Texto principal de alta legibilidad sobre fondos claros (ratio WCAG $> 14:1$). \\
+\midrule
+\tikz{\fill[colorEspochRed] (0,0) rectangle (1.8,0.45);} & \textbf{Rojo Destructivo} & \texttt{\#C00000} \newline RGB(192, 0, 0) & Insignias institucionales de alerta extrema y botones de acción destructiva irreversible (baja lógica). \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Configuración Oficial de Tailwind CSS (\texttt{tailwind.config.js})}
+Para garantizar que todos los desarrolladores implementen exactamente los mismos tokens cromáticos sin discrepancias, el archivo de configuración del frontend React debe incorporar la siguiente definición vinculante:
+
+\begin{lstlisting}
+// client/tailwind.config.js
+module.exports = {
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  theme: {
+    extend: {
+      colors: {
+        'mineral-green': {
+          '50': '#f5f8f6',
+          '100': '#ddeae2',
+          '200': '#bbd4c6',
+          '300': '#92b6a3',
+          '400': '#6b9681',
+          '500': '#517b67',
+          '600': '#3f6252',
+          '700': '#395649', // COLOR PRINCIPAL OFICIAL
+          '800': '#2d4239',
+          '900': '#293831',
+          '950': '#141f1b',
+        },
+        primary: {
+          DEFAULT: '#395649', // mineral-green-700
+          hover: '#3f6252',   // mineral-green-600
+          active: '#2d4239',  // mineral-green-800
+        }
+      }
+    }
+  },
+  plugins: []
+}
+\end{lstlisting}
+
+\section{Semántica de Estados de Disponibilidad de Red (RNF-11)}
+Para cumplir estrictamente con el principio de que el color no debe ser la única señal informativa, cada estado de conectividad combina tres elementos obligatorios: \textbf{Color de fondo/borde}, \textbf{Ícono vectorial representativo} y \textbf{Etiqueta de texto explícita en mayúsculas}.
+
+\begin{table}[htbp]
+\centering
+\caption{Matriz semántica de estados de conectividad y accesibilidad}\label{tab:estados_red}
+\small
+\begin{tabularx}{\textwidth}{p{2.2cm} p{2.8cm} p{3.0cm} X}
+\toprule
+\textbf{Muestra} & \textbf{Estado de Red} & \textbf{Código Hex / Token} & \textbf{Comportamiento Visual y Accesibilidad} \\
+\midrule
+\tikz{\fill[colorUp] (0,0) rectangle (1.8,0.5);} & \textbf{Disponible} (\textit{Up}) & \texttt{\#10B981} (Borde)\newline \texttt{\#ECFDF5} (Fondo) & Indica respuesta satisfactoria continua a comprobaciones ICMP/TCP. Badge con ícono de verificación ($\checkmark$) y etiqueta textual ``DISPONIBLE''. \\
+\midrule
+\tikz{\fill[colorDown] (0,0) rectangle (1.8,0.5);} & \textbf{No disponible} (\textit{Down}) & \texttt{\#EF4444} (Borde)\newline \texttt{\#FEF2F2} (Fondo) & Confirmada la falta de respuesta tras alcanzar el umbral de 3 fallos consecutivos. Badge con ícono de círculo tachado ($\times$) y etiqueta ``NO DISPONIBLE''. \\
+\midrule
+\tikz{\fill[colorUnreachable] (0,0) rectangle (1.8,0.5);} & \textbf{Inaccesible} (\textit{Unreachable}) & \texttt{\#F59E0B} (Borde)\newline \texttt{\#FFFBEB} (Fondo) & Dispositivo que no responde debido a una falla confirmada en su router o switch padre (Regla 8.1). Badge con ícono de enlace roto y etiqueta ``INACCESIBLE''. \\
+\midrule
+\tikz{\fill[colorPending] (0,0) rectangle (1.8,0.5);} & \textbf{Pendiente} (\textit{Pending}) & \texttt{\#6B7280} (Borde)\newline \texttt{\#F3F4F6} (Fondo) & Dispositivo recién registrado o descubierto sin suficiente evidencia histórica. Badge con ícono de reloj de arena y etiqueta ``PENDIENTE''. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Semántica de Niveles de Severidad de Alertas (Regla 8.2)}
+\begin{itemize}
+  \item \textbf{Informativa (\texttt{info}):} Azul cielo (\texttt{\#3B82F6} / \texttt{\#EFF6FF}). Acontecimientos ordinarios (nuevo host descubierto, inicio del servicio de monitoreo, respaldo exitoso).
+  \item \textbf{Advertencia (\texttt{warning}):} Ámbar dorado (\texttt{\#F59E0B} / \texttt{\#FFFBEB}). Caída confirmada de estaciones de trabajo individuales (PCs, laptops) o latencias RTT excesivas ($> 500$ ms).
+  \item \textbf{Crítica (\texttt{critical}):} Rojo carmesí vivo (\texttt{\#DC2626} / \texttt{\#FEF2F2}). Caída del Router, Switch troncal o servidor Debian. Activa sonido discreto opcional y despacho SMTP (Regla 8.6).
+\end{itemize}
+
+\newpage
+\chapter{Sistema Tipográfico y Jerarquía Visual}
+
+La tipografía debe garantizar una legibilidad impecable tanto en monitores estándar de laboratorio ($1366 \times 768$) como en pantallas de alta densidad.
+
+\section{Familia Tipográfica}
+El sistema adoptará la pila nativa y moderna:
+\begin{center}
+  \texttt{font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;}
+\end{center}
+La tipografía \textbf{Inter} ha sido seleccionada debido a su alta legibilidad en interfaces técnicas, apertura de caracteres clara en tamaños pequeños ($11\text{px} - 12\text{px}$) y excelente distinción entre caracteres homólogos (como el número 1, la letra ele minúscula \texttt{l} y la letra i mayúscula \texttt{I}).
+
+\section{Escala Tipográfica Estandarizada}
+\begin{table}[htbp]
+\centering
+\caption{Escala tipográfica y especificaciones de uso}\label{tab:escala_tipografica}
+\small
+\begin{tabularx}{\textwidth}{p{2.8cm} p{2.2cm} p{2.5cm} X}
+\toprule
+\textbf{Nivel Jerárquico} & \textbf{Tamaño (px / rem)} & \textbf{Peso (\textit{Weight})} & \textbf{Aplicación Concreta en el Sistema} \\
+\midrule
+\textbf{Encabezado H1} & 24px / 1.5rem & SemiBold (600) & Título principal de la vista activa (ej. ``Panel de Control'', ``Inventario de Dispositivos''). \\
+\midrule
+\textbf{Encabezado H2} & 20px / 1.25rem & SemiBold (600) & Títulos de secciones principales, tarjetas de resumen y cabeceras de modales. \\
+\midrule
+\textbf{Encabezado H3} & 16px / 1.0rem & Medium (500) & Nombres de dispositivos en fichas de detalle y títulos de agrupaciones en tablas. \\
+\midrule
+\textbf{Cuerpo Principal} & 14px / 0.875rem & Regular (400) & Texto general de lectura, celdas de tablas, párrafos explicativos y campos de entrada. \\
+\midrule
+\textbf{Microcopia / Badges} & 12px / 0.75rem & Medium (500) & Direcciones IP, direcciones MAC, marcas de tiempo relativas (hace 2 min) y chips de estado. \\
+\midrule
+\textbf{Tooltips / Ayudas} & 11px / 0.6875rem & Regular (400) & Textos de asistencia flotante en campos numéricos y justificaciones de guardrails. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\newpage
+\chapter{Sistema de Espaciado, Retícula y Layout (Sistema de 8 Puntos)}
+
+Para evitar que los desarrolladores utilicen márgenes o acolchados arbitrarios (como \texttt{13px} o \texttt{27px}), se implementa un riguroso **Sistema de Diseño basado en múltiplos de 8 píxeles** (con subdivisión de 4 píxeles para microalineaciones):
+
+\begin{table}[htbp]
+\centering
+\caption{Escala de espaciado estandarizada (Tokens de Tailwind CSS)}\label{tab:espaciado}
+\small
+\begin{tabularx}{\textwidth}{p{2.2cm} p{2.2cm} p{3.0cm} X}
+\toprule
+\textbf{Token} & \textbf{Dimensión} & \textbf{Equivalente rem} & \textbf{Uso Específico en la Interfaz} \\
+\midrule
+\texttt{space-1} & 4px & 0.25rem & Espacio interno mínimo entre ícono y texto en un badge. \\
+\midrule
+\texttt{space-2} & 8px & 0.50rem & Acolchado (\textit{padding}) vertical de botones y celdas de tablas. \\
+\midrule
+\texttt{space-3} & 12px & 0.75rem & Separación horizontal entre botones agrupados. \\
+\midrule
+\texttt{space-4} & 16px & 1.00rem & Acolchado interno estándar de tarjetas y contenedores modales. \\
+\midrule
+\texttt{space-6} & 24px & 1.50rem & Margen de separación entre tarjetas de métricas en el dashboard. \\
+\midrule
+\texttt{space-8} & 32px & 2.00rem & Margen exterior entre la barra de navegación y el contenido principal. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Retícula Responsiva (12 Columnas)}
+La interfaz se organiza en un contenedor de 12 columnas flexibles (\textit{CSS Grid}) que se adapta automáticamente:
+\begin{itemize}
+  \item \textbf{Monitores de Escritorio Estándar ($1366 \times 768$ a $1920 \times 1080$):} El panel general distribuye las tarjetas KPI en 4 columnas iguales (3 columnas de grid por tarjeta). El grafo de topología ocupa 8 columnas y el panel de actividad reciente ocupa 4 columnas.
+  \item \textbf{Laptops de Menor Resolución ($< 1200\text{px}$):} Las tarjetas de métricas se reorganizan en 2 filas de 2 columnas cada una, y el panel de actividad se reubica debajo del grafo de topología para garantizar visibilidad sin scroll horizontal.
+\end{itemize}
+
+\newpage
+\chapter{Componentes Centrales del Sistema de Diseño}
+
+\section{Barra Superior de Navegación y Centro de Notificaciones}
+La barra superior permanece fija (\textit{sticky}) en el tope de la ventana:
+\begin{itemize}
+  \item \textbf{Extremo Izquierdo:} Logotipo oficial de la ESPOCH y nombre de la plataforma (``ESPOCH Network Monitor'').
+  \item \textbf{Centro:} Menú de navegación con pestañas directas: \textit{Panel General}, \textit{Topología}, \textit{Inventario}, \textit{Estadísticas} y \textit{Configuración} (esta última deshabilitada visualmente para operadores según RF-02).
+  \item \textbf{Extremo Derecho:}
+  \begin{itemize}
+    \item \textbf{Campana de Alertas:} Muestra una insignia numérica roja (\textit{badge}) pulsante si existen alertas críticas activas. Al hacer clic, despliega un panel flotante con las últimas 5 alertas, permitiendo reconocerlas con 1 clic (RF-07.06).
+    \item \textbf{Insignia de Rol del Usuario:} Muestra el nombre del usuario logueado acompañado de un chip distintivo azul para ``ADMINISTRADOR'' o gris para ``OPERADOR''.
+  \end{itemize}
+\end{itemize}
+
+\section{Grafo Interactivo de Topología de Red (React Flow)}
+Conforme a la Sección 8.5 de la especificación técnica aprobada:
+\begin{itemize}
+  \item \textbf{Nodos con Iconografía de Hardware:} Cada nodo en el lienzo representa un equipo con silueta vectorial diferenciada (Router en azul con símbolo de pasarela, Switch en violeta con símbolo de conmutador, Computadoras en gris, Servidor en verde esmeralda).
+  \item \textbf{Estándar de Líneas de Enlace:}
+  \begin{itemize}
+    \item \textbf{Línea Sólida Continua (\texttt{stroke-solid}, 2px):} Enlace físico confirmado mediante verificación de cableado o lectura SNMP de tabla CAM.
+    \item \textbf{Línea Discontinua Punteada (\texttt{stroke-dasharray}, 2px):} Relación inferida por pertenencia a la misma subred o SSID Wi-Fi. Al pasar el cursor, un tooltip indica obligatoriamente: \textit{``Relación inferida (puerto físico no confirmado)''}.
+  \end{itemize}
+  \item \textbf{Interacción de Inspección:} Al hacer clic sobre cualquier nodo, se despliega una barra lateral derecha (\textit{Drawer}) con la ficha completa del dispositivo (RF-12), mostrando IP, MAC, tiempo de respuesta actual y las últimas 5 comprobaciones sin abandonar la vista del mapa.
+\end{itemize}
+
+\section{Formularios Asistidos con Guardrails de Seguridad (RF-10)}
+El panel de configuración incorpora asistencia visual en tiempo real para evitar que el administrador guarde parámetros inseguros:
+\begin{itemize}
+  \item Cada campo numérico indica claramente su intervalo seguro (ej. ``10 s a 300 s'').
+  \item Si el valor ingresado es menor a 10 s, el borde del campo se colorea inmediatamente de rojo carmesí, se deshabilita el botón de guardar y un texto explicativo indica: \textit{``El intervalo de ping no puede ser inferior a 10 segundos para proteger la estabilidad de la red''}.
+  \item Se incorporan tres botones de \textit{Presets de 1 Clic}: \textbf{Modo Equilibrado} (fábrica), \textbf{Modo Demostración} (para evaluación con docentes) y \textbf{Modo Ahorro}.
+\end{itemize}
+
+\newpage
+\chapter{Accesibilidad Universal y Ergonomía Visual (WCAG 2.1 AA)}
+
+El cumplimiento del requerimiento \textbf{RNF-11} se garantiza mediante las siguientes directrices técnicas:
+
+\section{Pruebas de Contraste Cromático}
+Todos los textos del sistema superan el ratio de contraste mínimo de \textbf{4.5:1} establecido por la pauta WCAG 2.1 AA para texto estándar sobre sus fondos respectivos:
+\begin{itemize}
+  \item Texto principal (\texttt{\#1E293B}) sobre fondo blanco (\texttt{\#FFFFFF}): Ratio de \textbf{14.6:1} (Excelente).
+  \item Texto en badge ``DISPONIBLE'' (\texttt{\#065F46}) sobre fondo verde suave (\texttt{\#ECFDF5}): Ratio de \textbf{6.8:1} (Cumple con holgura).
+  \item Texto en badge ``NO DISPONIBLE'' (\texttt{\#991B1B}) sobre fondo rojo suave (\texttt{\#FEF2F2}): Ratio de \textbf{7.2:1} (Cumple con holgura).
+\end{itemize}
+
+\section{Navegación Asistida por Teclado}
+Todos los componentes interactivos (enlaces, botones, modales, campos de tabla) poseen un anillo de enfoque visible (\textit{Focus Ring}) de 2 píxeles en color Mineral Green 700 (\texttt{\#395649}) con desplazamiento de 2 píxeles, permitiendo navegar por toda la aplicación utilizando exclusivamente las teclas \texttt{Tab}, \texttt{Enter} y \texttt{Escape}.
+
+\chapter{Conclusiones}
+Este estándar de interfaces proporciona las directrices definitivas para que el equipo desarrolle una aplicación web coherente, accesible y visualmente profesional. Al honrar la identidad de la Escuela Superior Politécnica de Chimborazo y aplicar normas internacionales de diseño de centros de operaciones de red, la plataforma facilitará la supervisión de la infraestructura tecnológica del laboratorio de cómputo con máxima eficacia y ergonomía.
+
+\end{document}
