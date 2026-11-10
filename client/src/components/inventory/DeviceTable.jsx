@@ -18,12 +18,18 @@ export function DeviceTable({
   const [typeFilter, setTypeFilter] = useState('');
 
   const filteredDevices = devices.filter((device) => {
+    const term = searchTerm.toLowerCase();
     const matchesSearch =
       searchTerm === '' ||
-      device.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      device.name?.toLowerCase().includes(term) ||
       (device.ipAddress && device.ipAddress.includes(searchTerm)) ||
-      (device.macAddress && device.macAddress.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (device.location && device.location.toLowerCase().includes(searchTerm.toLowerCase()));
+      (device.macAddress && device.macAddress.toLowerCase().includes(term)) ||
+      (device.vendor && device.vendor.toLowerCase().includes(term)) ||
+      (device.fabricante && device.fabricante.toLowerCase().includes(term)) ||
+      (device.model && device.model.toLowerCase().includes(term)) ||
+      (device.modelo && device.modelo.toLowerCase().includes(term)) ||
+      (device.location && device.location.toLowerCase().includes(term)) ||
+      (device.ubicacion && device.ubicacion.toLowerCase().includes(term));
 
     const matchesStatus = statusFilter === '' || device.status === statusFilter;
     const matchesType = typeFilter === '' || device.type === typeFilter;
@@ -40,7 +46,7 @@ export function DeviceTable({
             <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Buscar por nombre, IP, MAC o ubicación..."
+              placeholder="Buscar por nombre, IP, MAC, fabricante, modelo o ubicación..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-mineral-green-500/20 focus:border-mineral-green-600 transition-colors"
@@ -116,6 +122,11 @@ export function DeviceTable({
                     <td className="py-3 px-4 font-semibold text-slate-900">
                       <div>
                         <span>{device.name}</span>
+                        {(device.vendor || device.model) && (
+                          <span className="text-[10px] text-slate-500 block font-normal">
+                            {[device.vendor, device.model].filter(Boolean).join(' - ')}
+                          </span>
+                        )}
                         {device.parentId && (
                           <span className="text-[10px] text-slate-400 block font-normal">
                             Padre: {device.parentId.name}
@@ -123,7 +134,7 @@ export function DeviceTable({
                         )}
                       </div>
                     </td>
-                    <td className="py-3 px-4 font-mono font-medium">{device.ipAddress || '—'}</td>
+                    <td className="py-3 px-4 font-mono font-medium">{device.ipAddress || (device.isManaged === false ? 'Sin IP' : '—')}</td>
                     <td className="py-3 px-4 font-mono text-slate-500">{device.macAddress || '—'}</td>
                     <td className="py-3 px-4 uppercase font-semibold text-slate-500 text-[10px]">
                       {device.type}
