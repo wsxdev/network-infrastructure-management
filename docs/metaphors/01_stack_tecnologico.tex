@@ -6,6 +6,7 @@
 % Paquetes de graficos y diagramas
 \usepackage{graphicx}
 \graphicspath{{../img/}{img/}}
+\usepackage{pdflscape}
 \usepackage{tikz}
 \usetikzlibrary{shapes.geometric,shapes.misc,arrows.meta,positioning,calc,fit,backgrounds,shadows.blur}
 
@@ -185,30 +186,40 @@ La metáfora del sistema proporciona un modelo mental claro y unificado del func
 \begin{figure}[htbp]
   \centering
   \begin{tikzpicture}[
-    scale=0.9, every node/.style={transform shape},
-    box/.style={rectangle, draw=black, thick, fill=white, rounded corners=3pt, align=center, minimum height=1.2cm, minimum width=3.4cm, font=\small},
-    daemon/.style={rectangle, draw=espochRed, thick, fill=techGray, rounded corners=3pt, align=center, minimum height=1.2cm, minimum width=3.4cm, font=\small},
-    bus/.style={rectangle, draw=espochBlue, very thick, fill=techGray, rounded corners=4pt, align=center, minimum height=1.0cm, minimum width=4.2cm, font=\small\bfseries},
-    db/.style={cylinder, draw=espochBlue, thick, fill=techGray, shape border rotate=90, aspect=0.25, minimum height=1.3cm, minimum width=3.0cm, align=center, font=\small},
-    arrow/.style={-{Stealth[scale=1.0]}, thick},
-    biarrow/.style={{Stealth[scale=1.0]}-{Stealth[scale=1.0]}, thick}
+    scale=0.92, every node/.style={transform shape},
+    box/.style={rectangle, draw=black, thick, fill=white, rounded corners=3pt, align=center, minimum height=1.1cm, text width=6.5cm, font=\small},
+    bus/.style={rectangle, draw=espochBlue, very thick, fill=espochBlue!8, rounded corners=4pt, align=center, minimum height=1.1cm, text width=8.5cm, font=\small\bfseries},
+    subbox/.style={rectangle, draw=black, thick, fill=techGray, rounded corners=3pt, align=center, minimum height=1.1cm, text width=4.5cm, font=\small},
+    arrow/.style={-{Stealth[scale=0.95]}, thick},
+    biarrow/.style={{Stealth[scale=0.95]}-{Stealth[scale=0.95]}, thick}
   ]
-    % Nodos
-    \node[box] (ui) at (0,4.2) {\textbf{Consola NOC}\\[2pt]Frontend React 18};
-    \node[box] (api) at (0,2.1) {\textbf{Servidor de Aplicación}\\[2pt]API REST Express};
-    \node[bus] (bus) at (0,0.5) {\textbf{Bus de Eventos Interno}\\[2pt]\footnotesize \texttt{EventEmitter} en Node.js};
-    \node[daemon] (daemon) at (-4.5,0.5) {\textbf{Motor de Sondeo}\\[2pt]ICMP Ping / ARP-Scan};
-    \node[db] (db) at (4.5,0.5) {\textbf{Base de Datos}\\[2pt]MongoDB 7.0 (TTL)};
-    \node[box, fill=techGray] (lan) at (-4.5,-1.8) {\textbf{Red Local (LAN)}\\[2pt]Switches, Routers, PCs};
+    % Nivel 1: Frontend
+    \node[box] (ui) at (0, 7.0) {\textbf{Consola NOC}\newline \footnotesize Frontend React 18 + Socket.io Client};
+
+    % Nivel 2: API
+    \node[box] (api) at (0, 5.0) {\textbf{Servidor de Aplicación}\newline \footnotesize API REST Express / Middlewares};
+
+    % Nivel 3: Bus Central
+    \node[bus] (bus) at (0, 3.0) {Bus Central de Eventos\newline \footnotesize \texttt{EventEmitter} en Node.js (Desacoplamiento)};
+
+    % Nivel 4: Motores de Soporte (Monitoreo izq, Persistencia der)
+    \node[subbox, draw=espochRed] (daemon) at (-3.2, 1.0) {\textbf{Motor de Sondeo}\newline \footnotesize ICMP Ping / ARP-Scan};
+    \node[subbox, draw=espochBlue] (db) at (3.2, 1.0) {\textbf{Base de Datos}\newline \footnotesize MongoDB 7.0 (Índices TTL)};
+
+    % Nivel 5: Red Local
+    \node[subbox] (lan) at (-3.2, -1.0) {\textbf{Infraestructura LAN}\newline \footnotesize Switches, Routers, Hosts};
 
     % Conexiones
-    \draw[arrow] (ui.south west) -- node[left, font=\scriptsize] {HTTP REST} (api.north west);
-    \draw[biarrow] (ui.south east) -- node[right, font=\scriptsize] {WebSockets (Tiempo Real)} (api.north east);
-    \draw[arrow] (api) -- (bus);
-    \draw[arrow] (daemon) -- node[above, font=\scriptsize] {Emite Eventos} (bus);
-    \draw[arrow] (bus) -- node[above, font=\scriptsize] {Persistencia} (db);
-    \draw[arrow] (daemon) -- node[left, font=\scriptsize] {Sondeos ICMP/ARP} (lan);
-    \draw[arrow] (lan) -- node[right, font=\scriptsize] {Respuestas} (daemon);
+    \draw[arrow] (ui.south west) -- node[left, font=\scriptsize] {HTTP REST (Auth / CRUD)} (api.north west);
+    \draw[biarrow] (ui.south east) -- node[right, font=\scriptsize] {WebSockets (Telemetría)} (api.north east);
+    
+    \draw[arrow] (api) -- node[right, font=\scriptsize] {Despacha peticiones} (bus);
+    
+    \draw[arrow] (daemon.north) to[bend left=15] node[left, font=\scriptsize] {Emite métricas} (bus.south west);
+    \draw[arrow] (bus.south east) to[bend left=15] node[right, font=\scriptsize] {Persiste BSON} (db.north);
+    
+    \draw[arrow] (daemon.south west) -- node[left, font=\scriptsize] {Sondeos ICMP/ARP} (lan.north west);
+    \draw[arrow] (lan.north east) -- node[right, font=\scriptsize] {Respuestas} (daemon.south east);
 
   \end{tikzpicture}
   \caption{Diagrama de interacción general de los componentes del sistema}\label{fig:arquitectura_general}
@@ -220,70 +231,71 @@ La metáfora del sistema proporciona un modelo mental claro y unificado del func
 \section{Estructura del Flujo Reactivo}
 El monitoreo de red opera sobre condiciones asíncronas: caídas de enlace, fluctuaciones de latencia e incorporación de nuevos hosts. La Arquitectura Dirigida por Eventos desacopla la detección de anomalías de su procesamiento y visualización, garantizando que el sistema reaccione en milisegundos sin bloquear el servidor web.
 
+\begin{landscape}
 \begin{figure}[htbp]
 \centering
 \begin{tikzpicture}[
-  scale=0.88, every node/.style={transform shape},
-  arrow/.style={-{Stealth[scale=0.85]}, thick},
-  actor/.style={circle, draw=black, thick, fill=white, minimum size=0.42cm},
-  comp/.style={rectangle, draw=black, thick, fill=techGray, rounded corners=2pt, minimum height=1.05cm, minimum width=2.45cm, align=center, font=\scriptsize},
-  broker/.style={cylinder, draw=espochBlue, very thick, fill=white, shape border rotate=0, aspect=0.12, minimum height=1.0cm, minimum width=6.2cm, align=center, font=\small\bfseries}
+  scale=0.92, every node/.style={transform shape},
+  arrow/.style={-{Stealth[scale=0.88]}, thick},
+  actor/.style={circle, draw=black, thick, fill=white, minimum size=0.55cm},
+  comp/.style={rectangle, draw=black, thick, fill=techGray, rounded corners=3pt, minimum height=1.35cm, text width=3.6cm, align=center, font=\small},
+  subcomp/.style={rectangle, draw=black, thick, fill=white, rounded corners=3pt, minimum height=1.1cm, text width=5.5cm, align=center, font=\small},
+  buspipe/.style={rectangle, draw=espochBlue, very thick, fill=espochBlue!8, rounded corners=6pt, minimum height=1.15cm, text width=22.2cm, align=center, font=\normalsize\bfseries}
 ]
 
-  % Actor
-  \node[actor] (head) at (0,7.1) {};
-  \draw[thick] (0,6.89) -- (0,6.25); % cuerpo
-  \draw[thick] (-0.3,6.6) -- (0.3,6.6); % brazos
-  \draw[thick] (0,6.25) -- (-0.25,5.65); % pierna izq
-  \draw[thick] (0,6.25) -- (0.25,5.65); % pierna der
-  \node[font=\footnotesize\bfseries] at (0,5.35) {Operador / Administrador NOC};
+  % 1. ACTOR EN LA CIMA
+  \node[actor] (head) at (0,7.7) {};
+  \draw[thick] (0,7.42) -- (0,6.65); % cuerpo
+  \draw[thick] (-0.35,7.05) -- (0.35,7.05); % brazos
+  \draw[thick] (0,6.65) -- (-0.28,5.85); % pierna izq
+  \draw[thick] (0,6.65) -- (0.28,5.85); % pierna der
+  \node[font=\footnotesize\bfseries] at (0,5.4) {Operador / Administrador NOC};
 
-  % Frontend Web
-  \node[comp, minimum width=3.4cm] (front) at (0,4.1) {\textbf{Frontend Web}\\[1pt]React 18 + Socket.io Client};
+  % 2. FRONTEND WEB
+  \node[subcomp] (front) at (0,4.2) {\textbf{Frontend Web}\newline \footnotesize React 18 + Socket.io Client};
 
-  % Modulo Central / Controlador API
-  \node[comp, minimum width=3.4cm] (api) at (0,2.4) {\textbf{ModuloControlador}\\[1pt]API REST Express / Auth};
+  % 3. CONTROLADOR REST
+  \node[subcomp] (api) at (0,2.4) {\textbf{ModuloControlador}\newline \footnotesize API REST Express / Middlewares};
 
-  % Broker / Bus Central
-  \node[broker] (bus) at (0,0.8) {Bus de Eventos Central\\(\texttt{EventEmitter} en Node.js)};
+  % 4. BROKER CENTRAL (BUS DE EVENTOS)
+  \node[buspipe] (bus) at (0,0.6) {Broker de Eventos Central (\texttt{EventEmitter} en Node.js)};
 
-  % Modulos Inferiores
-  \node[comp] (m1) at (-5.6,-1.7) {\textbf{ModuloMonitoreo}\\[1pt]Ping / ARP-Scan};
-  \node[comp] (m2) at (-2.8,-1.7) {\textbf{ModuloAlertas}\\[1pt]Reglas de Umbrales};
-  \node[comp] (m3) at (0.0,-1.7) {\textbf{ModuloPersistencia}\\[1pt]MongoDB ODM};
-  \node[comp] (m4) at (2.8,-1.7) {\textbf{ModuloNotificaciones}\\[1pt]Socket.io Gateway};
-  \node[comp] (m5) at (5.6,-1.7) {\textbf{ModuloSeguridad}\\[1pt]Auditoría / Bloqueo};
+  % 5. 5 MODULOS HORIZONTALES (x = -9.2, -4.6, 0.0, 4.6, 9.2)
+  \node[comp] (m1) at (-9.2,-2.3) {{\footnotesize\textbf{ModuloMonitoreo}}\newline \scriptsize Ping ICMP / ARP-Scan\newline \tiny\textcolor{black!60}{(Sondeo continuo)}};
+  \node[comp] (m2) at (-4.6,-2.3) {{\footnotesize\textbf{ModuloAlertas}}\newline \scriptsize Reglas de Umbrales\newline \tiny\textcolor{black!60}{(Evaluación reglas)}};
+  \node[comp] (m3) at (0.0,-2.3) {{\footnotesize\textbf{ModuloPersistencia}}\newline \scriptsize MongoDB ODM (TTL)\newline \tiny\textcolor{black!60}{(Persistencia BSON)}};
+  \node[comp] (m4) at (4.6,-2.3) {{\footnotesize\textbf{ModuloNotificaciones}}\newline \scriptsize Socket.io Gateway\newline \tiny\textcolor{black!60}{(Emisión WebSocket)}};
+  \node[comp] (m5) at (9.2,-2.3) {{\footnotesize\textbf{ModuloSeguridad}}\newline \scriptsize Auditoría y Bloqueo\newline \tiny\textcolor{black!60}{(Bloqueo tras 5x)}};
 
-  % Conexiones superiores
-  \draw[arrow] (0,5.15) -- node[right, font=\tiny] {Interacción UI} (front.north);
-  \draw[arrow] (front.south) -- node[right, font=\tiny] {Petición HTTP} (api.north);
-  \draw[arrow] (api.south) -- node[right, font=\tiny] {Evento Disparado} (bus.north);
+  % FLUJO SUPERIOR
+  \draw[arrow] (0,5.15) -- node[right, font=\scriptsize] {Interacción UI} (front.north);
+  \draw[arrow] (front.south) -- node[right, font=\scriptsize] {Petición HTTP} (api.north);
+  \draw[arrow] (api.south) -- node[right, font=\scriptsize] {Evento Disparado} (bus.north);
 
-  % Modulo 1: Monitoreo
-  \draw[arrow] (m1.north) to[bend left=16] node[left, font=\tiny, sloped] {Evento MetricaRecolectada} (bus.west);
-  \draw[arrow] (m1.east) to[out=25,in=-25,looseness=3] node[right, font=\tiny] {Sondeo ICMP/ARP} (m1.east);
+  % FLECHAS MODULOS <-> BROKER
+  % Modulo 1 -> Broker
+  \draw[arrow] (m1.north) to[bend left=8] node[left, font=\scriptsize] {Evento PingResult} (-9.2,0.05);
 
-  % Modulo 2: Alertas
-  \draw[arrow] (bus.south west) to[bend right=15] node[left, font=\tiny] {Consume Metrica} (m2.north);
-  \draw[arrow] (m2.north) to[bend right=15] node[right, font=\tiny] {Evento AlertaGenerada} (bus.south west);
-  \draw[arrow] (m2.east) to[out=25,in=-25,looseness=3] node[right, font=\tiny] {Evalúa umbral} (m2.east);
+  % Broker -> Modulo 2 -> Broker
+  \draw[arrow] (-4.9,0.05) to[bend right=10] node[left, font=\scriptsize] {Consume PingResult} (m2.north west);
+  \draw[arrow] (m2.north east) to[bend right=10] node[right, font=\scriptsize] {Evento Alerta} (-4.3,0.05);
 
-  % Modulo 3: Persistencia
-  \draw[arrow] (bus.south) -- node[left, font=\tiny] {Consume Metrica/Alerta} (m3.north);
-  \draw[arrow] (m3.east) to[out=25,in=-25,looseness=3] node[right, font=\tiny] {Persiste BSON} (m3.east);
+  % Broker -> Modulo 3
+  \draw[arrow] (0,0.05) -- node[right, font=\scriptsize] {Consume Telemetría} (m3.north);
 
-  % Modulo 4: Notificaciones
-  \draw[arrow] (bus.south east) to[bend left=15] node[right, font=\tiny] {Consume Alerta/Estado} (m4.north);
-  \draw[arrow] (m4.east) to[out=25,in=-25,looseness=3] node[right, font=\tiny] {Emite WebSocket} (m4.east);
-  \draw[arrow, draw=espochBlue, thick, dashed] (m4.north) to[bend right=38] node[right, font=\tiny] {WebSocket push} (front.east);
+  % Broker -> Modulo 4
+  \draw[arrow] (4.6,0.05) -- node[right, font=\scriptsize] {Consume Alertas / Estado} (m4.north);
 
-  % Modulo 5: Seguridad
-  \draw[arrow] (bus.east) to[bend left=16] node[right, font=\tiny, sloped] {Consume IntentoFallido} (m5.north);
-  \draw[arrow] (m5.east) to[out=25,in=-25,looseness=3] node[right, font=\tiny] {Bloquea cuenta} (m5.east);
+  % Modulo 4 -> Frontend Web (WebSocket push en tiempo real)
+  \draw[arrow, draw=espochBlue, thick, dashed] (m4.north east) to[out=55,in=-10,looseness=1.1] node[pos=0.55, right=4pt, font=\scriptsize, align=left] {Canal WebSocket (Socket.io)\newline Push en Tiempo Real} (front.east);
+
+  % Broker -> Modulo 5
+  \draw[arrow] (9.2,0.05) to[bend left=8] node[right, font=\scriptsize] {Consume IntentoFallido} (m5.north);
 
 \end{tikzpicture}
-\caption{Diagrama de componentes y flujo de eventos del sistema}\label{fig:diagrama_eventos}
+\caption{Diagrama de componentes y flujo de eventos del sistema (EDA)}\label{fig:diagrama_eventos}
 \end{figure}
+\end{landscape}
 
 \section{Catálogo Estandarizado de Eventos}
 El bus de eventos opera mediante constantes inmutables para impedir el uso de cadenas mágicas y asegurar tipado estricto en el backend:
@@ -292,7 +304,7 @@ El bus de eventos opera mediante constantes inmutables para impedir el uso de ca
 \centering
 \caption{Catálogo de eventos del bus interno}\label{tab:catalogo_eventos}
 \small
-\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash\ttfamily\footnotesize}p{4.1cm} >{\raggedright\arraybackslash\small}p{2.5cm} >{\raggedright\arraybackslash\small}p{3.3cm} >{\raggedright\arraybackslash\small}X}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash\ttfamily\footnotesize}p{3.8cm} >{\raggedright\arraybackslash\small}p{2.9cm} >{\raggedright\arraybackslash\small}p{3.4cm} >{\raggedright\arraybackslash\small}X}
 \toprule
 \textbf{\textnormal{\textsf{\textbf{Evento Tipado}}}} & \textbf{\textnormal{\textsf{\textbf{Productor}}}} & \textbf{\textnormal{\textsf{\textbf{Consumidor(es)}}}} & \textbf{\textnormal{\textsf{\textbf{Acción Desencadenada}}}} \\
 \midrule
