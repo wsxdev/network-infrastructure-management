@@ -38,3 +38,13 @@ test-results/
 # Temporary files
 tmp/
 temp/
+
+# LaTeX build artifacts
+*.aux
+*.lof
+*.lot
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz

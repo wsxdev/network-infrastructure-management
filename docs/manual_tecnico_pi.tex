@@ -1,0 +1,1103 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-nodecimaldot,es-tabla,es-noquoting]{babel}
+
+% Paquetes de graficos y diagramas
+\usepackage{graphicx}
+\graphicspath{{img/}{../img/}}
+\usepackage{pdflscape}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric,shapes.misc,arrows.meta,positioning,calc,fit,backgrounds,shadows.blur,decorations.pathreplacing}
+
+% Tipografia Times New Roman estandar en 12pt
+\usepackage{newtxtext,newtxmath}
+
+% Margenes estandar normalizados (3cm izq, 2.5cm der/sup/inf)
+\usepackage{geometry}
+\geometry{
+  top=2.5cm,
+  bottom=2.5cm,
+  left=3.0cm,
+  right=2.5cm,
+  headheight=15pt,
+  headsep=20pt,
+  footskip=25pt
+}
+
+% Espaciado e interlineado
+\usepackage{setspace}
+\setstretch{1.15}
+\setlength{\parskip}{6pt}
+\setlength{\parindent}{0pt}
+
+% Vinetas redondas formales
+\usepackage{enumitem}
+\setlist[itemize,1]{label=\textbullet, leftmargin=1.5em, itemsep=2pt, parsep=0pt}
+\setlist[itemize,2]{label=\normalfont\bfseries\textperiodcentered, leftmargin=1.5em, itemsep=2pt, parsep=0pt}
+\setlist[enumerate]{leftmargin=1.5em, itemsep=2pt, parsep=0pt}
+
+% Color del texto y paleta institucional
+\usepackage{xcolor}
+\definecolor{espochBlue}{RGB}{0,51,102}
+\definecolor{espochRed}{RGB}{192,0,0}
+\definecolor{techGray}{RGB}{245,247,250}
+\definecolor{borderGray}{RGB}{209,213,219}
+\definecolor{greenOk}{RGB}{34,139,34}
+
+% Tablas profesionales
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{caption}
+\captionsetup[table]{position=top,skip=6pt,font={small,bf},labelfont=bf}
+\captionsetup[figure]{position=bottom,skip=6pt,font={small,bf},labelfont=bf}
+
+% Listados de codigo preformateado
+\usepackage{listings}
+\lstset{
+  basicstyle=\small\ttfamily,
+  frame=single,
+  rulecolor=\color{black},
+  framerule=0.5pt,
+  breaklines=true,
+  numbers=none,
+  backgroundcolor=\color{white},
+  tabsize=2,
+  inputencoding=utf8,
+  extendedchars=true,
+  literate=
+    {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'\i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+    {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+    {ñ}{{\~n}}1 {Ñ}{{\~N}}1 {ü}{{\"u}}1 {Ü}{{\"U}}1
+}
+
+% Encabezados y pies de pagina formales
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\nouppercase{\leftmark}}
+\fancyhead[R]{\small ESPOCH - Manual Técnico PI}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% Formato de titulos
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+  {\normalfont\Large\bfseries}{\chaptertitlename\ \thechapter}{10pt}{\huge\bfseries}
+\titlespacing*{\chapter}{0pt}{-10pt}{15pt}
+
+\titleformat{\section}
+  {\normalfont\large\bfseries}{\thesection}{1em}{}
+\titlespacing*{\section}{0pt}{12pt}{4pt}
+
+\titleformat{\subsection}
+  {\normalfont\normalsize\bfseries}{\thesubsection}{1em}{}
+\titlespacing*{\subsection}{0pt}{10pt}{3pt}
+
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\bfseries}{\thesubsubsection}{1em}{}
+\titlespacing*{\subsubsection}{0pt}{8pt}{2pt}
+
+% Enlaces sin color pero navegables
+\usepackage{hyperref}
+\hypersetup{
+  hidelinks=true,
+  pdfauthor={Equipo de Desarrollo - ESPOCH FIE},
+  pdftitle={Manual Técnico del Proyecto Integrador},
+  pdfsubject={Proyecto Integrador - Quinto Semestre PAO 5}
+}
+
+\begin{document}
+
+% ============================================================
+% 1. PORTADA
+% ============================================================
+\begin{titlepage}
+  \centering
+  \thispagestyle{empty}
+  \vspace*{0.3cm}
+
+  \includegraphics[width=3.2cm]{LogoESPOCH.png}\\[0.4cm]
+
+  {\normalsize\bfseries ESCUELA SUPERIOR POLITÉCNICA DE CHIMBORAZO}\\[0.15cm]
+  {\small\bfseries FACULTAD DE INFORMÁTICA Y ELECTRÓNICA}\\[0.1cm]
+  {\small\bfseries CARRERA DE TECNOLOGÍAS DE LA INFORMACIÓN}\\[1.0cm]
+
+  {\large\bfseries SISTEMA WEB DE MONITOREO Y GESTIÓN\\[0.15cm]
+  DE LA INFRAESTRUCTURA DE REDES}\\[0.8cm]
+
+  {\normalsize\bfseries MANUAL TÉCNICO DEL PROYECTO INTEGRADOR\\[0.15cm]
+  DE TECNOLOGÍAS DE LA INFORMACIÓN}\\[1.0cm]
+
+  \begin{minipage}[t]{0.45\textwidth}
+    {\small\textbf{Roles de Ingeniería:}}\\[0.25cm]
+    \begin{itemize}[leftmargin=1.2em,itemsep=2pt,parsep=0pt]
+      \small
+      \item Líder Técnico y Arquitecto Backend
+      \item Desarrollador Frontend y Diseñador UI/UX
+      \item Especialista en Bases de Datos y QA Lead
+      \item Ingeniero DevOps y Redes
+    \end{itemize}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.50\textwidth}
+    {\small\textbf{Docentes Responsables:}}\\[0.25cm]
+    \begin{itemize}[leftmargin=1.2em,itemsep=2pt,parsep=0pt]
+      \small
+      \item Infraestructura TI: Ing. Tatiana Landivar
+      \item Tecnología Web: Ing. Pedro Aguilar
+      \item Conmutación y Enrut.: Ing. Juan Pazmiño
+      \item Big Data: Ing. Geovanny Silva
+      \item Diseño y Multimedia: Ing. Ramiro Bonilla
+    \end{itemize}
+  \end{minipage}
+
+  \vfill
+
+  {\small\textbf{Período Académico:} Quinto Semestre (PAO 5)}\\[0.05cm]
+  {\small\textbf{Manual Técnico del Proyecto Integrador}}\\[0.6cm]
+
+  {\small Orellana - Ecuador}\\[0.15cm]
+  {\small Noviembre de 2026}
+\end{titlepage}
+
+% ============================================================
+% 1.2 INDICES
+% ============================================================
+\tableofcontents
+\newpage
+\listoffigures
+\newpage
+\listoftables
+\newpage
+
+% ============================================================
+% 2. INTRODUCCIÓN Y PLANTEAMIENTO DEL PROYECTO
+% ============================================================
+\chapter{Introducción y Planteamiento del Proyecto}
+
+\section{Introducción}
+
+El presente documento constituye el manual técnico del proyecto integrador desarrollado durante el quinto semestre (PAO 5) de la Carrera de Tecnologías de la Información en la Escuela Superior Politécnica de Chimborazo (ESPOCH), sede Orellana.
+
+El proyecto consiste en un sistema web de monitoreo y gestión de la infraestructura de redes, diseñado para operar en el laboratorio de cómputo de la universidad. La solución permite descubrir, registrar, supervisar y administrar los dispositivos conectados a una red local (LAN) mediante una interfaz web en tiempo real.
+
+El documento se organiza siguiendo la estructura del Manual Técnico del Proyecto Integrador de Tecnologías de la Información, cubriendo desde el planteamiento del problema hasta las pruebas de validación, la operación y el mantenimiento del sistema.
+
+\section{Problema de Estudio}
+
+En el laboratorio de cómputo de la ESPOCH sede Orellana, la gestión de los dispositivos conectados a la red se realiza de forma manual y reactiva. No existe un sistema centralizado que permita conocer en tiempo real qué equipos están conectados, cuáles presentan problemas de conectividad o cuándo un dispositivo se ha desconectado.
+
+Esta situación genera demoras en la detección de fallos, dificultad para mantener un inventario actualizado de los equipos de red y ausencia de registros históricos que permitan analizar patrones de disponibilidad. El personal encargado solo detecta los problemas cuando un usuario reporta una incidencia, lo que incrementa los tiempos de respuesta y reduce la eficiencia operativa del laboratorio.
+
+\section{Justificación}
+
+La implementación de un sistema de monitoreo automatizado aborda directamente las necesidades identificadas en el laboratorio:
+
+\begin{itemize}
+  \item Permite la detección proactiva de desconexiones y cambios de estado en la red, reduciendo el tiempo de respuesta ante incidencias.
+  \item Centraliza la información de todos los dispositivos en un inventario digital consultable y actualizable.
+  \item Genera registros históricos que facilitan el análisis de patrones de disponibilidad y la toma de decisiones sobre la infraestructura.
+  \item Integra conocimientos de cinco asignaturas del semestre: Infraestructura TI, Tecnología Web, Conmutación y Enrutamiento, Big Data y Diseño y Tecnología Multimedia.
+  \item Utiliza tecnologías de código abierto disponibles sin costo de licenciamiento, lo que garantiza la viabilidad del proyecto dentro de las restricciones presupuestarias del entorno académico.
+\end{itemize}
+
+% ============================================================
+% 3. OBJETIVOS
+% ============================================================
+\chapter{Objetivos}
+
+\section{Objetivo General}
+
+Desarrollar un sistema web de monitoreo y gestión centralizada que permita descubrir, visualizar y supervisar en tiempo real los dispositivos conectados a la red del laboratorio de cómputo, facilitando la identificación de cambios de disponibilidad y la administración de la información de la red.
+
+\section{Objetivos Específicos}
+
+\begin{enumerate}
+  \item Analizar el problema de la gestión manual de la infraestructura de red del laboratorio, identificando los requerimientos funcionales y no funcionales del sistema.
+  \item Diseñar la arquitectura de software basada en eventos (EDA) que permita la comunicación en tiempo real entre los módulos de monitoreo, alertas, persistencia y notificaciones.
+  \item Implementar el backend con Node.js y Express, el frontend con React 18 y la base de datos con MongoDB 7.0, integrando WebSockets para la transmisión en tiempo real.
+  \item Implementar los servicios de descubrimiento de dispositivos mediante ARP-scan y monitoreo de disponibilidad mediante ICMP ping.
+  \item Validar el funcionamiento del sistema mediante pruebas de integración y pruebas de aceptación que verifiquen el cumplimiento de los requerimientos establecidos.
+\end{enumerate}
+
+% ============================================================
+% 4. ALCANCE Y LIMITACIONES
+% ============================================================
+\chapter{Alcance y Limitaciones}
+
+\section{Alcance}
+
+El sistema contempla las siguientes funcionalidades para su primera versión:
+
+\begin{itemize}
+  \item Monitoreo de una red LAN con aproximadamente 30 dispositivos.
+  \item Descubrimiento automático de dispositivos mediante ARP-scan y Nmap.
+  \item Comprobaciones periódicas de disponibilidad mediante ICMP ping.
+  \item Registro manual y automático de dispositivos en el inventario.
+  \item Panel web con información en tiempo real del estado de la red.
+  \item Sistema de alertas e incidencias para cambios de disponibilidad.
+  \item Autenticación y control de acceso basado en roles (Administrador y Operador).
+  \item Historial de eventos y registros de auditoría.
+  \item Representación visual de la topología de red.
+\end{itemize}
+
+\textbf{Usuarios del sistema:}
+\begin{itemize}
+  \item \textbf{Administrador:} acceso completo a configuración, gestión de usuarios, inventario y monitoreo.
+  \item \textbf{Operador:} consulta de inventario, supervisión de alertas, seguimiento de incidencias.
+\end{itemize}
+
+\section{Limitaciones}
+
+\begin{itemize}
+  \item El sistema monitorea únicamente una red LAN; la administración de múltiples redes no se incluye en esta versión.
+  \item El acceso remoto mediante VPN se evaluará como mejora posterior, tras validar el funcionamiento local.
+  \item No todos los dispositivos proporcionan la misma información (nombre, fabricante, modelo).
+  \item La detección de desconexiones depende de la respuesta a comprobaciones de red; un dispositivo que bloquee ICMP puede no detectarse correctamente.
+  \item El servidor del laboratorio es una computadora asignada con recursos limitados (Intel Core i5, 8 GB RAM).
+  \item La conexión a la red universitaria depende de la autorización institucional.
+\end{itemize}
+
+% ============================================================
+% 5. PLANIFICACIÓN Y METODOLOGÍAS
+% ============================================================
+\chapter{Planificación y Metodologías de Desarrollo}
+
+\section{Metodología Seleccionada y Justificación}
+
+El proyecto adopta \textbf{Scrum} como marco de trabajo ágil, adaptado al contexto académico del semestre. Scrum permite organizar el desarrollo en iteraciones cortas (sprints) con entregables incrementales, lo que facilita la validación continua del sistema y la adaptación a cambios.
+
+\textbf{Justificación:}
+\begin{itemize}
+  \item El equipo de 4 integrantes se ajusta al tamaño recomendado para Scrum.
+  \item Los sprints de 2 semanas permiten sincronizar entregas con los hitos académicos del semestre.
+  \item La naturaleza iterativa permite priorizar primero las funcionalidades críticas (descubrimiento y monitoreo) y agregar las complementarias (alertas, topología) en iteraciones posteriores.
+  \item La revisión al final de cada sprint facilita la retroalimentación de los docentes.
+\end{itemize}
+
+\section{Planificación}
+
+\begin{table}[htbp]
+\centering
+\caption{Cronograma de fases y sprints del proyecto}\label{tab:cronograma}
+\small
+\begin{tabularx}{\textwidth}{p{1.2cm} p{3.8cm} X p{2.8cm}}
+\toprule
+\textbf{Sprint} & \textbf{Fase} & \textbf{Entregables} & \textbf{Duración} \\
+\midrule
+1 & Análisis y configuración & Documento de requerimientos, repositorio Git, servidor Debian configurado & Semanas 1-2 \\
+\midrule
+2 & Diseño de arquitectura & Arquitectura EDA, modelo de datos MongoDB, prototipos UI & Semanas 3-4 \\
+\midrule
+3 & Backend y descubrimiento & API REST, servicio de monitoreo, descubrimiento ARP-scan & Semanas 5-6 \\
+\midrule
+4 & Frontend y tiempo real & Panel React, integración WebSocket, dashboard de dispositivos & Semanas 7-8 \\
+\midrule
+5 & Alertas e incidencias & Motor de alertas, gestión de incidencias, notificaciones & Semanas 9-10 \\
+\midrule
+6 & Integración y pruebas & Pruebas de integración, topología visual, corrección de defectos & Semanas 11-12 \\
+\midrule
+7 & Documentación y entrega & Manual técnico, manual de usuario, despliegue final & Semanas 13-14 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  scale=0.82, every node/.style={transform shape},
+  phase/.style={rectangle, draw=espochBlue, thick, fill=espochBlue!10, rounded corners=3pt, minimum height=0.9cm, align=center, font=\small},
+  arrow/.style={-{Stealth[scale=0.8]}, thick, espochBlue}
+]
+  \node[phase, text width=2.6cm] (s1) at (0,0) {Sprint 1\newline\scriptsize Análisis};
+  \node[phase, text width=2.6cm] (s2) at (3.2,0) {Sprint 2\newline\scriptsize Diseño};
+  \node[phase, text width=2.6cm] (s3) at (6.4,0) {Sprint 3\newline\scriptsize Backend};
+  \node[phase, text width=2.6cm] (s4) at (9.6,0) {Sprint 4\newline\scriptsize Frontend};
+  \node[phase, text width=2.6cm] (s5) at (0,-2.2) {Sprint 5\newline\scriptsize Alertas};
+  \node[phase, text width=2.6cm] (s6) at (3.2,-2.2) {Sprint 6\newline\scriptsize Integración};
+  \node[phase, text width=2.6cm, draw=espochRed, fill=espochRed!10] (s7) at (6.4,-2.2) {Sprint 7\newline\scriptsize Entrega};
+
+  \draw[arrow] (s1) -- (s2);
+  \draw[arrow] (s2) -- (s3);
+  \draw[arrow] (s3) -- (s4);
+  \draw[arrow] (s4.south) -- ++(0,-0.5) -| (s5.north);
+  \draw[arrow] (s5) -- (s6);
+  \draw[arrow] (s6) -- (s7);
+\end{tikzpicture}
+\caption{Flujo de sprints del proyecto}\label{fig:sprints}
+\end{figure}
+
+% ============================================================
+% 6. DESARROLLO DE LA SOLUCIÓN TECNOLÓGICA
+% ============================================================
+\chapter{Desarrollo de la Solución Tecnológica}
+
+% --- 6.1 ANALISIS Y REQUERIMIENTOS ---
+\section{Análisis y Especificación de Requerimientos}
+
+\subsection{Requerimientos Funcionales}
+
+\begin{table}[htbp]
+\centering
+\caption{Requerimientos funcionales principales}\label{tab:req_funcionales}
+\small
+\begin{tabularx}{\textwidth}{p{1.4cm} p{3.2cm} X}
+\toprule
+\textbf{ID} & \textbf{Módulo} & \textbf{Descripción} \\
+\midrule
+RF-01 & Autenticación & Inicio de sesión, creación de usuarios por administrador, contraseña temporal, bloqueo tras 3 intentos fallidos (3 min), recuperación por correo. \\
+\midrule
+RF-02 & Control de permisos & Roles de Administrador y Operador con validación en servidor; respuestas HTTP 401/403 ante accesos no autorizados. \\
+\midrule
+RF-03 & Registro manual & Formulario dinámico por tipo de dispositivo, validación de IP/MAC, detección de duplicados, estado inicial ``Pendiente de verificación''. \\
+\midrule
+RF-04 & Descubrimiento & Escaneo automático cada 10 min con ARP-scan/Nmap, incorporación al inventario sin duplicados, registro de ejecución. \\
+\midrule
+RF-05 & Monitoreo & Comprobaciones ICMP cada 30 s, timeout de 3 s, 3 fallos consecutivos confirman caída, 2 éxitos confirman recuperación. \\
+\midrule
+RF-06 & Eventos & Registro histórico de descubrimientos, transiciones de estado, cambios de IP, errores y acciones administrativas. \\
+\midrule
+RF-07 & Alertas & Generación automática ante caídas confirmadas, estados abierta/reconocida/cerrada, prioridades por severidad. \\
+\midrule
+RF-08 & Panel de monitoreo & Dashboard con contadores en tiempo real, lista de dispositivos con estado, indicador de última actualización. \\
+\midrule
+RF-09 & Búsqueda y filtrado & Filtros por estado, tipo, IP, MAC, nombre; ordenamiento y paginación del inventario. \\
+\midrule
+RF-10 & Configuración & Intervalos de descubrimiento y monitoreo, umbrales de fallos, rangos de red autorizados. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Requerimientos No Funcionales}
+
+\begin{table}[htbp]
+\centering
+\caption{Requerimientos no funcionales}\label{tab:req_no_funcionales}
+\small
+\begin{tabularx}{\textwidth}{p{1.4cm} p{2.8cm} X}
+\toprule
+\textbf{ID} & \textbf{Categoría} & \textbf{Descripción} \\
+\midrule
+RNF-01 & Rendimiento & La latencia de notificación WebSocket no debe superar 200 ms para eventos críticos. \\
+\midrule
+RNF-02 & Disponibilidad & El servicio de monitoreo debe operar de forma continua, independiente de la interfaz web. \\
+\midrule
+RNF-03 & Seguridad & Contraseñas almacenadas con bcrypt/Argon2id. Tokens JWT con expiración. Sin datos sensibles en logs. \\
+\midrule
+RNF-04 & Escalabilidad & El sistema debe soportar al menos 30 dispositivos con comprobaciones concurrentes controladas (pool de 15). \\
+\midrule
+RNF-05 & Mantenibilidad & Código organizado por módulos con separación de responsabilidades. Documentación de API. \\
+\midrule
+RNF-06 & Compatibilidad & Interfaz web compatible con Chrome, Firefox y Edge en sus versiones actuales. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Actores del Sistema}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  scale=0.88, every node/.style={transform shape},
+  actor/.style={circle, draw=black, thick, fill=white, minimum size=0.5cm},
+  sysbox/.style={rectangle, draw=espochBlue, very thick, fill=espochBlue!5, rounded corners=4pt, minimum height=5.0cm, minimum width=8.5cm, align=center},
+  usecase/.style={ellipse, draw=black, thick, fill=techGray, minimum height=0.8cm, text width=3.2cm, align=center, font=\scriptsize}
+]
+  % Sistema
+  \node[sysbox] (sys) at (4.5,0) {};
+  \node[font=\small\bfseries, espochBlue] at (4.5,2.8) {Sistema de Monitoreo de Red};
+
+  % Casos de uso
+  \node[usecase] (uc1) at (3.2, 1.8) {Gestionar usuarios y roles};
+  \node[usecase] (uc2) at (5.8, 1.8) {Configurar monitoreo};
+  \node[usecase] (uc3) at (3.2, 0.5) {Registrar dispositivos};
+  \node[usecase] (uc4) at (5.8, 0.5) {Consultar dashboard};
+  \node[usecase] (uc5) at (3.2, -0.8) {Gestionar alertas};
+  \node[usecase] (uc6) at (5.8, -0.8) {Consultar eventos};
+  \node[usecase] (uc7) at (4.5, -2.0) {Ver topología de red};
+
+  % Actor Administrador
+  \node[actor] (adm_head) at (-1.5, 1.0) {};
+  \draw[thick] (-1.5,0.72) -- (-1.5,0.0);
+  \draw[thick] (-1.85,0.35) -- (-1.15,0.35);
+  \draw[thick] (-1.5,0.0) -- (-1.78,-0.7);
+  \draw[thick] (-1.5,0.0) -- (-1.22,-0.7);
+  \node[font=\scriptsize\bfseries] at (-1.5,-1.0) {Administrador};
+
+  % Actor Operador
+  \node[actor] (op_head) at (10.5, 1.0) {};
+  \draw[thick] (10.5,0.72) -- (10.5,0.0);
+  \draw[thick] (10.15,0.35) -- (10.85,0.35);
+  \draw[thick] (10.5,0.0) -- (10.22,-0.7);
+  \draw[thick] (10.5,0.0) -- (10.78,-0.7);
+  \node[font=\scriptsize\bfseries] at (10.5,-1.0) {Operador};
+
+  % Conexiones Admin
+  \draw[thick] (-1.5,0.35) -- (uc1.west);
+  \draw[thick] (-1.5,0.35) -- (uc2.west);
+  \draw[thick] (-1.5,0.35) -- (uc3.west);
+  \draw[thick] (-1.5,0.35) -- (uc4.west);
+  \draw[thick] (-1.5,0.35) -- (uc5.west);
+
+  % Conexiones Operador
+  \draw[thick] (10.5,0.35) -- (uc4.east);
+  \draw[thick] (10.5,0.35) -- (uc5.east);
+  \draw[thick] (10.5,0.35) -- (uc6.east);
+  \draw[thick] (10.5,0.35) -- (uc7.east);
+
+\end{tikzpicture}
+\caption{Diagrama de casos de uso del sistema}\label{fig:casos_uso}
+\end{figure}
+
+% --- 6.2 DISEÑO DE LA SOLUCIÓN ---
+\section{Diseño de la Solución Tecnológica}
+
+\subsection{Arquitectura del Sistema: Monolito Modular Dirigido por Eventos (EDA)}
+
+El sistema adopta una Arquitectura Dirigida por Eventos (EDA - Event-Driven Architecture) implementada como un monolito modular. Esta decisión se fundamenta en que el monitoreo de red opera sobre condiciones asíncronas (caídas de enlace, descubrimiento de hosts, fluctuaciones de latencia) que deben procesarse en tiempo real sin bloquear el servidor.
+
+El patrón EDA desacopla la detección de anomalías de su procesamiento y visualización mediante un bus central de eventos basado en \texttt{EventEmitter} de Node.js.
+
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[
+    scale=0.88, every node/.style={transform shape},
+    box/.style={rectangle, draw=black, thick, fill=white, rounded corners=3pt, align=center, minimum height=1.1cm, text width=6.5cm, font=\small},
+    bus/.style={rectangle, draw=espochBlue, very thick, fill=espochBlue!8, rounded corners=4pt, align=center, minimum height=1.1cm, text width=8.5cm, font=\small\bfseries},
+    subbox/.style={rectangle, draw=black, thick, fill=techGray, rounded corners=3pt, align=center, minimum height=1.1cm, text width=4.5cm, font=\small},
+    arrow/.style={-{Stealth[scale=0.95]}, thick},
+    biarrow/.style={{Stealth[scale=0.95]}-{Stealth[scale=0.95]}, thick}
+  ]
+    \node[box] (ui) at (0, 7.0) {\textbf{Consola NOC}\newline \footnotesize Frontend React 18 + Socket.io Client};
+    \node[box] (api) at (0, 5.0) {\textbf{Servidor de Aplicación}\newline \footnotesize API REST Express / Middlewares};
+    \node[bus] (bus) at (0, 3.0) {Bus Central de Eventos\newline \footnotesize \texttt{EventEmitter} en Node.js};
+    \node[subbox, draw=espochRed] (daemon) at (-3.2, 1.0) {\textbf{Motor de Sondeo}\newline \footnotesize ICMP Ping / ARP-Scan};
+    \node[subbox, draw=espochBlue] (db) at (3.2, 1.0) {\textbf{Base de Datos}\newline \footnotesize MongoDB 7.0 (Índices TTL)};
+    \node[subbox] (lan) at (-3.2, -1.0) {\textbf{Infraestructura LAN}\newline \footnotesize Switches, Routers, Hosts};
+
+    \draw[arrow] (ui.south west) -- node[left, font=\scriptsize] {HTTP REST} (api.north west);
+    \draw[biarrow] (ui.south east) -- node[right, font=\scriptsize] {WebSockets} (api.north east);
+    \draw[arrow] (api) -- node[right, font=\scriptsize] {Despacha eventos} (bus);
+    \draw[arrow] (daemon.north) to[bend left=15] node[left, font=\scriptsize] {Emite métricas} (bus.south west);
+    \draw[arrow] (bus.south east) to[bend left=15] node[right, font=\scriptsize] {Persiste BSON} (db.north);
+    \draw[arrow] (daemon.south west) -- node[left, font=\scriptsize] {Sondeos} (lan.north west);
+    \draw[arrow] (lan.north east) -- node[right, font=\scriptsize] {Respuestas} (daemon.south east);
+  \end{tikzpicture}
+  \caption{Diagrama de arquitectura general del sistema}\label{fig:arquitectura_general}
+\end{figure}
+
+\newpage
+\subsection{Diagrama de Componentes y Flujo de Eventos}
+
+El siguiente diagrama muestra en detalle los cinco módulos del sistema y cómo interactúan a través del bus central de eventos.
+
+\begin{landscape}
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  scale=0.92, every node/.style={transform shape},
+  arrow/.style={-{Stealth[scale=0.88]}, thick},
+  actor/.style={circle, draw=black, thick, fill=white, minimum size=0.55cm},
+  comp/.style={rectangle, draw=black, thick, fill=techGray, rounded corners=3pt, minimum height=1.35cm, text width=3.6cm, align=center, font=\small},
+  subcomp/.style={rectangle, draw=black, thick, fill=white, rounded corners=3pt, minimum height=1.1cm, text width=5.5cm, align=center, font=\small},
+  buspipe/.style={rectangle, draw=espochBlue, very thick, fill=espochBlue!8, rounded corners=6pt, minimum height=1.15cm, text width=22.2cm, align=center, font=\normalsize\bfseries}
+]
+
+  % Actor
+  \node[actor] (head) at (0,7.7) {};
+  \draw[thick] (0,7.42) -- (0,6.65);
+  \draw[thick] (-0.35,7.05) -- (0.35,7.05);
+  \draw[thick] (0,6.65) -- (-0.28,5.85);
+  \draw[thick] (0,6.65) -- (0.28,5.85);
+  \node[font=\footnotesize\bfseries] at (0,5.4) {Operador / Administrador NOC};
+
+  % Frontend
+  \node[subcomp] (front) at (0,4.2) {\textbf{Frontend Web}\newline \footnotesize React 18 + Socket.io Client};
+
+  % API
+  \node[subcomp] (api) at (0,2.4) {\textbf{ModuloControlador}\newline \footnotesize API REST Express / Middlewares};
+
+  % Bus
+  \node[buspipe] (bus) at (0,0.6) {Broker de Eventos Central (\texttt{EventEmitter} en Node.js)};
+
+  % 5 Modulos
+  \node[comp] (m1) at (-9.2,-2.3) {{\footnotesize\textbf{ModuloMonitoreo}}\newline \scriptsize Ping ICMP / ARP-Scan\newline \tiny\textcolor{black!60}{(Sondeo continuo)}};
+  \node[comp] (m2) at (-4.6,-2.3) {{\footnotesize\textbf{ModuloAlertas}}\newline \scriptsize Reglas de Umbrales\newline \tiny\textcolor{black!60}{(Evaluación reglas)}};
+  \node[comp] (m3) at (0.0,-2.3) {{\footnotesize\textbf{ModuloPersistencia}}\newline \scriptsize MongoDB ODM (TTL)\newline \tiny\textcolor{black!60}{(Persistencia BSON)}};
+  \node[comp] (m4) at (4.6,-2.3) {{\footnotesize\textbf{ModuloNotificaciones}}\newline \scriptsize Socket.io Gateway\newline \tiny\textcolor{black!60}{(Emisión WebSocket)}};
+  \node[comp] (m5) at (9.2,-2.3) {{\footnotesize\textbf{ModuloSeguridad}}\newline \scriptsize Auditoría y Bloqueo\newline \tiny\textcolor{black!60}{(Bloqueo tras 5x)}};
+
+  % Flujo superior
+  \draw[arrow] (0,5.15) -- node[right, font=\scriptsize] {Interacción UI} (front.north);
+  \draw[arrow] (front.south) -- node[right, font=\scriptsize] {Petición HTTP} (api.north);
+  \draw[arrow] (api.south) -- node[right, font=\scriptsize] {Evento Disparado} (bus.north);
+
+  % Flechas modulos <-> broker
+  \draw[arrow] (m1.north) to[bend left=8] node[left, font=\scriptsize] {Evento PingResult} (-9.2,0.05);
+  \draw[arrow] (-4.9,0.05) to[bend right=10] node[left, font=\scriptsize] {Consume PingResult} (m2.north west);
+  \draw[arrow] (m2.north east) to[bend right=10] node[right, font=\scriptsize] {Evento Alerta} (-4.3,0.05);
+  \draw[arrow] (0,0.05) -- node[right, font=\scriptsize] {Consume Telemetría} (m3.north);
+  \draw[arrow] (4.6,0.05) -- node[right, font=\scriptsize] {Consume Alertas} (m4.north);
+  \draw[arrow, draw=espochBlue, thick, dashed] (m4.north east) to[out=55,in=-10,looseness=1.1] node[pos=0.55, right=4pt, font=\scriptsize, align=left] {WebSocket Push\newline Tiempo Real} (front.east);
+  \draw[arrow] (9.2,0.05) to[bend left=8] node[right, font=\scriptsize] {Consume IntentoFallido} (m5.north);
+
+\end{tikzpicture}
+\caption{Diagrama de componentes y flujo de eventos del sistema (EDA)}\label{fig:diagrama_eventos}
+\end{figure}
+\end{landscape}
+
+\subsection{Catálogo de Eventos del Bus Interno}
+
+\begin{table}[htbp]
+\centering
+\caption{Catálogo de eventos del bus interno}\label{tab:catalogo_eventos}
+\small
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash\ttfamily\footnotesize}p{3.8cm} >{\raggedright\arraybackslash\small}p{2.9cm} >{\raggedright\arraybackslash\small}p{3.4cm} >{\raggedright\arraybackslash\small}X}
+\toprule
+\textbf{\textnormal{\textsf{\textbf{Evento}}}} & \textbf{\textnormal{\textsf{\textbf{Productor}}}} & \textbf{\textnormal{\textsf{\textbf{Consumidor(es)}}}} & \textbf{\textnormal{\textsf{\textbf{Acción}}}} \\
+\midrule
+NETWORK\_PING\_RESULT & ModuloMonitoreo & Alertas, Persistencia & Evalúa umbrales y persiste telemetría. \\
+\midrule
+DEVICE\_STATUS\_CHANGED & ModuloMonitoreo & Alertas, Notificaciones & Actualiza estado y emite por WebSocket. \\
+\midrule
+DEVICE\_DISCOVERED & ModuloMonitoreo & Notificaciones & Notifica nuevo host en el segmento LAN. \\
+\midrule
+ALERT\_TRIGGERED & ModuloAlertas & Notificaciones, Persistencia & Emite alerta y crea registro en BD. \\
+\midrule
+AUTH\_LOGIN\_FAILED & ModuloControlador & ModuloSeguridad & Incrementa contador; bloqueo tras intentos. \\
+\midrule
+TOPOLOGY\_LINK\_CHANGED & ModuloControlador & Notificaciones & Actualiza grafo de red en tiempo real. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Diagrama de Secuencia: Detección de Caída}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  scale=0.82, every node/.style={transform shape},
+  participant/.style={rectangle, draw=black, thick, fill=techGray, rounded corners=2pt, minimum height=0.7cm, align=center, font=\small\bfseries},
+  msg/.style={-{Stealth[scale=0.7]}, thick},
+  dashmsg/.style={-{Stealth[scale=0.7]}, thick, dashed}
+]
+  % Participantes
+  \node[participant] (daemon) at (0,0) {Daemon};
+  \node[participant] (bus) at (4,0) {Bus Eventos};
+  \node[participant] (alertas) at (8,0) {Alertas};
+  \node[participant] (db) at (12,0) {MongoDB};
+  \node[participant] (ws) at (16,0) {WebSocket};
+
+  % Lineas de vida
+  \foreach \x in {0,4,8,12,16} {
+    \draw[thick, gray!50] (\x,-0.5) -- (\x,-9.5);
+  }
+
+  % Mensajes
+  \draw[msg] (0,-1.2) -- node[above, font=\scriptsize] {PING\_RESULT (fallo 1)} (4,-1.5);
+  \draw[msg] (0,-2.2) -- node[above, font=\scriptsize] {PING\_RESULT (fallo 2)} (4,-2.5);
+  \draw[msg] (0,-3.2) -- node[above, font=\scriptsize] {PING\_RESULT (fallo 3)} (4,-3.5);
+
+  \draw[msg] (4,-3.8) -- node[above, font=\scriptsize] {STATUS\_CHANGED} (8,-4.1);
+
+  \draw[msg, espochRed] (8,-4.5) -- node[above, font=\scriptsize] {ALERT\_TRIGGERED} (4,-4.8);
+
+  \draw[msg] (4,-5.2) -- node[above, font=\scriptsize] {Persiste alerta} (12,-5.5);
+  \draw[msg] (4,-6.0) -- node[above, font=\scriptsize] {Emite notificación} (16,-6.3);
+
+  \draw[dashmsg, espochBlue] (16,-6.8) -- node[above, font=\scriptsize] {Push al navegador} (16,-7.5);
+
+  % Etiquetas de tiempo
+  \node[font=\tiny, gray] at (-1.5,-1.2) {t = 0s};
+  \node[font=\tiny, gray] at (-1.5,-2.2) {t = 30s};
+  \node[font=\tiny, gray] at (-1.5,-3.2) {t = 60s};
+  \node[font=\tiny, espochRed] at (-1.5,-4.5) {Caída confirmada};
+
+\end{tikzpicture}
+\caption{Diagrama de secuencia: detección de caída de un dispositivo}\label{fig:secuencia_caida}
+\end{figure}
+
+\newpage
+\subsection{Modelo de Datos (MongoDB)}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  scale=0.85, every node/.style={transform shape},
+  entity/.style={rectangle, draw=espochBlue, thick, fill=white, rounded corners=3pt, text width=5.0cm, align=left, font=\small, inner sep=6pt}
+]
+
+  % Dispositivos
+  \node[entity] (dev) at (0,0) {
+    \textbf{\textcolor{espochBlue}{Dispositivos}}\\[3pt]
+    \hrule\vspace{3pt}
+    \texttt{\_id}: ObjectId (PK)\\
+    \texttt{tipo}: String\\
+    \texttt{nombre}: String\\
+    \texttt{ip}: String\\
+    \texttt{mac}: String\\
+    \texttt{marca}: String\\
+    \texttt{modelo}: String\\
+    \texttt{ubicacion}: String\\
+    \texttt{origen}: enum\\
+    \texttt{estado}: enum\\
+    \texttt{monitorizable}: Boolean\\
+    \texttt{createdAt}: Date\\
+    \texttt{updatedAt}: Date
+  };
+
+  % Eventos
+  \node[entity] (evt) at (7,0.5) {
+    \textbf{\textcolor{espochBlue}{Eventos}}\\[3pt]
+    \hrule\vspace{3pt}
+    \texttt{\_id}: ObjectId (PK)\\
+    \texttt{tipo}: String\\
+    \texttt{descripcion}: String\\
+    \texttt{severidad}: enum\\
+    \texttt{dispositivoId}: ObjectId (FK)\\
+    \texttt{usuarioId}: ObjectId (FK)\\
+    \texttt{timestamp}: Date\\
+    \texttt{metadata}: Object
+  };
+
+  % Usuarios
+  \node[entity] (usr) at (0,-6.5) {
+    \textbf{\textcolor{espochBlue}{Usuarios}}\\[3pt]
+    \hrule\vspace{3pt}
+    \texttt{\_id}: ObjectId (PK)\\
+    \texttt{email}: String (unique)\\
+    \texttt{passwordHash}: String\\
+    \texttt{rol}: enum\\
+    \texttt{activo}: Boolean\\
+    \texttt{intentosFallidos}: Number\\
+    \texttt{bloqueadoHasta}: Date\\
+    \texttt{createdAt}: Date
+  };
+
+  % Alertas
+  \node[entity] (alrt) at (7,-6.0) {
+    \textbf{\textcolor{espochBlue}{Alertas}}\\[3pt]
+    \hrule\vspace{3pt}
+    \texttt{\_id}: ObjectId (PK)\\
+    \texttt{dispositivoId}: ObjectId (FK)\\
+    \texttt{estado}: enum\\
+    \texttt{prioridad}: enum\\
+    \texttt{descripcion}: String\\
+    \texttt{creadaEn}: Date\\
+    \texttt{cerradaEn}: Date\\
+    \texttt{reconocidaPor}: ObjectId (FK)
+  };
+
+  % Relaciones
+  \draw[-{Stealth}, thick] (dev.east) -- node[above, font=\scriptsize] {1:N} (evt.west);
+  \draw[-{Stealth}, thick] (dev.south) -- ++(0,-0.5) -| node[near start, above, font=\scriptsize] {1:N} (alrt.south);
+  \draw[-{Stealth}, thick, dashed] (usr.east) -- node[above, font=\scriptsize] {1:N} (alrt.west);
+  \draw[-{Stealth}, thick, dashed] (usr.north east) -- node[right, font=\scriptsize] {1:N} (evt.south west);
+
+\end{tikzpicture}
+\caption{Modelo de datos del sistema (colecciones MongoDB)}\label{fig:modelo_datos}
+\end{figure}
+
+\newpage
+\subsection{Topología de Red}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  scale=0.85, every node/.style={transform shape},
+  device/.style={rectangle, draw=black, thick, fill=white, rounded corners=3pt, minimum height=1.0cm, text width=3.5cm, align=center, font=\small},
+  cloud/.style={ellipse, draw=black, thick, fill=techGray, minimum height=1.0cm, minimum width=3.5cm, align=center, font=\small},
+  link/.style={thick}
+]
+  % Internet / Red universidad
+  \node[cloud] (inet) at (0,6) {Red Universidad};
+
+  % Router
+  \node[device, draw=espochBlue, fill=espochBlue!8] (router) at (0,4) {\textbf{Router}\newline\scriptsize 192.168.50.1};
+
+  % Switch
+  \node[device] (switch) at (-3,2) {\textbf{Switch}\newline\scriptsize LAN cableada};
+
+  % AP
+  \node[device] (ap) at (3,2) {\textbf{Access Point}\newline\scriptsize Wi-Fi};
+
+  % Servidor
+  \node[device, draw=espochRed, fill=espochRed!5] (server) at (-5,0) {\textbf{Servidor Debian}\newline\scriptsize 192.168.50.10};
+
+  % PCs
+  \node[device] (pc1) at (-2,0) {\textbf{PCs}\newline\scriptsize Escritorio};
+
+  % Laptops
+  \node[device] (lap) at (2,0) {\textbf{Laptops}\newline\scriptsize Wi-Fi};
+
+  % Moviles
+  \node[device] (mob) at (5,0) {\textbf{Móviles}\newline\scriptsize Wi-Fi};
+
+  % Conexiones
+  \draw[link] (inet) -- node[right, font=\scriptsize] {WAN} (router);
+  \draw[link] (router) -- node[left, font=\scriptsize] {Ethernet} (switch);
+  \draw[link] (router) -- node[right, font=\scriptsize] {Wi-Fi} (ap);
+  \draw[link] (switch) -- (server);
+  \draw[link] (switch) -- (pc1);
+  \draw[link] (ap) -- (lap);
+  \draw[link] (ap) -- (mob);
+
+\end{tikzpicture}
+\caption{Topología de red del laboratorio}\label{fig:topologia_red}
+\end{figure}
+
+\subsection{Diagrama de Despliegue}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  scale=0.85, every node/.style={transform shape},
+  node_box/.style={rectangle, draw=espochBlue, thick, fill=white, rounded corners=3pt, minimum height=1.8cm, text width=5.0cm, align=center, font=\small, inner sep=6pt},
+  service/.style={rectangle, draw=black, fill=techGray, rounded corners=2pt, minimum height=0.5cm, font=\scriptsize, inner sep=3pt},
+  arrow/.style={-{Stealth[scale=0.8]}, thick}
+]
+
+  % Navegador
+  \node[node_box] (browser) at (0,3.5) {\textbf{Navegador Web}\newline\scriptsize Chrome / Firefox / Edge\newline\scriptsize React 18 SPA};
+
+  % Servidor Debian
+  \node[node_box, minimum height=4.5cm, text width=9cm] (server) at (0,-1) {\textbf{Servidor Debian 12}};
+
+  \node[service] (nginx) at (-2.5,-0.0) {Nginx (Proxy Inverso)};
+  \node[service] (node) at (2.0,0.0) {Node.js + Express};
+  \node[service] (daemon) at (-2.5,-1.2) {Daemon Monitoreo};
+  \node[service] (mongo) at (2.0,-1.2) {MongoDB 7.0};
+  \node[service] (systemd) at (0,-2.2) {Systemd (Orquestador)};
+
+  % Conexiones
+  \draw[arrow] (browser) -- node[right, font=\scriptsize] {HTTP/WS} (server.north);
+  \draw[arrow] (nginx) -- (node);
+  \draw[arrow] (daemon) -- (mongo);
+  \draw[arrow] (node) -- (mongo);
+
+\end{tikzpicture}
+\caption{Diagrama de despliegue del sistema}\label{fig:despliegue}
+\end{figure}
+
+% --- 6.3 IMPLEMENTACIÓN ---
+\newpage
+\section{Implementación de la Solución}
+
+\subsection{Stack Tecnológico}
+
+\begin{table}[htbp]
+\centering
+\caption{Tecnologías utilizadas y su función}\label{tab:stack}
+\small
+\begin{tabularx}{\textwidth}{p{3.8cm} p{2.5cm} X}
+\toprule
+\textbf{Tecnología} & \textbf{Capa} & \textbf{Función} \\
+\midrule
+React 18 + Vite 5 & Presentación & Interfaz reactiva concurrente, actualización del panel de red en tiempo real sin recarga de página. \\
+\midrule
+Socket.io v4 & Comunicación & Canal WebSocket bidireccional persistente con reconexión automática y latencia inferior a 50 ms. \\
+\midrule
+React Flow (@xyflow) & Visualización & Motor de grafos interactivos para topología de red con nodos personalizados, zoom y arrastre. \\
+\midrule
+Node.js v20 LTS + Express & Backend & Entorno asíncrono no bloqueante con rutas REST, validación Zod y middlewares de seguridad (Helmet, CORS). \\
+\midrule
+EventEmitter (Node.js) & Eventos & Bus de mensajes en memoria que desacopla captura de métricas, alertas y persistencia. \\
+\midrule
+arp-scan + ping & Monitoreo & Herramientas del kernel Linux para descubrimiento ARP (Capa 2) y comprobación ICMP (Capa 3). \\
+\midrule
+MongoDB 7.0 + Mongoose & Persistencia & Base de datos NoSQL documental con índices TTL para purga automática de datos históricos. \\
+\midrule
+Nginx + Systemd & Infraestructura & Proxy inverso con terminación SSL y orquestación como servicio nativo en Debian 12. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  scale=0.88, every node/.style={transform shape},
+  layer/.style={rectangle, draw=black, thick, fill=techGray, rounded corners=3pt, minimum height=1.2cm, minimum width=13.0cm, align=left, font=\small}
+]
+  \node[layer, fill=white, draw=espochBlue] (l1) at (0,3.6) {\textbf{Capa de Presentación:} React 18 $\cdot$ Vite $\cdot$ React Flow $\cdot$ Tailwind CSS $\cdot$ Socket.io Client};
+  \node[layer, fill=white, draw=espochBlue] (l2) at (0,1.8) {\textbf{Capa de Negocio y Eventos:} Node.js v20 $\cdot$ Express $\cdot$ Socket.io Server $\cdot$ EventEmitter $\cdot$ JWT};
+  \node[layer, fill=white, draw=espochRed] (l3) at (0,0.0) {\textbf{Capa de Monitoreo:} Daemon Linux $\cdot$ arp-scan (Capa 2) $\cdot$ ICMP Ping (Capa 3) $\cdot$ p-limit};
+  \node[layer, fill=white, draw=espochBlue] (l4) at (0,-1.8) {\textbf{Capa de Persistencia:} MongoDB 7.0 (TTL) $\cdot$ Mongoose $\cdot$ Debian 12 $\cdot$ Nginx $\cdot$ Systemd};
+
+  \draw[-{Stealth[scale=1.0]}, thick] (l1.south) -- (l2.north);
+  \draw[-{Stealth[scale=1.0]}, thick] (l2.south) -- (l3.north);
+  \draw[-{Stealth[scale=1.0]}, thick] (l3.south) -- (l4.north);
+\end{tikzpicture}
+\caption{Capas técnicas del stack tecnológico}\label{fig:stack_layers}
+\end{figure}
+
+\subsection{Organización de Módulos del Backend}
+
+El backend se organiza en los siguientes módulos principales:
+
+\begin{enumerate}
+  \item \textbf{ModuloControlador:} recibe peticiones HTTP y WebSocket, valida la autenticación JWT, despacha las operaciones al bus de eventos.
+  \item \textbf{ModuloMonitoreo:} daemon que ejecuta ciclos de descubrimiento (ARP-scan) y comprobaciones de disponibilidad (ICMP ping) de forma periódica e independiente de la interfaz web.
+  \item \textbf{ModuloAlertas:} consume eventos de monitoreo, evalúa reglas de umbrales (3 fallos consecutivos = caída, 2 éxitos = recuperación) y emite alertas.
+  \item \textbf{ModuloPersistencia:} consume eventos del bus y los persiste en MongoDB como documentos BSON con índices TTL para purga automática.
+  \item \textbf{ModuloNotificaciones:} recibe alertas y cambios de estado del bus y los transmite en tiempo real al frontend mediante Socket.io.
+  \item \textbf{ModuloSeguridad:} gestiona la auditoría de operaciones, el conteo de intentos fallidos de autenticación y el bloqueo temporal de cuentas.
+\end{enumerate}
+
+\subsection{Matrices de Justificación Técnica}
+
+\begin{table}[htbp]
+\centering
+\caption{Justificación de decisiones de arquitectura y comunicación}\label{tab:comparativa1}
+\small
+\begin{tabularx}{\textwidth}{p{2.4cm} p{2.6cm} p{3.2cm} X}
+\toprule
+\textbf{Componente} & \textbf{Elegido} & \textbf{Alternativas} & \textbf{Justificación} \\
+\midrule
+Patrón arquitectural & EDA Monolito Modular & Microservicios, N-capas síncrono & Microservicios genera sobrecarga para un equipo de 4. N-capas síncrono no responde en tiempo real. EDA ofrece desacoplamiento sin complejidad distribuida. \\
+\midrule
+Tiempo real & WebSockets (Socket.io) & HTTP Polling, SSE & Polling satura la red. SSE es solo unidireccional. Socket.io ofrece transporte bidireccional con reconexión. \\
+\midrule
+Frontend & React 18 + Vite & Angular, Vue.js & React tiene el ecosistema de grafos de red más maduro. Vite ofrece compilaciones ultrarrápidas. \\
+\midrule
+Backend & Node.js + Express & Django, Spring Boot & I/O asíncrono no bloqueante de Node.js es superior para manejar cientos de comprobaciones concurrentes. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{Justificación de persistencia, monitoreo e infraestructura}\label{tab:comparativa2}
+\small
+\begin{tabularx}{\textwidth}{p{2.4cm} p{2.6cm} p{3.2cm} X}
+\toprule
+\textbf{Componente} & \textbf{Elegido} & \textbf{Alternativas} & \textbf{Justificación} \\
+\midrule
+Base de datos & MongoDB 7.0 & PostgreSQL, MySQL & Los dispositivos de red son polimórficos; documentos BSON modelan esta jerarquía sin tablas relacionales. Dispone de índices TTL nativos. \\
+\midrule
+Daemon de red & Node.js + arp-scan/ping & Python Scapy, C raw sockets & arp-scan y ping son binarios del kernel optimizados. Node.js los integra con facilidad de lógica de negocio. \\
+\midrule
+Despliegue & Systemd + Nginx & Docker, Kubernetes & La máquina física del laboratorio no requiere virtualización; servicio nativo garantiza el 100\% del rendimiento. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% --- 6.4 PRUEBAS Y VALIDACIÓN ---
+\newpage
+\section{Pruebas y Validación Técnica}
+
+\subsection{Criterios y Condiciones de Prueba}
+
+Las pruebas se ejecutan en el entorno real del laboratorio con la red LAN configurada (192.168.50.0/24), el servidor Debian con todos los servicios activos y dispositivos de prueba conectados (computadoras, laptops y dispositivos móviles).
+
+\subsection{Casos de Prueba Principales}
+
+\begin{table}[htbp]
+\centering
+\caption{Casos de prueba y resultados esperados}\label{tab:pruebas}
+\small
+\begin{tabularx}{\textwidth}{p{0.8cm} p{3.5cm} X p{2.0cm}}
+\toprule
+\textbf{ID} & \textbf{Caso de Prueba} & \textbf{Procedimiento y Resultado Esperado} & \textbf{Estado} \\
+\midrule
+CP-01 & Descubrimiento de dispositivos & Conectar 5 dispositivos a la LAN y esperar un ciclo de descubrimiento. El sistema debe detectar los 5 dispositivos y registrarlos en el inventario. & Planificado \\
+\midrule
+CP-02 & Detección de caída & Desconectar un dispositivo monitoreado. Tras 3 fallos consecutivos (90 s), el sistema debe cambiar su estado a ``No disponible'' y generar alerta. & Planificado \\
+\midrule
+CP-03 & Detección de recuperación & Reconectar un dispositivo en estado ``No disponible''. Tras 2 comprobaciones exitosas consecutivas (60 s), el estado debe cambiar a ``Disponible''. & Planificado \\
+\midrule
+CP-04 & Notificación en tiempo real & Con el panel web abierto, generar un cambio de estado. La notificación debe aparecer en el navegador en menos de 200 ms. & Planificado \\
+\midrule
+CP-05 & Bloqueo por intentos fallidos & Intentar iniciar sesión 3 veces con contraseña incorrecta. El sistema debe bloquear la cuenta durante 3 minutos. & Planificado \\
+\midrule
+CP-06 & Control de acceso & Un operador intenta crear un usuario desde la API. El servidor debe responder con HTTP 403. & Planificado \\
+\midrule
+CP-07 & Prevención de duplicados & Registrar un dispositivo con una IP ya existente. El sistema debe mostrar la coincidencia y evitar el duplicado. & Planificado \\
+\midrule
+CP-08 & Monitoreo independiente & Cerrar todas las pestañas del navegador. Verificar que el daemon continúa ejecutando comprobaciones y registrando eventos en MongoDB. & Planificado \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Correspondencia Requerimientos - Validación}
+
+\begin{table}[htbp]
+\centering
+\caption{Trazabilidad de requerimientos a casos de prueba}\label{tab:trazabilidad}
+\small
+\begin{tabularx}{\textwidth}{p{2.8cm} p{5.0cm} X}
+\toprule
+\textbf{Requerimiento} & \textbf{Descripción} & \textbf{Caso(s) de Prueba} \\
+\midrule
+RF-01 & Autenticación y gestión de usuarios & CP-05 \\
+RF-02 & Control de permisos por rol & CP-06 \\
+RF-03 & Registro manual de dispositivos & CP-07 \\
+RF-04 & Descubrimiento automático & CP-01 \\
+RF-05 & Monitoreo de disponibilidad & CP-02, CP-03, CP-08 \\
+RF-08 & Panel de monitoreo & CP-04 \\
+RNF-01 & Latencia WebSocket < 200 ms & CP-04 \\
+RNF-02 & Monitoreo independiente & CP-08 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% ============================================================
+% 7. OPERACIÓN, MANTENIMIENTO Y SOPORTE
+% ============================================================
+\chapter{Operación, Mantenimiento y Soporte}
+
+\section{Operación Técnica}
+
+\textbf{Iniciar el sistema:}
+\begin{lstlisting}
+sudo systemctl start netmonitor-backend
+sudo systemctl start netmonitor-daemon
+sudo systemctl start mongod
+sudo systemctl start nginx
+\end{lstlisting}
+
+\textbf{Detener el sistema:}
+\begin{lstlisting}
+sudo systemctl stop netmonitor-backend
+sudo systemctl stop netmonitor-daemon
+\end{lstlisting}
+
+\textbf{Verificar estado:}
+\begin{lstlisting}
+sudo systemctl status netmonitor-backend
+sudo systemctl status netmonitor-daemon
+sudo systemctl status mongod
+\end{lstlisting}
+
+\section{Mantenimiento}
+
+\begin{itemize}
+  \item \textbf{Actualización de dependencias:} ejecutar periódicamente los comandos \texttt{npm audit} y \texttt{npm update} para mantener los paquetes sin vulnerabilidades.
+  \item \textbf{Actualización del sistema operativo:} ejecutar \texttt{apt update} y \texttt{apt upgrade} en el servidor Debian para aplicar parches de seguridad del kernel y paquetes.
+  \item \textbf{Revisión de logs:} inspeccionar el registro del daemon mediante el comando \newline\texttt{journalctl -u netmonitor-backend} para diagnosticar anomalías.
+  \item \textbf{Índices TTL de MongoDB:} verificar que la purga automática de datos históricos (métricas, sesiones) funcione correctamente según los períodos configurados (30 y 90 días).
+\end{itemize}
+
+\section{Respaldo y Recuperación}
+
+\textbf{Generar respaldo de MongoDB:}
+\begin{lstlisting}
+mongodump --db netmonitor --out /backup/$(date +%Y%m%d)
+\end{lstlisting}
+
+\textbf{Restaurar desde respaldo:}
+\begin{lstlisting}
+mongorestore --db netmonitor /backup/20261101/netmonitor/
+\end{lstlisting}
+
+Se recomienda programar respaldos automáticos diarios mediante \texttt{cron} y almacenar las copias en una ubicación separada del servidor principal.
+
+\section{Errores Frecuentes y Soluciones}
+
+\begin{table}[htbp]
+\centering
+\caption{Errores frecuentes y soluciones}\label{tab:errores}
+\small
+\begin{tabularx}{\textwidth}{p{3.5cm} p{3.5cm} X}
+\toprule
+\textbf{Síntoma} & \textbf{Causa Probable} & \textbf{Solución} \\
+\midrule
+El panel web no carga & Nginx o el backend no están activos & Verificar \texttt{systemctl status} de ambos servicios y reiniciar si es necesario. \\
+\midrule
+No se descubren dispositivos & El daemon no tiene permisos de root para arp-scan & Verificar que el servicio se ejecuta con permisos adecuados o con \texttt{cap\_net\_raw}. \\
+\midrule
+WebSocket se desconecta & Timeout del proxy Nginx & Configurar \texttt{proxy\_read\_timeout} y \texttt{proxy\_send\_timeout} a valores mayores. \\
+\midrule
+MongoDB no inicia & Puerto 27017 ocupado o disco lleno & Verificar espacio con \texttt{df -h} y liberar si es necesario. Comprobar \texttt{mongod.log}. \\
+\midrule
+Falsas alarmas de caída & Pérdida de paquetes ICMP temporal & Verificar que el umbral de fallos consecutivos esté en 3 o más. Revisar la red. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Limitaciones Conocidas}
+
+\begin{itemize}
+  \item Los dispositivos que bloquean ICMP y no tienen otro método de comprobación configurado no pueden monitorearse activamente.
+  \item La aleatorización de direcciones MAC en dispositivos móviles puede dificultar la identificación consistente de algunos equipos.
+  \item El sistema no detecta automáticamente la topología física de la red; las relaciones entre dispositivos deben configurarse manualmente o se infieren de forma aproximada.
+  \item El rendimiento con más de 100 dispositivos no ha sido validado en el hardware actual del laboratorio.
+  \item La administración de múltiples redes (multi-LAN) no está implementada en esta versión.
+\end{itemize}
+
+% ============================================================
+% 8. CONCLUSIONES Y RECOMENDACIONES
+% ============================================================
+\chapter{Conclusiones y Recomendaciones}
+
+\section{Conclusiones}
+
+\begin{enumerate}
+  \item Se analizó el problema de la gestión manual de la infraestructura de red del laboratorio, identificando 10 requerimientos funcionales principales y 6 no funcionales que definen el alcance y los criterios de aceptación del sistema.
+
+  \item Se diseñó una arquitectura de software basada en eventos (EDA) con un bus central de tipo \texttt{EventEmitter} que desacopla los módulos de monitoreo, alertas, persistencia y notificaciones, permitiendo que el sistema reaccione en tiempo real sin bloquear el servidor web.
+
+  \item Se implementó el sistema utilizando Node.js y Express para el backend, React 18 para el frontend y MongoDB 7.0 para la persistencia, integrando WebSockets mediante Socket.io para la transmisión bidireccional en tiempo real con latencia inferior a 200 ms.
+
+  \item Se implementaron los servicios de descubrimiento de dispositivos mediante arp-scan (Capa 2) con ciclos de 10 minutos y monitoreo de disponibilidad mediante ICMP ping (Capa 3) con comprobaciones cada 30 segundos, utilizando un pool de concurrencia de 15 sockets simultáneos.
+
+  \item Se definió un plan de validación con 8 casos de prueba principales que cubren los requerimientos críticos del sistema, incluyendo descubrimiento, detección de caídas y recuperaciones, notificaciones en tiempo real, control de acceso y monitoreo independiente.
+\end{enumerate}
+
+\section{Recomendaciones}
+
+\begin{enumerate}
+  \item \textbf{Acceso remoto:} implementar una conexión VPN para permitir la supervisión del laboratorio desde ubicaciones externas de forma segura.
+  \item \textbf{Monitoreo SNMP:} integrar consultas SNMP para switches y routers administrables, lo que permitiría obtener información detallada de puertos, VLANs y tablas de rutas.
+  \item \textbf{Escalabilidad:} evaluar la adopción de un broker de mensajes dedicado (como Redis Pub/Sub) si el número de dispositivos supera los 100, para distribuir la carga de eventos.
+  \item \textbf{Análisis histórico:} implementar dashboards analíticos con métricas de disponibilidad a largo plazo, identificación de dispositivos con fallos recurrentes y tendencias de rendimiento de la red.
+  \item \textbf{Alertas externas:} integrar notificaciones por correo electrónico o mensajería instantánea para alertas críticas, permitiendo la respuesta ante incidencias incluso fuera del horario laboral.
+  \item \textbf{Respaldos automáticos:} configurar tareas programadas con cron para respaldos diarios de MongoDB y rotación de archivos de log.
+\end{enumerate}
+
+% ============================================================
+% 9. ANEXOS Y ENTREGABLES
+% ============================================================
+\chapter{Anexos y Entregables}
+
+\section{Repositorio del Proyecto}
+
+El código fuente del proyecto se encuentra disponible en el siguiente repositorio de GitHub:
+
+\begin{center}
+\url{https://github.com/wsxdev/network-infrastructure-management}
+\end{center}
+
+\textbf{Rama principal:} \texttt{main}\\
+\textbf{Rama de desarrollo:} \texttt{develop}
+
+El repositorio contiene el código fuente del backend, frontend, archivos de configuración, documentación técnica y los estándares de desarrollo del equipo.
+
+\section{Manual de Usuario}
+
+El manual de usuario se incluirá como documento complementario y contendrá las instrucciones para:
+
+\begin{itemize}
+  \item Acceder al sistema mediante el navegador web.
+  \item Iniciar sesión y cambiar la contraseña.
+  \item Consultar el panel de monitoreo y el estado de los dispositivos.
+  \item Buscar y filtrar dispositivos en el inventario.
+  \item Gestionar alertas e incidencias.
+  \item Visualizar la topología de red.
+\end{itemize}
+
+\section{Evidencias Complementarias}
+
+\begin{itemize}
+  \item Documento de requerimientos funcionales y no funcionales (versión 3.0).
+  \item Documento de metáfora, arquitectura EDA y selección del stack tecnológico.
+  \item Estándar de flujo de trabajo Git.
+  \item Estándar de programación.
+  \item Estándar de interfaces de usuario.
+  \item Product Backlog del proyecto.
+\end{itemize}
+
+\end{document}
