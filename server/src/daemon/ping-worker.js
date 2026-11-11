@@ -1,6 +1,7 @@
 import { spawn } from 'child_process';
 import net from 'net';
 import pLimit from 'p-limit';
+import mongoose from 'mongoose';
 import { Device } from '../models/device.model.js';
 import { env } from '../config/environment.js';
 import { recordPingResult } from '../services/device.service.js';
@@ -48,34 +49,34 @@ export function executeSafePing(ipAddress, timeoutMs = 3000) {
       if (exitCode === 0) {
         // Extraer rtt del formato "time=X.XX ms" si existe
         const rttMatch = stdoutData.match(/time=([0-9.]+)\s*ms/);
-        const parsedRtt = rttMatch ? parseFloat(rttMatch[1]) : elapsed;
+        const responseTimeMs = rttMatch ? parseFloat(rttMatch[1]) : elapsed;
 
-        resolve({
+        return resolve({
           isAlive: true,
-          responseTimeMs: Math.round(parsedRtt),
+          responseTimeMs: Math.round(responseTimeMs),
           errorMessage: null
         });
-      } else {
-        resolve({
-          isAlive: false,
-          responseTimeMs: null,
-          errorMessage: stderrData.trim() || 'Tiempo de espera agotado (Host inalcanzable)'
-        });
       }
+
+      return resolve({
+        isAlive: false,
+        responseTimeMs: null,
+        errorMessage: stderrData.trim() || `Host inaccesible (código de salida ${exitCode})`
+      });
     });
 
     pingProcess.on('error', (err) => {
       resolve({
         isAlive: false,
         responseTimeMs: null,
-        errorMessage: `Fallo en binario ping: ${err.message}`
+        errorMessage: `Fallo al invocar binario de red ping: ${err.message}`
       });
     });
   });
 }
 
-let isCycleRunning = false;
 let pingIntervalId = null;
+let isCycleRunning = false;
 
 /**
  * Inicia el bucle centinela del daemon de monitoreo con concurrencia limitada.
@@ -89,6 +90,9 @@ export function startPingWorker(io = null) {
 
   const runCycle = async () => {
     if (isCycleRunning) return;
+    if (mongoose.connection.readyState !== 1) {
+      return; // Base de datos en enlace / reconexión: posponer ciclo sin saturar
+    }
     isCycleRunning = true;
 
     try {
@@ -97,7 +101,7 @@ export function startPingWorker(io = null) {
         isDeleted: false,
         isManaged: true,
         ipAddress: { $ne: null, $exists: true }
-      });
+      }).maxTimeMS(3000);
 
       if (devices.length === 0) {
         isCycleRunning = false;
@@ -107,7 +111,7 @@ export function startPingWorker(io = null) {
       // 2. Límite de concurrencia estricto (RNF-15: p-limit a 15)
       const limit = pLimit(env.MAX_CONCURRENT_PINGS);
 
-      const checkPromises = devices.map(device =>
+      const checkPromises = devices.map((device) =>
         limit(async () => {
           const pingResult = await executeSafePing(device.ipAddress, env.PING_TIMEOUT_MS);
           const updateResult = await recordPingResult(device._id, pingResult);
@@ -141,7 +145,7 @@ export function startPingWorker(io = null) {
         });
       }
     } catch (err) {
-      console.error('❌ Error en ciclo del Ping Worker:', err);
+      console.warn('⚠️ Ciclo del Ping Worker pospuesto:', err.message);
     } finally {
       isCycleRunning = false;
     }
