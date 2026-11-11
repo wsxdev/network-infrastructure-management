@@ -13,6 +13,8 @@ router.use(authenticate);
 // Rutas de consulta (Accesibles por administrador y operador)
 router.get('/', deviceController.getDevices);
 router.get('/topology', deviceController.getTopology);
+// Catálogo de tipos dinámico — T-03.01.01 (antes de /:id para evitar colisión de rutas)
+router.get('/types', deviceController.getDeviceTypes);
 router.get('/:id', validateRequest(idParamSchema, 'params'), deviceController.getDeviceById);
 router.post('/:id/ping', validateRequest(idParamSchema, 'params'), deviceController.pingDeviceNow);
 

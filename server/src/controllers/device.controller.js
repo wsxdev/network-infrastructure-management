@@ -10,6 +10,7 @@ import { asyncHandler } from '../middlewares/async-handler.js';
 import * as deviceService from '../services/device.service.js';
 import * as topologyService from '../services/topology.service.js';
 import { executeSafePing } from '../daemon/ping-worker.js';
+import { DeviceType } from '../models/deviceType.model.js';
 
 /**
  * Consulta y lista dispositivos con soporte para paginación y filtros.
@@ -28,6 +29,22 @@ export const getDevices = asyncHandler(async (req, res) => {
       page: result.page,
       limit: result.limit
     }
+  });
+});
+
+/**
+ * Retorna el catálogo activo de tipos de dispositivos ordenado para el selector de formularios.
+ * Satisface T-03.01.01: tipos cargados dinámicamente desde la colección `device_types`.
+ *
+ * @param {import('express').Request} req - Petición HTTP Express
+ * @param {import('express').Response} res - Respuesta HTTP Express
+ * @returns {Promise<void>}
+ */
+export const getDeviceTypes = asyncHandler(async (req, res) => {
+  const types = await DeviceType.find({ isActive: true }).sort({ order: 1 }).lean();
+  return res.status(200).json({
+    success: true,
+    data: types
   });
 });
 
