@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { AlertCircle, Loader2 } from 'lucide-react';
 import { Modal } from '../common/Modal';
 import { Button } from '../common/Button';
 import { MaskedIpInput } from '../common/MaskedIpInput';
 import { MaskedMacInput } from '../common/MaskedMacInput';
+import api from '../../services/api';
 
 /**
  * Modal para el registro y edición de dispositivos en el inventario.
  * Cumple con RNF-11 (Accesibilidad WCAG 2.1 AA) y los Criterios de Aceptación (Escenarios 1, 2, 3 y 4).
+ * Los tipos de dispositivos se cargan dinámicamente desde GET /api/devices/types (T-03.01.01).
  */
 export function DeviceModal({ isOpen, onClose, onSave, device = null, availableParents = [] }) {
   const [formData, setFormData] = useState({
     name: '',
-    type: 'workstation',
+    type: '',
     ipAddress: '',
     macAddress: '',
     vendor: '',
@@ -22,14 +26,30 @@ export function DeviceModal({ isOpen, onClose, onSave, device = null, availableP
     isManaged: true
   });
 
+  // Estados de validación inline — Corrección 1
+  const [touched, setTouched] = useState({ name: false, type: false });
+  const [fieldErrors, setFieldErrors] = useState({ name: '', type: '' });
+
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Carga dinámica del catálogo de tipos — T-03.01.01
+  const {
+    data: deviceTypesData,
+    isLoading: isLoadingTypes
+  } = useQuery({
+    queryKey: ['deviceTypes'],
+    queryFn: () => api.get('/devices/types').then((r) => r.data.data),
+    staleTime: 1000 * 60 * 10 // 10 minutos
+  });
+
+  const deviceTypes = deviceTypesData || [];
 
   useEffect(() => {
     if (device) {
       setFormData({
         name: device.name || '',
-        type: device.type || 'workstation',
+        type: device.type || '',
         ipAddress: device.ipAddress || '',
         macAddress: device.macAddress || '',
         vendor: device.vendor || device.fabricante || '',
@@ -42,7 +62,7 @@ export function DeviceModal({ isOpen, onClose, onSave, device = null, availableP
     } else {
       setFormData({
         name: '',
-        type: 'workstation',
+        type: '',
         ipAddress: '',
         macAddress: '',
         vendor: '',
@@ -54,17 +74,47 @@ export function DeviceModal({ isOpen, onClose, onSave, device = null, availableP
       });
     }
     setError(null);
+    setTouched({ name: false, type: false });
+    setFieldErrors({ name: '', type: '' });
   }, [device, isOpen]);
+
+  // Cuando carguen los tipos y aún no hay tipo seleccionado, seleccionar el primero
+  useEffect(() => {
+    if (!formData.type && deviceTypes.length > 0) {
+      setFormData((prev) => ({ ...prev, type: deviceTypes[0].code }));
+    }
+  }, [deviceTypes]);
+
+  /** Valida un campo individual y retorna el mensaje de error (cadena vacía = OK). */
+  const validateField = (name, value) => {
+    if (name === 'name') {
+      return value.trim() === '' ? 'El nombre del dispositivo es obligatorio.' : '';
+    }
+    if (name === 'type') {
+      return value === '' ? 'Debe seleccionar un tipo de dispositivo.' : '';
+    }
+    return '';
+  };
+
+  const handleBlur = (fieldName) => {
+    setTouched((prev) => ({ ...prev, [fieldName]: true }));
+    setFieldErrors((prev) => ({
+      ...prev,
+      [fieldName]: validateField(fieldName, formData[fieldName])
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
 
-    // Validación previa del lado cliente
-    if (!formData.name.trim()) {
-      setError('El nombre del dispositivo es obligatorio.');
-      return;
-    }
+    // Marcar todos los campos obligatorios como tocados para mostrar errores
+    const nameErr = validateField('name', formData.name);
+    const typeErr = validateField('type', formData.type);
+    setTouched({ name: true, type: true });
+    setFieldErrors({ name: nameErr, type: typeErr });
+
+    if (nameErr || typeErr) return;
 
     if (formData.isManaged && !formData.ipAddress.trim()) {
       setError('La dirección IP es obligatoria para dispositivos con monitoreo directo.');
@@ -111,36 +161,98 @@ export function DeviceModal({ isOpen, onClose, onSave, device = null, availableP
 
         {/* Fila 1: Nombre y Tipo */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {/* Campo Nombre con validación inline — Corrección 1 */}
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">
               Nombre *
             </label>
-            <input
-              type="text"
-              required
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              placeholder="Ej. Switch Acceso Módulo 2"
-              className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mineral-green-500/20 focus:border-mineral-green-600"
-            />
+            <div className="relative">
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) => {
+                  setFormData({ ...formData, name: e.target.value });
+                  if (touched.name) {
+                    setFieldErrors((prev) => ({
+                      ...prev,
+                      name: validateField('name', e.target.value)
+                    }));
+                  }
+                }}
+                onBlur={() => handleBlur('name')}
+                placeholder="Ej. Switch Acceso Módulo 2"
+                className={`w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-2 focus:ring-mineral-green-500/20 focus:border-mineral-green-600 ${
+                  touched.name && fieldErrors.name
+                    ? 'border-red-400 bg-red-50/20 pr-8'
+                    : 'border-slate-300'
+                }`}
+              />
+              {touched.name && fieldErrors.name && (
+                <AlertCircle
+                  size={14}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-red-500 pointer-events-none"
+                />
+              )}
+            </div>
+            {touched.name && fieldErrors.name && (
+              <p className="text-[11px] text-red-600 mt-1 flex items-center gap-1">
+                {fieldErrors.name}
+              </p>
+            )}
           </div>
 
+          {/* Campo Tipo con validación inline — T-03.01.01 + Corrección 1 */}
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">
               Tipo de Dispositivo *
             </label>
-            <select
-              value={formData.type}
-              onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-              className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg bg-white focus:outline-none focus:border-mineral-green-600"
-            >
-              <option value="router">Router / Gateway</option>
-              <option value="switch">Switch</option>
-              <option value="server">Servidor</option>
-              <option value="workstation">Estación de Trabajo / PC</option>
-              <option value="ap">Punto de Acceso (AP)</option>
-              <option value="other">Otro Periférico</option>
-            </select>
+            <div className="relative">
+              <select
+                value={formData.type}
+                onChange={(e) => {
+                  setFormData({ ...formData, type: e.target.value });
+                  if (touched.type) {
+                    setFieldErrors((prev) => ({
+                      ...prev,
+                      type: validateField('type', e.target.value)
+                    }));
+                  }
+                }}
+                onBlur={() => handleBlur('type')}
+                disabled={isLoadingTypes}
+                className={`w-full px-3 py-2 text-xs border rounded-lg bg-white focus:outline-none focus:border-mineral-green-600 disabled:opacity-60 ${
+                  touched.type && fieldErrors.type
+                    ? 'border-red-400 bg-red-50/20'
+                    : 'border-slate-300'
+                }`}
+              >
+                {isLoadingTypes ? (
+                  <option value="">Cargando tipos...</option>
+                ) : (
+                  <>
+                    {deviceTypes.length === 0 && (
+                      <option value="">Sin tipos disponibles</option>
+                    )}
+                    {deviceTypes.map((t) => (
+                      <option key={t.code} value={t.code}>
+                        {t.label}
+                      </option>
+                    ))}
+                  </>
+                )}
+              </select>
+              {isLoadingTypes && (
+                <Loader2
+                  size={13}
+                  className="absolute right-7 top-1/2 -translate-y-1/2 text-slate-400 animate-spin pointer-events-none"
+                />
+              )}
+            </div>
+            {touched.type && fieldErrors.type && (
+              <p className="text-[11px] text-red-600 mt-1 flex items-center gap-1">
+                {fieldErrors.type}
+              </p>
+            )}
           </div>
         </div>
 
