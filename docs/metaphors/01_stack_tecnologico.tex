@@ -30,7 +30,7 @@
 \setlength{\parskip}{6pt}
 \setlength{\parindent}{0pt}
 
-% Viñetas redondas formales
+% Vinetas redondas formales
 \usepackage{enumitem}
 \setlist[itemize,1]{label=\textbullet, leftmargin=1.5em, itemsep=2pt, parsep=0pt}
 \setlist[itemize,2]{label=\normalfont\bfseries\textperiodcentered, leftmargin=1.5em, itemsep=2pt, parsep=0pt}
@@ -124,8 +124,9 @@
   {\large\bfseries SISTEMA WEB DE MONITOREO Y GESTIÓN\\[0.15cm]
   DE LA INFRAESTRUCTURA DE REDES - ESPOCH}\\[0.7cm]
 
-  {\normalsize\bfseries DOCUMENTO DE METÁFORA Y STACK TECNOLÓGICO}\\[0.15cm]
-  {\small Arquitectura de Software, Ecosistema de Herramientas y Justificación Técnica}\\[1.0cm]
+  {\normalsize\bfseries DOCUMENTO DE METÁFORA, ARQUITECTURA DIRIGIDA POR EVENTOS\\[0.15cm]
+  Y SELECCIÓN DEL STACK TECNOLÓGICO}\\[0.15cm]
+  {\small Arquitectura Reactiva en Tiempo Real, Ecosistema de Herramientas y Justificación Técnica}\\[1.0cm]
 
   \begin{minipage}[t]{0.45\textwidth}
     {\small\textbf{Roles de Ingeniería:}}\\[0.25cm]
@@ -153,10 +154,10 @@
   \vfill
 
   {\small\textbf{Período Académico:} Quinto Semestre (PAO 5)}\\[0.05cm]
-  {\small\textbf{Documento Oficial de Ingeniería de Software (Versión 1.0)}}\\[0.6cm]
+  {\small\textbf{Documento Oficial de Ingeniería de Software (Versión 2.0 - Arquitectura EDA)}}\\[0.6cm]
 
   {\small Orellana - Ecuador}\\[0.15cm]
-  {\small Octubre de 2026}
+  {\small Noviembre de 2026}
 \end{titlepage}
 
 \tableofcontents
@@ -165,83 +166,183 @@
 \listoftables
 \newpage
 
+\listoffigures
+\newpage
+
 \chapter{Metáfora Arquitectural del Sistema}
 
-\section{Concepto de la Metáfora: La Torre de Control de Red y el Centinela}
-En las metodologías ágiles de ingeniería de software (como eXtreme Programming y Scrum), la \textit{metáfora del sistema} es una visión compartida de alto nivel que permite a todos los desarrolladores, evaluadores y usuarios comprender intuitivamente cómo opera el software, sus componentes y su flujo de datos sin perderse en detalles de bajo nivel.
+\section{Concepto de la Metáfora: La Torre de Control de Tráfico Aéreo y el Escuadrón Centinela}
+En las metodologías ágiles de ingeniería de software (como eXtreme Programming y Scrum), la \textit{metáfora del sistema} es una visión compartida de alto nivel que permite a todos los ingenieros de desarrollo, evaluadores de calidad y operadores comprender intuitivamente cómo opera el software, sus componentes y su flujo de datos sin extraviarse en detalles de bajo nivel.
 
 Para el presente proyecto, la metáfora rectora seleccionada es:
 \begin{center}
-  \textbf{\large ``La Torre de Control de Tráfico Aéreo y el Escuadrón Centinela''}
+  \textbf{\large ``La Torre de Control de Tráfico Aéreo, el Escuadrón Centinela y el Canal de Telemetría Radárica''}
 \end{center}
 
 Bajo esta analogía operativa:
 \begin{itemize}
-  \item \textbf{La Torre de Control (Frontend React):} Es la cabina panorámica donde los controladores (Administradores y Operadores de red) supervisan en tiempo real la posición, altura y estado de cada aeronave mediante pantallas gráficas intuitivas, radares de topología y un panel de alertas. La torre no sale a volar ni interroga directamente a los aviones en el aire; simplemente consume la telemetría depurada que recibe del centro de radar.
-  \item \textbf{El Centro de Operaciones y Despacho (Backend Node.js / Express API):} Es la central de procesamiento que aplica las reglas de seguridad, valida autorizaciones de despegue y aterrizaje, procesa las peticiones de los controladores y expone interfaces estandarizadas (API REST) para entregar datos consolidados sin sobrecargar los sistemas de vuelo.
-  \item \textbf{El Escuadrón Centinela de Radar (Daemon de Monitoreo en Segundo Plano):} Es un servicio autónomo que patrulla incansablemente el espacio aéreo (la red de área local). Emite pulsos periódicos de radar (pings ICMP y barridos ARP/Nmap) para descubrir nuevas naves en el perímetro y verificar que los aviones autorizados sigan respondiendo. Si una nave no responde tras tres pulsos sucesivos, el radar no asume que se desintegró físicamente, sino que emite una notificación de emergencia a la torre.
-  \item \textbf{La Bitácora de Vuelo y Caja Negra (Base de Datos MongoDB):} Es el registro inalterable donde se almacenan las coordenadas de cada aeronave, los planes de vuelo históricos, los eventos de aproximación y las incidencias detectadas para auditoría posterior y análisis estadístico a largo plazo.
+  \item \textbf{La Torre de Control (Frontend React 18):} Es la cabina panorámica donde los controladores (Administradores y Operadores de red del NOC) supervisan en tiempo real la posición, latencia y estado operativo de cada equipo mediante paneles gráficos reactivos, diagramas de topología y consolas de alertas acústico-visuales. La torre no sale a la pista ni interroga directamente a las aeronaves en vuelo; simplemente proyecta de forma inmediata los datos que recibe por el canal de radiofrecuencia.
+  \item \textbf{El Canal de Telemetría Radárica (WebSockets con Socket.io):} Representa el enlace de radiofrecuencia continuo y bidireccional entre la torre y la estación terrena de radar. Elimina de raíz la necesidad de que los controladores deban llamar por teléfono cada 5 segundos para preguntar si un avión sigue en vuelo (\textit{antipatrón de polling HTTP}). En su lugar, cualquier variación de estado o señal de alarma se propaga instantáneamente a todas las pantallas activas en cuestión de milisegundos.
+  \item \textbf{El Centro de Despacho y Bus de Mensajería (Backend Node.js / Express con EventBus):} Es la estación central de control que coordina las operaciones. Dispone de un bus interno de eventos que recibe las señales crudas del radar, evalúa las prioridades, despacha las alertas a los operadores y atiende transacciones seguras (como la autorización de credenciales, autenticación JWT dual y parametrización de umbrales) mediante una API REST protegida.
+  \item \textbf{El Escuadrón Centinela de Radar (Daemon de Monitoreo en Segundo Plano):} Es un servicio autónomo gobernado por el sistema operativo que patrulla de manera ininterrumpida el espacio aéreo (la red de área local). Emite pulsos periódicos de radar (pings ICMP ultraligeros y barridos ARP) para verificar que los equipos registrados sigan respondiendo y detectar intrusiones o nuevas terminales no inventariadas. Cuando un equipo deja de responder a 3 pulsos sucesivos, el radar emite un evento de cambio de estado hacia el bus central.
+  \item \textbf{La Bitácora de Vuelo y Caja Negra (Base de Datos MongoDB):} Es el archivo inalterable donde se registran la telemetría periódica, el inventario de aeronaves, el historial de cambios de topología y la bitácora de incidentes para auditoría posterior, gobernado mediante índices de expiración automática (TTL) para impedir la degradación de almacenamiento.
 \end{itemize}
 
-Esta metáfora resuelve de forma natural la separación de responsabilidades exigida en el requerimiento RNF-03: \textit{el radar centinela continúa vigilando el espacio aéreo incluso cuando los operadores de la torre de control cierran sus ventanas de visualización}.
+Esta metáfora resuelve de forma natural la separación de responsabilidades exigida en el requerimiento RNF-03: \textit{el radar centinela continúa vigilando el espacio aéreo incluso cuando todos los operadores de la torre de control cierran sus navegadores web}.
 
 \begin{figure}[htbp]
   \centering
   \begin{tikzpicture}[
     box/.style={rectangle, draw=black, thick, fill=white, rounded corners=3pt, align=center, minimum height=1.3cm, minimum width=3.8cm, font=\small},
     daemon/.style={rectangle, draw=espochRed, thick, fill=techGray, rounded corners=3pt, align=center, minimum height=1.3cm, minimum width=3.8cm, font=\small},
-    db/.style={cylinder, draw=espochBlue, thick, fill=techGray, shape border rotate=90, aspect=0.25, minimum height=1.4cm, minimum width=3.5cm, align=center, font=\small},
-    arrow/.style={-{Stealth[scale=1.1]}, thick}
+    bus/.style={rectangle, draw=espochBlue, very thick, fill=techGray, rounded corners=4pt, align=center, minimum height=1.1cm, minimum width=4.5cm, font=\small\bfseries},
+    db/.style={cylinder, draw=espochBlue, thick, fill=techGray, shape border rotate=90, aspect=0.25, minimum height=1.4cm, minimum width=3.2cm, align=center, font=\small},
+    arrow/.style={-{Stealth[scale=1.1]}, thick},
+    biarrow/.style={{Stealth[scale=1.1]}-{Stealth[scale=1.1]}, thick}
   ]
     % Nodos
-    \node[box] (ui) at (0,4.5) {\textbf{Torre de Control}\\[2pt]Frontend React 18};
-    \node[box] (api) at (0,2.2) {\textbf{Centro de Despacho}\\[2pt]Backend Node.js / Express};
-    \node[daemon] (daemon) at (-4.5,0) {\textbf{Escuadrón Centinela}\\[2pt]Daemon Linux (ICMP/ARP)};
-    \node[db] (db) at (4.5,0) {\textbf{Bitácora de Vuelo}\\[2pt]MongoDB 7.0};
-    \node[box, fill=techGray] (lan) at (-4.5,-2.5) {\textbf{Espacio Aéreo (LAN)}\\[2pt]Routers, Switches, PCs};
+    \node[box] (ui) at (0,4.8) {\textbf{Torre de Control (NOC)}\\[2pt]Frontend React 18 + Vite};
+    \node[box] (api) at (0,2.3) {\textbf{Centro de Despacho}\\[2pt]API REST Express / Middlewares};
+    \node[bus] (bus) at (0,0.5) {\textbf{Bus de Eventos Interno (EventEmitter)}\\[2pt]\footnotesize Desacoplamiento Productor / Consumidor};
+    \node[daemon] (daemon) at (-4.8,0.5) {\textbf{Escuadrón Centinela}\\[2pt]Daemon Linux (ICMP / ARP)};
+    \node[db] (db) at (4.8,0.5) {\textbf{Bitácora de Vuelo}\\[2pt]MongoDB 7.0 (TTL 90d)};
+    \node[box, fill=techGray] (lan) at (-4.8,-2.2) {\textbf{Infraestructura de Red (LAN)}\\[2pt]Routers, Switches, Servidores, PCs};
 
     % Conexiones
-    \draw[arrow] (ui) -- node[right, font=\footnotesize] {HTTP/REST (Cada 5s)} (api);
-    \draw[arrow] (api) -- node[above, font=\footnotesize] {Mongoose BSON} (db);
-    \draw[arrow] (daemon) -- node[above, font=\footnotesize] {Eventos y Checks} (db);
-    \draw[arrow] (daemon) -- node[left, font=\footnotesize] {Pulsos de Radar} (lan);
+    \draw[arrow] (ui.south west) -- node[left, font=\footnotesize] {HTTP/REST (Auth / Config)} (api.north west);
+    \draw[biarrow] (ui.south east) -- node[right, font=\footnotesize] {WebSockets (Socket.io Realtime)} (api.north east);
+    \draw[arrow] (api) -- (bus);
+    \draw[arrow] (daemon) -- node[above, font=\footnotesize] {Emite Eventos} (bus);
+    \draw[arrow] (bus) -- node[above, font=\footnotesize] {Persistencia BSON} (db);
+    \draw[arrow] (daemon) -- node[left, font=\footnotesize] {Pulsos ICMP/ARP} (lan);
     \draw[arrow] (lan) -- node[right, font=\footnotesize] {Respuestas Eco} (daemon);
 
   \end{tikzpicture}
-  \caption{Diagrama esquemático de la metáfora arquitectural del sistema}\label{fig:metafora_diagrama}
+  \caption{Diagrama esquemático de la metáfora arquitectural con canal reactivo}\label{fig:metafora_diagrama}
+\end{figure}
+
+\newpage
+\chapter{Arquitectura Dirigida por Eventos (EDA)}
+
+\section{Fundamentación Técnica y Selección del Paradigma}
+Los sistemas de monitoreo y supervisión de infraestructuras críticas operan bajo una premisa fundamental: \textit{el estado de la red cambia de manera asíncrona, espontánea y no predecible}. Una interfaz web tradicional basada en peticiones periódicas (\textit{polling} HTTP cada 5 segundos) presenta tres deficiencias técnicas graves:
+\begin{enumerate}
+  \item \textbf{Latencia de Notificación Inaceptable:} Si un switch de núcleo colapsa a los 100 ms de haber concluido un ciclo de sondeo, el operador humano no se entera hasta 4.9 segundos después, violando el umbral de respuesta inmediata exigido en salas NOC.
+  \item \textbf{Sobrecarga Innecesaria de E/S y Red:} Miles de peticiones HTTP vacías sobrecargan la capa de transporte TCP, consumiendo ancho de banda y ciclos de CPU en el servidor al serializar y parsear encabezados HTTP redundantes sin que haya cambios que reportar.
+  \item \textbf{Acoplamiento Temporal:} Obliga al backend a mantener bloqueadas conexiones o sincronizar tiempos entre módulos de escaneo y controladores web.
+\end{enumerate}
+
+Para resolver estas limitaciones, se adopta formalmente una \textbf{Arquitectura Modular Dirigida por Eventos (EDA - Event-Driven Architecture)}. Este patrón separa la generación de datos de su consumo, permitiendo que la aplicación reaccione instantáneamente ante cualquier variación en la infraestructura.
+
+\section{Componentes del Modelo EDA en el Sistema}
+El modelo de eventos implementado en el sistema se articula a través de cuatro componentes bien definidos:
+
+\subsection{1. Productores de Eventos (Event Producers)}
+Son aquellos módulos que detectan cambios de estado o procesan acciones del sistema y generan señales tipadas sin conocer qué entidad las procesará posteriormente:
+\begin{itemize}
+  \item \textbf{Proceso Centinela (Daemon de Red):} Emite eventos como \texttt{NETWORK\_PING\_RESULT} tras cada ciclo de eco ICMP, \texttt{DEVICE\_DISCOVERED} cuando el barrido ARP identifica una dirección MAC desconocida, y \texttt{DEVICE\_STATUS\_CHANGED} cuando un nodo transiciona entre estados (\texttt{online}, \texttt{warning}, \texttt{offline}).
+  \item \textbf{Módulo de Seguridad y Autenticación:} Emite eventos como \texttt{AUTH\_LOGIN\_SUCCESS}, \texttt{AUTH\_LOGIN\_FAILED} y \texttt{AUTH\_ACCOUNT\_LOCKED} tras exceder los 5 intentos fallidos normados en la especificación.
+  \item \textbf{Gestor de Inventario:} Emite notificaciones de creación, actualización o alteración de enlaces de topología (\texttt{DEVICE\_CREATED}, \texttt{DEVICE\_UPDATED}, \texttt{TOPOLOGY\_LINK\_CHANGED}).
+\end{itemize}
+
+\subsection{2. Bus Central de Eventos en Memoria (Internal Event Bus)}
+Consiste en un despachador centralizado basado en la clase nativa \texttt{EventEmitter} de Node.js, configurado bajo el patrón \textit{Singleton}. Sus características técnicas son:
+\begin{itemize}
+  \item \textbf{Procesamiento No Bloqueante:} Las suscripciones se ejecutan en el bucle de eventos (\textit{Event Loop}) asíncrono, garantizando que un fallo en un suscriptor jamás bloquee a los demás ni afecte al productor.
+  \item \textbf{Catálogo Tipado de Eventos:} Se prohíbe el uso de cadenas de texto arbitrarias. Todos los eventos se definen como constantes inmutables en un módulo de constantes (\texttt{events.constants.js}).
+  \item \textbf{Aislamiento de Errores:} Cada manejador de eventos (\textit{listener}) encapsula su lógica en bloques controlados para que excepciones no capturadas no provoquen la terminación del proceso Node.js (\texttt{uncaughtException}).
+\end{itemize}
+
+\subsection{3. Consumidores de Eventos (Event Consumers / Listeners)}
+Módulos especializados que se suscriben al bus para reaccionar de forma independiente ante eventos específicos:
+\begin{itemize}
+  \item \textbf{Motor de Evaluación de Alertas (Alert Engine):} Escucha \texttt{NETWORK\_PING\_RESULT} y \texttt{DEVICE\_STATUS\_CHANGED}. Si un nodo acumula 3 fallos consecutivos o supera el umbral crítico de latencia configurado, evalúa las reglas de degradación y emite la alarma \texttt{ALERT\_TRIGGERED}.
+  \item \textbf{Servicio de Persistencia y Métricas (Metrics Store):} Escucha los eventos de telemetría y los persiste en la base de datos MongoDB aplicando agregaciones en segundo plano para no saturar el almacenamiento.
+  \item \textbf{Pasarela WebSockets (Socket.io Realtime Gateway):} Transforma los eventos internos del backend en tramas WebSocket dirigidas a las salas activas de clientes web (\texttt{dashboard}, \texttt{alerts}, \texttt{topology}).
+  \item \textbf{Bitácora de Auditoría (Audit Logger):} Registra los eventos de seguridad y cambios administrativos en el archivo de logs del sistema mediante Winston.
+\end{itemize}
+
+\subsection{4. Clientes Reactivos en Tiempo Real (WebSocket Consumers)}
+El frontend React mantiene un canal WebSocket persistente con la librería \texttt{socket.io-client}. Al recibir un mensaje del servidor, los hooks reactivos actualizan directamente el almacén de estado y el grafo interactivo de nodos sin requerir ninguna recarga de página.
+
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[
+    producer/.style={rectangle, draw=espochRed, thick, fill=techGray, rounded corners=3pt, align=center, minimum height=1.1cm, minimum width=3.4cm, font=\small},
+    bus/.style={rectangle, draw=espochBlue, very thick, fill=white, rounded corners=5pt, align=center, minimum height=1.3cm, minimum width=13cm, font=\bfseries\normalsize},
+    consumer/.style={rectangle, draw=black, thick, fill=techGray, rounded corners=3pt, align=center, minimum height=1.1cm, minimum width=3.0cm, font=\small},
+    client/.style={rectangle, draw=espochBlue, thick, fill=white, rounded corners=3pt, align=center, minimum height=1.1cm, minimum width=3.2cm, font=\small},
+    arrow/.style={-{Stealth[scale=1.1]}, thick}
+  ]
+
+    % Productores arriba
+    \node[producer] (p1) at (-4.5,4.0) {\textbf{Daemon de Red}\\[2pt]\footnotesize Pings ICMP / ARP-Scan};
+    \node[producer] (p2) at (0,4.0) {\textbf{Módulo de Seguridad}\\[2pt]\footnotesize Login / Bloqueos};
+    \node[producer] (p3) at (4.5,4.0) {\textbf{Inventario de Red}\\[2pt]\footnotesize CRUD Dispositivos / Links};
+
+    % Bus en el centro
+    \node[bus] (eventbus) at (0,1.8) {BUS DE EVENTOS CENTRAL (\texttt{EventEmitter} en Node.js)\\[2pt]\footnotesize Despacho asíncrono no bloqueante y desacoplado};
+
+    % Consumidores abajo
+    \node[consumer] (c1) at (-4.8,-0.5) {\textbf{Motor de Alertas}\\[2pt]\footnotesize Reglas de umbrales};
+    \node[consumer] (c2) at (-1.6,-0.5) {\textbf{Persistencia}\\[2pt]\footnotesize MongoDB BSON};
+    \node[consumer] (c3) at (1.6,-0.5) {\textbf{Bitácora Auditoría}\\[2pt]\footnotesize Winston Logger};
+    \node[consumer, draw=espochBlue] (c4) at (4.8,-0.5) {\textbf{Socket.io Gateway}\\[2pt]\footnotesize Servidor WebSockets};
+
+    % Cliente frontend
+    \node[client] (wsclient) at (4.8,-2.5) {\textbf{Dashboard React 18}\\[2pt]\footnotesize Recepción en tiempo real};
+
+    % Flechas Productores -> Bus
+    \draw[arrow] (p1) -- node[left, font=\scriptsize] {\texttt{PING\_RESULT}} (p1 |- eventbus.north);
+    \draw[arrow] (p2) -- node[right, font=\scriptsize] {\texttt{AUTH\_EVENT}} (p2 |- eventbus.north);
+    \draw[arrow] (p3) -- node[right, font=\scriptsize] {\texttt{DEVICE\_CHANGE}} (p3 |- eventbus.north);
+
+    % Flechas Bus -> Consumidores
+    \draw[arrow] (c1 |- eventbus.south) -- (c1);
+    \draw[arrow] (c2 |- eventbus.south) -- (c2);
+    \draw[arrow] (c3 |- eventbus.south) -- (c3);
+    \draw[arrow] (c4 |- eventbus.south) -- (c4);
+
+    % Flecha Socket.io -> Cliente
+    \draw[arrow, draw=espochBlue, very thick] (c4) -- node[right, font=\scriptsize] {WebSocket (\texttt{emit})} (wsclient);
+
+  \end{tikzpicture}
+  \caption{Flujo arquitectural de la Arquitectura Dirigida por Eventos (EDA)}\label{fig:eda_flow}
 \end{figure}
 
 \newpage
 \chapter{Desglose Exhaustivo del Stack Tecnológico}
 
-El sistema implementa una arquitectura modular de tres niveles desacoplados más un servicio de fondo nativo en el sistema operativo del servidor, alineándose con las directrices de la norma ISO/IEC 25010 en cuanto a modularidad, mantenibilidad y eficiencia del desempeño.
+El sistema implementa una arquitectura modular desacoplada basada en eventos, alineándose con las directrices de la norma ISO/IEC 25010 en cuanto a modularidad, mantenibilidad, fiabilidad y eficiencia de desempeño.
 
-\section{Capa de Presentación: Frontend Web}
-La interfaz gráfica de usuario está orientada a la operación intuitiva en salas de control y centros de soporte de laboratorio (NOC). Debe responder fluidamente en pantallas de escritorio con resolución igual o superior a $1366 \times 768$ píxeles (RNF-10).
+\section{Capa de Presentación: Frontend Web Reactivo}
+La interfaz gráfica de usuario está orientada a la operación en salas de control y centros de soporte de redes (NOC). Debe responder fluidamente en pantallas de escritorio con resolución igual o superior a $1366 \times 768$ píxeles (RNF-10).
 
 \begin{itemize}
-  \item \textbf{Librería Base:} \textbf{React 18.2+}. Permite la reactividad instantánea del estado mediante su modelo de Virtual DOM concurrente, facilitando actualizaciones selectivas del panel de control sin provocar parpadeos ni recargas completas de la página web.
-  \item \textbf{Herramienta de Construcción y Empaquetado:} \textbf{Vite 5.x}. Se selecciona Vite en reemplazo del obsoleto Create React App (CRA). Vite utiliza \textit{esbuild} basado en Go para proporcionar un arranque en desarrollo prácticamente instantáneo y empaqueta el código de producción con \textit{Rollup}, reduciendo drásticamente el tamaño del bundle Javascript descargado por el navegador.
-  \item \textbf{Enrutamiento del Cliente:} \textbf{React Router DOM v6}. Permite la navegación desacoplada mediante rutas protegidas por rol (\texttt{ProtectedRoute}), redirigiendo a los operadores lejos de las vistas exclusivas de administración sin requerir solicitudes adicionales de páginas HTML al servidor.
-  \item \textbf{Renderizado del Grafo de Topología:} \textbf{React Flow (xyflow)}. Librería especializada en diagramación de grafos dinámicos e interactivos en React. Permite representar nodos con íconos personalizados de hardware (switches, routers, terminales), dibujar aristas con enlaces continuos (confirmados físicamente) o discontinuos (inferidos lógicamente), soportando controles de zoom, arrastre y selección rápida para inspección de fichas.
-  \item \textbf{Estilizado y Sistema de Diseño:} \textbf{Tailwind CSS v3.4}. Framework utilitario que garantiza consistencia visual absoluta, cumplimiento riguroso de la paleta de colores del proyecto sin colisiones de nombres de clase, y fácil implementación de diseño responsivo adaptado a las pantallas de los laboratorios.
-  \item \textbf{Iconografía Profesional:} \textbf{Lucide React}. Set moderno, limpio y vectorial de íconos que garantizan que el estado de cada nodo no se transmita únicamente mediante color, sino acompañado de símbolos inequívocos de comprobación, advertencia y fallo (RNF-11).
-  \item \textbf{Cliente de Comunicación HTTP y Caché:} \textbf{Axios y TanStack Query (React Query)}. Gestiona el sondeo periódico (\textit{polling}) del panel cada 5 segundos de forma controlada, evitando fugas de memoria, manejando cancelaciones automáticas ante desmontaje de componentes e interceptando respuestas HTTP 401 para la renovación transparente de tokens.
+  \item \textbf{Librería Base de Interfaz:} \textbf{React 18.2+}. Proporciona renderizado reactivo concurrente mediante Virtual DOM. Permite actualizar selectivamente widgets de métricas y nodos de red sin recargas de página.
+  \item \textbf{Herramienta de Construcción y Empaquetado:} \textbf{Vite 5.x}. Ofrece arranque ultraveloz en desarrollo basado en precompilación con \textit{esbuild} y empaqueta el producto final en producción con \textit{Rollup}, reduciendo drásticamente el peso de las transferencias.
+  \item \textbf{Comunicación Bidireccional en Tiempo Real:} \textbf{Socket.io Client (v4.7+)}. Mantiene una conexión persistente sobre WebSockets con reconexión automática y retrocompatibilidad (\textit{polling fallback}). Recibe en tiempo real los eventos de telemetría y alertas emitidos por el backend.
+  \item \textbf{Cliente HTTP Transaccional y Caché:} \textbf{Axios y TanStack Query (React Query v5)}. Administra las consultas REST síncronas (autenticación, formularios, reportes históricos) con invalidación controlada de caché, evitando peticiones duplicadas y manejando cancelaciones de solicitudes.
+  \item \textbf{Renderizado del Grafo de Topología:} \textbf{React Flow (@xyflow/react v12)}. Librería especializada en modelado de redes interactivas sobre Canvas/SVG. Permite representar switches, routers y terminales con íconos vectoriales, enlaces físicos continuos o discontinuos, controles de arrastre, zoom infinito y selección de nodos para inspección de métricas.
+  \item \textbf{Sistema de Diseño y Estilos:} \textbf{Tailwind CSS v3.4}. Framework de clases utilitarias que garantiza adherencia a la paleta institucional, consistencia de espaciado y tipografía, y respuesta fluida en diferentes resoluciones.
+  \item \textbf{Iconografía de Alta Definición:} \textbf{Lucide React}. Set moderno de íconos vectoriales que refuerza el estado de los nodos con señales gráficas explícitas (check, alerta, cruz), evitando depender únicamente del color para cumplir la norma WCAG 2.1 AA.
 \end{itemize}
 
-\section{Capa de Servicios y Lógica de Negocio: Backend API REST}
-El servidor de aplicaciones procesa las transacciones, gestiona la seguridad de acceso y sirve como pasarela formal entre la interfaz de usuario y la persistencia de datos.
+\section{Capa de Servicios y Lógica de Negocio: Backend Node.js}
+El servidor de aplicaciones procesa las transacciones, gestiona la seguridad y ejecuta el bus de mensajería interna.
 
 \begin{itemize}
-  \item \textbf{Entorno de Ejecución:} \textbf{Node.js v20 LTS (Iron)}. Plataforma basada en el motor V8 de Google que maneja la concurrencia mediante un bucle de eventos asíncrono no bloqueante (\textit{Event Loop}). Resulta idóneo para aplicaciones orientadas a E/S intensiva de red, donde múltiples peticiones de consulta coexisten con escrituras concurrentes de monitoreo.
-  \item \textbf{Framework de Enrutamiento:} \textbf{Express.js v4.19+}. Microframework ligero y minimalista que ofrece una capa robusta de middlewares para la autenticación, control de accesos basados en roles (RBAC), registro de peticiones (\textit{Morgan}) y manejo centralizado de excepciones.
-  \item \textbf{Seguridad Criptográfica de Credenciales:} \textbf{bcrypt (12 rondas de salting)}. Algoritmo de hash adaptativo que protege las contraseñas contra ataques de fuerza bruta y tablas arcoíris. No se almacenan contraseñas en texto plano bajo ninguna circunstancia (RNF-05).
-  \item \textbf{Gestión de Sesiones Seguras:} \textbf{jsonwebtoken (JWT)}. Arquitectura dual de autenticación:
+  \item \textbf{Entorno de Ejecución:} \textbf{Node.js v20 LTS (Iron)}. Plataforma basada en el motor V8 de Google que ejecuta un bucle de eventos no bloqueante (\textit{Event Loop}), idónea para operaciones concurrentes de E/S de red y persistencia sin levantar hilos pesados del sistema operativo.
+  \item \textbf{Framework Web y Middlewares:} \textbf{Express.js v4.21+}. Microframework minimalista que organiza la capa HTTP mediante middlewares de seguridad (\textit{Helmet}), compresión (\textit{compression}), deserialización segura (\textit{express.json}) y auditoría de peticiones (\textit{Morgan}).
+  \item \textbf{Servidor de WebSockets:} \textbf{Socket.io v4.8+}. Servidor de comunicación en tiempo real acoplado al servidor HTTP de Node.js. Administra salas de transmisión (\textit{rooms}) para segmentar el tráfico de eventos según la vista activa del operador.
+  \item \textbf{Bus Central de Eventos:} \textbf{Node.js EventEmitter (Módulo Interno)}. Patrón de publicación y suscripción (\textit{Pub/Sub}) en memoria que desacopla la recolección de métricas de su distribución y almacenamiento.
+  \item \textbf{Seguridad Criptográfica:} \textbf{bcrypt (12 rondas de salting)}. Función hash unidireccional y adaptativa que protege las contraseñas contra ataques de fuerza bruta y tablas arcoíris. No se almacenan contraseñas en texto plano (RNF-05).
+  \item \textbf{Gestión de Sesiones Seguras:} \textbf{jsonwebtoken (JWT Dual)}. Acceso mediante dos tokens diferenciados:
   \begin{itemize}
     \item \textit{Access Token:} JWT de corta vigencia (15 minutos), firmado con HMAC-SHA256, transportado en la cabecera HTTP \texttt{Authorization: Bearer}.
-    \item \textit{Refresh Token:} Credencial de larga duración (8 horas), persistida en base de datos y entregada al cliente exclusivamente mediante una cookie con banderas \texttt{HttpOnly}, \texttt{Secure} y \texttt{SameSite=Lax}, mitigando de raíz ataques XSS y CSRF (Sección 8.3 de la especificación).
+    \item \textit{Refresh Token:} Credencial de larga duración (8 horas), almacenada en base de datos y transferida exclusivamente mediante cookie con banderas \texttt{HttpOnly}, \texttt{Secure} y \texttt{SameSite=Lax}, mitigando de raíz ataques XSS y CSRF.
   \end{itemize}
-  \item \textbf{Validación de Datos de Entrada:} \textbf{Zod / Joi}. Validación rigurosa de esquemas en servidor. Impide la inyección de tipos arbitrarios y garantiza que los parámetros de configuración (umbrales, timeouts, intervalos) se mantengan estrictamente dentro de los límites seguros (\textit{guardrails}) definidos en la especificación RF-10.
+  \item \textbf{Validación Defensiva de Esquemas:} \textbf{Zod v3.24+}. Validación rigurosa de entradas en tiempo de ejecución. Impide la inyección de tipos arbitrarios y restringe umbrales y tiempos de sondeo a los límites seguros de la especificación (RF-10).
 \end{itemize}
 
 \section{Capa de Monitoreo y Exploración de Red: Daemon Centinela}
@@ -267,45 +368,62 @@ La capa de datos utiliza un motor flexible para acomodar la naturaleza heterogé
 
 \begin{itemize}
   \item \textbf{Motor de Base de Datos:} \textbf{MongoDB 7.0 Community Edition}. Sistema de base de datos documental orientado a JSON/BSON. Permite almacenar atributos dinámicos por tipo de hardware sin requerir complejas migraciones de esquema relacional.
-  \item \textbf{Mapeador Objeto-Documento (ODM):} \textbf{Mongoose v8}. Facilita la declaración de esquemas estrictos, validación de tipos a nivel de aplicación, definición de hooks (\textit{pre-save} y \textit{post-save}) para auditoría y tipado consistente.
-  \item \textbf{Índices TTL (Time-To-Live) para Gestión de Capacidad:} Mecanismo automático nativo de MongoDB para depurar datos de alta frecuencia y prevenir el desbordamiento de disco en el servidor Debian (Sección 8.4 de la especificación):
+  \item \textbf{Mapeador Objeto-Documento (ODM):} \textbf{Mongoose 8.9+}. Garantiza tipado estricto en el código, validación de reglas de negocio a nivel de esquema, manejo de índices compuestos únicos y enganches (\textit{hooks}) previos a la persistencia.
+  \item \textbf{Estrategia de Depuración Automática (Índices TTL):}
   \begin{itemize}
-    \item Colección \texttt{checks}: Expira automáticamente a los 30 días.
-    \item Colección \texttt{events}: Expira automáticamente a los 90 días (semestre académico).
-    \item Colección \texttt{sessions}: Expira automáticamente a las 24 horas tras caducar el token.
+    \item Colección \texttt{sessions}: Los registros de sesión expiran y se eliminan automáticamente según el campo \texttt{expiresAt}.
+    \item Colección \texttt{metrics}: Las métricas de ping de alta resolución se consolidan por promedios horarios y expiran a los 30 días para evitar el desbordamiento de disco (RNF-13).
+    \item Colección \texttt{events}: Registro histórico de eventos e incidencias con retención de 90 días (equivalente al período académico).
   \end{itemize}
-  \item \textbf{Módulo de Agregación para Big Data:} Consultas analíticas diarias mediante el \textit{Aggregation Pipeline} de MongoDB para computar estadísticas consolidadas de disponibilidad (RF-11), resumiendo miles de pings en un único registro diario por dispositivo.
 \end{itemize}
 
-\section{Capa de Infraestructura, Red y Despliegue en Laboratorio}
+\section{Infraestructura del Host y Despliegue en Servidor Físico}
+El proyecto se aloja directamente en el servidor de laboratorio asignado, garantizando acceso nativo a la interfaz de red física:
+
 \begin{itemize}
-  \item \textbf{Sistema Operativo del Servidor:} \textbf{Debian GNU/Linux 12 (Bookworm) x86\_64}. Reconocido por su estabilidad inquebrantable, bajo consumo de memoria RAM y paquetes de red nativos maduros.
-  \item \textbf{Servidor Web y Proxy Inverso:} \textbf{Nginx 1.22+}. Actúa como puerta de enlace frontal en el puerto 80/443 del servidor. Entrega los archivos estáticos optimizados del frontend React y redirige las rutas \texttt{/api/*} hacia el backend de Node.js en \texttt{localhost:5000}. Aísla completamente la base de datos MongoDB en el puerto local \texttt{127.0.0.1:27017}, impidiendo cualquier acceso directo desde el exterior.
-  \item \textbf{Acceso Remoto Seguro (Fase 2):} \textbf{WireGuard VPN}. Protocolo de red privada virtual criptográfica de última generación que opera en el espacio de kernel de Linux. Permite a los docentes y evaluadores acceder al panel de control desde fuera del laboratorio a través de un túnel cifrado ChaCha20-Poly1305, sin exponer puertos del sistema a Internet ni comprometer la seguridad institucional.
+  \item \textbf{Sistema Operativo Base:} \textbf{Debian GNU/Linux 12 (Bookworm)}. Distribución conocida por su máxima estabilidad, mínima superficie de ataque y soporte nativo de utilidades de red avanzadas.
+  \item \textbf{Servidor Web Inverso:} \textbf{Nginx 1.22+}. Actúa como puerta de enlace frontal, gestionando la terminación segura de certificados SSL/TLS, compresión estática \textit{gzip}, y canalizando peticiones HTTP ordinarias y actualización de conexiones WebSockets (\texttt{Upgrade: websocket}) hacia el proceso Node.js interno.
+  \item \textbf{Gestión de Procesos en Producción:} \textbf{Systemd}. Se configuran unidades de servicio dedicadas (\texttt{noc-backend.service}) para arranque automático con el sistema operativo, aislamiento mediante usuarios sin privilegios (\texttt{nocuser}) y rotación automática de bitácoras de consola hacia \texttt{journald}.
+  \item \textbf{Acceso Remoto para Demostraciones y Mantenimiento:} \textbf{Cloudflare Tunnel / SSH inverso}. Permite exponer de manera cifrada el panel de control durante sesiones de evaluación técnica y clases sin abrir puertos del sistema a Internet ni comprometer la seguridad institucional.
 \end{itemize}
 
 \newpage
 \chapter{Matriz de Justificación Técnica y Alternativas Descartadas}
 
-Para cumplir con los estándares de rigor técnico en la toma de decisiones de ingeniería de software, se documenta la evaluación comparativa frente a tecnologías alternativas.
+Para cumplir con los estándares de rigor técnico en la toma de decisiones de ingeniería de software, se documenta la evaluación comparativa frente a tecnologías alternativas dividida por ámbitos de diseño.
 
 \begin{table}[htbp]
 \centering
-\caption{Matriz comparativa de selección tecnológica}\label{tab:comparativa_tech}
+\caption{Matriz comparativa de arquitectura, tiempo real y desarrollo web}\label{tab:comparativa_software}
 \small
-\begin{tabularx}{\textwidth}{p{2.8cm} p{2.8cm} p{4.0cm} X}
+\begin{tabularx}{\textwidth}{p{2.6cm} p{2.8cm} p{3.8cm} X}
 \toprule
 \textbf{Capa / Componente} & \textbf{Tecnología Elegida} & \textbf{Alternativas Evaluadas} & \textbf{Criterio y Justificación de Decisión} \\
 \midrule
-\textbf{Frontend Web} & \textbf{React 18 + Vite} & Angular, Vue.js, Django Templates & React cuenta con el ecosistema de visualización de grafos más maduro (React Flow). Vite ofrece compilaciones ultrarrápidas y menor consumo de memoria que Angular o Webpack. \\
+\textbf{Patrón Arquitectural} & \textbf{Monolito Modular Dirigido por Eventos (EDA)} & Microservicios distribuidos, Monolito síncrono N-capas & Microservicios introduce sobrecarga de latencia de red entre servicios y complejidad innecesaria para un equipo de 4 personas. El monolito síncrono no puede responder en tiempo real a eventos de red. EDA modular ofrece el equilibrio óptimo entre desacoplamiento y simplicidad operativa. \\
 \midrule
-\textbf{Backend \& API} & \textbf{Node.js + Express} & Python (Django/FastAPI), Java (Spring Boot) & El modelo de I/O asíncrono no bloqueante de Node.js es superior al manejar cientos de pings y comprobaciones concurrentes de red sin levantar hilos pesados de sistema operativo. Permite compartir tipos y modelos en Javascript con el frontend. \\
+\textbf{Comunicación en Tiempo Real} & \textbf{WebSockets (Socket.io)} & HTTP Polling periódico, Server-Sent Events (SSE) & HTTP Polling satura la red con peticiones vacías cada pocos segundos y genera latencia inaceptable. SSE solo permite flujo unidireccional servidor-cliente. Socket.io ofrece transporte bidireccional, reconexión inteligente, salas de aislamiento y latencia inferior a 50 ms. \\
 \midrule
-\textbf{Base de Datos} & \textbf{MongoDB 7.0} & PostgreSQL, MySQL, SQLite & La estructura de los dispositivos de red es altamente polimórfica (un router tiene tablas de rutas; un switch tiene puertos y VLANs; una PC no). Los documentos BSON permiten modelar esta jerarquía sin tablas puente artificiales. Índices TTL automáticos nativos. \\
+\textbf{Frontend Web} & \textbf{React 18 + Vite} & Angular, Vue.js, Plantillas Server-Side (EJS/Django) & React cuenta con el ecosistema de visualización de grafos de red más maduro (@xyflow/react). Vite ofrece compilaciones ultrarrápidas y menor consumo de memoria en desarrollo que Webpack. \\
 \midrule
-\textbf{Daemon de Red} & \textbf{Node.js Daemon + arp-scan/ping} & Python Scapy, C/C++ raw sockets & `arp-scan` y `ping` son binarios del sistema altamente optimizados por el kernel de Linux. Integrarlos con Node.js proporciona equilibrio perfecto entre velocidad de ejecución en bajo nivel y facilidad de lógica de negocio. \\
+\textbf{Backend \& API} & \textbf{Node.js + Express} & Python (Django/FastAPI), Java (Spring Boot) & El modelo de I/O asíncrono no bloqueante de Node.js es superior al manejar cientos de comprobaciones concurrentes de red sin levantar hilos pesados del sistema operativo. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{Matriz comparativa de persistencia, monitoreo de red e infraestructura}\label{tab:comparativa_infra}
+\small
+\begin{tabularx}{\textwidth}{p{2.6cm} p{2.8cm} p{3.8cm} X}
+\toprule
+\textbf{Capa / Componente} & \textbf{Tecnología Elegida} & \textbf{Alternativas Evaluadas} & \textbf{Criterio y Justificación de Decisión} \\
 \midrule
-\textbf{Despliegue} & \textbf{Systemd + Nginx en Debian} & Docker Compose en VM, Kubernetes & En la máquina física del laboratorio asignada para el proyecto, la virtualización o capas de abstracción pesadas de contenedores consumen memoria RAM innecesaria. La ejecución como servicio nativo Systemd garantiza el 100\% del rendimiento del hardware. \\
+\textbf{Base de Datos} & \textbf{MongoDB 7.0} & PostgreSQL, MySQL, SQLite & La estructura de los dispositivos de red es polimórfica (un router tiene tablas de rutas; un switch puertos y VLANs; una PC no). Los documentos BSON modelan esta jerarquía sin tablas relacionales artificiales. Dispone de índices TTL nativos. \\
+\midrule
+\textbf{Daemon de Red} & \textbf{Node.js Daemon + arp-scan/ping} & Python Scapy, C/C++ raw sockets & `arp-scan` y `ping` son binarios del sistema altamente optimizados por el kernel de Linux. Integrarlos con Node.js proporciona equilibrio entre velocidad de ejecución en bajo nivel y facilidad de lógica de negocio. \\
+\midrule
+\textbf{Despliegue} & \textbf{Systemd + Nginx en Debian} & Docker Compose en VM, Kubernetes & En la máquina física del laboratorio asignada para el proyecto, capas pesadas de virtualización consumen memoria RAM innecesaria. La ejecución como servicio nativo Systemd garantiza el 100\% del rendimiento del hardware. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -313,7 +431,7 @@ Para cumplir con los estándares de rigor técnico en la toma de decisiones de i
 \newpage
 \chapter{Articulación con las Asignaturas del Semestre (PAO 5)}
 
-El stack tecnológico seleccionado no es fortuito; ha sido diseñado de manera interdisciplinaria para integrar las competencias prácticas exigidas por las asignaturas de la carrera:
+El stack tecnológico seleccionado y la arquitectura dirigida por eventos se articulan de manera interdisciplinaria para integrar las competencias prácticas exigidas por las asignaturas de la carrera:
 
 \begin{table}[htbp]
 \centering
@@ -325,18 +443,18 @@ El stack tecnológico seleccionado no es fortuito; ha sido diseñado de manera i
 \midrule
 \textbf{Infraestructura TI}\newline (Ing. Tatiana Landivar) & Servidor Debian 12, Daemon Systemd, Nginx, Gobernanza de Servidores & Despliegue de servicios en Linux, gestión de dependencias, automatización de tareas en segundo plano y políticas de seguridad perimetral del host. \\
 \midrule
-\textbf{Tecnología Web}\newline (Ing. Pedro Aguilar) & React 18, Vite, Node.js, Express, REST API, JWT dual tokens & Arquitectura cliente-servidor desacoplada, consumo reactivo de endpoints, protección de sesiones web y diseño modular en capas. \\
+\textbf{Tecnología Web}\newline (Ing. Pedro Aguilar) & React 18, Vite, Node.js, Express, WebSockets (Socket.io), Arquitectura EDA, JWT dual tokens & Arquitectura reactiva dirigida por eventos, canales WebSocket de telemetría bidireccional, protección de sesiones web y diseño modular de servicios. \\
 \midrule
 \textbf{Conmutación y Enrutamiento}\newline (Ing. Juan Pazmiño) & arp-scan, ICMP, sondeos TCP, Capa 2/3, Nodos Parent-Child & Comprensión de tramas Ethernet broadcast, direccionamiento IP, pasarelas por defecto, tablas de conmutación y correlación de fallos de red. \\
 \midrule
 \textbf{Big Data}\newline (Ing. Geovanny Silva) & MongoDB, Índices TTL, Agregación Downsampling, Métricas históricas & Procesamiento de grandes volúmenes de telemetría de red, agregación diaria de disponibilidad y retención eficiente sin desbordamiento de almacenamiento. \\
 \midrule
-\textbf{Diseño y Tecnología Multimedia}\newline (Ing. Ramiro Bonilla) & React Flow, Tailwind CSS, Lucide Icons, WCAG 2.1 AA & Visualización de grafos interactivos de topología, ergonomía visual, centro de notificaciones con accesibilidad cromática y acústica. \\
+\textbf{Diseño y Tecnología Multimedia}\newline (Ing. Ramiro Bonilla) & React Flow (@xyflow), Tailwind CSS, Lucide Icons, WCAG 2.1 AA & Visualización de grafos interactivos de topología, ergonomía visual, centro de notificaciones con accesibilidad cromática y acústica. \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
 \chapter{Conclusiones}
-La selección del stack tecnológico presentado responde a criterios de ingeniería rigurosos: rendimiento en tiempo real, mínimo consumo de recursos en hardware local, modularidad estricta y cumplimiento integral de las normas de calidad ISO/IEC 25010 y de seguridad ISO/IEC 27001. Este documento constituye la base técnica vinculante sobre la cual se desarrollará la solución durante el período académico.
+La selección del stack tecnológico y la adopción de una Arquitectura Dirigida por Eventos (EDA) responden a criterios de ingeniería rigurosos: notificación en tiempo real con latencia inferior a 50 milisegundos, mínimo consumo de recursos en hardware local, desacoplamiento absoluto entre la recolección de métricas y su visualización, y cumplimiento integral de las normas de calidad ISO/IEC 25010 y de seguridad ISO/IEC 27001. Este documento constituye la base técnica vinculante sobre la cual se desarrollará la solución durante el período académico.
 
 \end{document}

@@ -2,7 +2,7 @@
   "name": "network-infrastructure-management",
   "version": "1.0.0",
   "description": "Sistema de Monitoreo de Infraestructura de Red - ESPOCH FIE",
-  "author": "William Chisag, Karen Maje, Licet Ibarra, Alejandro Rodríguez",
+  "author": "Equipo de Desarrollo e Ingenieria de Software - ESPOCH FIE",
   "license": "ISC",
   "private": true,
   "workspaces": [
