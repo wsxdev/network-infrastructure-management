@@ -3,7 +3,10 @@ import { randomUUID } from "node:crypto";
 import { after, before, test } from "node:test";
 import mongoose from "mongoose";
 import { Device } from "../src/models/device.model.js";
-import { checkDeviceConflicts } from "../src/services/device-duplicate.service.js";
+import {
+  checkDeviceConflicts,
+  createDeviceWithDuplicateCheck,
+} from "../src/services/device-duplicate.service.js";
 
 const databaseName = `rf0303_test_${randomUUID()}`;
 
@@ -71,4 +74,30 @@ test("detecta duplicados activos y permite reutilizar direcciones dadas de baja"
     macAddress: mac,
   });
   assert.notEqual(String(replacement._id), String(original._id));
+});
+
+test("rechaza el alta duplicada y conserva el equipo original", async () => {
+  const ipAddress = "192.0.2.81";
+  const macAddress = "02:00:00:00:03:AC";
+  const original = await createDeviceWithDuplicateCheck({
+    name: "Equipo original",
+    ipAddress,
+    macAddress,
+  });
+
+  await assert.rejects(
+    createDeviceWithDuplicateCheck({ name: "IP repetida", ipAddress }),
+    (error) =>
+      error.statusCode === 409 &&
+      error.code === "DUPLICATE_IP" &&
+      String(error.conflicts.ipConflict?._id) === String(original._id),
+  );
+
+  await assert.rejects(
+    createDeviceWithDuplicateCheck({ name: "MAC repetida", macAddress }),
+    { statusCode: 409, code: "DUPLICATE_MAC", field: "mac" },
+  );
+
+  assert.equal(await Device.countDocuments({ ipAddress }), 1);
+  assert.equal((await Device.findById(original._id)).name, "Equipo original");
 });
