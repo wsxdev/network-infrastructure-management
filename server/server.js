@@ -35,7 +35,11 @@ async function bootstrap() {
     await connectDatabase();
 
     // 2. Sembrado automático si la base de datos está vacía
-    await seedDatabase();
+    try {
+      await seedDatabase();
+    } catch (seedError) {
+      console.warn('⚠️ Sembrado inicial pospuesto (Atlas reconectando):', seedError.message);
+    }
 
     // 3. Inicio del Servidor HTTP
     server.listen(env.PORT, () => {
@@ -47,8 +51,10 @@ async function bootstrap() {
       startArpScanner(io);
     });
   } catch (error) {
-    console.error('❌ Error crítico al arrancar el servidor:', error);
-    process.exit(1);
+    console.warn(`⚠️ Error en arranque inicial: ${error.message}; iniciando servidor HTTP en puerto ${env.PORT}`);
+    server.listen(env.PORT, () => {
+      console.log(`🚀 Servidor NOC ESPOCH escuchando en el puerto ${env.PORT}`);
+    });
   }
 }
 

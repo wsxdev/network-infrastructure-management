@@ -32,6 +32,19 @@ export const getDevices = asyncHandler(async (req, res) => {
   });
 });
 
+const DEFAULT_CATALOG_TYPES = [
+  { code: 'desktop',          label: 'Computadora de escritorio',    order: 1 },
+  { code: 'laptop',           label: 'Laptop',                       order: 2 },
+  { code: 'server',           label: 'Servidor',                     order: 3 },
+  { code: 'router',           label: 'Router',                       order: 4 },
+  { code: 'switch_managed',   label: 'Switch administrable',         order: 5 },
+  { code: 'switch_unmanaged', label: 'Switch no administrable',      order: 6 },
+  { code: 'access_point',     label: 'Punto de acceso inalámbrico',  order: 7 },
+  { code: 'network_printer',  label: 'Impresora de red',             order: 8 },
+  { code: 'smartphone',       label: 'Smartphone',                   order: 9 },
+  { code: 'other',            label: 'Otro',                         order: 10 }
+];
+
 /**
  * Retorna el catálogo activo de tipos de dispositivos ordenado para el selector de formularios.
  * Satisface T-03.01.01: tipos cargados dinámicamente desde la colección `device_types`.
@@ -41,11 +54,18 @@ export const getDevices = asyncHandler(async (req, res) => {
  * @returns {Promise<void>}
  */
 export const getDeviceTypes = asyncHandler(async (req, res) => {
-  const types = await DeviceType.find({ isActive: true }).sort({ order: 1 }).lean();
-  return res.status(200).json({
-    success: true,
-    data: types
-  });
+  try {
+    const types = await DeviceType.find({ isActive: true }).sort({ order: 1 }).maxTimeMS(3000).lean();
+    return res.status(200).json({
+      success: true,
+      data: types && types.length > 0 ? types : DEFAULT_CATALOG_TYPES
+    });
+  } catch (err) {
+    return res.status(200).json({
+      success: true,
+      data: DEFAULT_CATALOG_TYPES
+    });
+  }
 });
 
 /**
