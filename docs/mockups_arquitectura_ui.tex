@@ -1,0 +1,1535 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-nodecimaldot,es-tabla,es-noquoting]{babel}
+
+% Graficos y diagramas TikZ
+\usepackage{graphicx}
+\graphicspath{{img/}{../img/}{../../img/}}
+\usepackage{pdflscape}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric,shapes.misc,arrows.meta,positioning,calc,fit,backgrounds,shadows.blur}
+
+% Tipografia Times New Roman estandar en 12pt
+\usepackage{newtxtext,newtxmath}
+
+% Margenes estandar normalizados (3cm izq, 2.5cm der/sup/inf)
+\usepackage{geometry}
+\geometry{
+  top=2.5cm,
+  bottom=2.5cm,
+  left=3.0cm,
+  right=2.5cm,
+  headheight=15pt,
+  headsep=20pt,
+  footskip=25pt
+}
+
+% Espaciado e interlineado
+\usepackage{setspace}
+\setstretch{1.15}
+\setlength{\parskip}{6pt}
+\setlength{\parindent}{0pt}
+
+% Vinetas redondas formales
+\usepackage{enumitem}
+\setlist[itemize,1]{label=\textbullet, leftmargin=1.5em, itemsep=2pt, parsep=0pt}
+\setlist[itemize,2]{label=\normalfont\bfseries\textperiodcentered, leftmargin=1.5em, itemsep=2pt, parsep=0pt}
+\setlist[enumerate]{leftmargin=1.5em, itemsep=2pt, parsep=0pt}
+
+% Colores formales de diseno y arquitectura UI
+\usepackage{xcolor}
+\definecolor{espochBlue}{RGB}{0,51,102}
+\definecolor{espochRed}{RGB}{192,0,0}
+\definecolor{techGray}{RGB}{245,247,250}
+\definecolor{borderGray}{RGB}{209,213,219}
+\definecolor{mineralPrimary}{RGB}{57,86,73}
+\definecolor{greenOk}{RGB}{34,139,34}
+
+% Tablas profesionales segun estandares ISO/APA
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{caption}
+\captionsetup[table]{position=top,skip=6pt,font={small,bf},labelfont=bf}
+\captionsetup[figure]{position=bottom,skip=6pt,font={small,bf},labelfont=bf}
+
+% Encabezados y pies de pagina formales
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\nouppercase{\leftmark}}
+\fancyhead[R]{\small ESPOCH - Especificación de Mockups UI/UX}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% Formato de titulos
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+  {\normalfont\Large\bfseries}{\chaptertitlename\ \thechapter}{10pt}{\huge\bfseries}
+\titlespacing*{\chapter}{0pt}{-10pt}{15pt}
+
+\titleformat{\section}
+  {\normalfont\large\bfseries}{\thesection}{1em}{}
+\titlespacing*{\section}{0pt}{12pt}{4pt}
+
+\titleformat{\subsection}
+  {\normalfont\normalsize\bfseries}{\thesubsection}{1em}{}
+\titlespacing*{\subsection}{0pt}{10pt}{3pt}
+
+% Enlaces sin color pero navegables
+\usepackage{hyperref}
+\hypersetup{
+  hidelinks=true,
+  pdfauthor={Equipo de Diseno y Desarrollo de Software - ESPOCH FIE},
+  pdftitle={Especificacion Completa de Mockups y Wireframes - Plataforma NOC},
+  pdfsubject={Diseno de Interfaces y Experiencia de Usuario - PAO 5}
+}
+
+% Estilos TikZ para Wireframes
+\tikzset{
+  browser/.style={draw=black!75, thick, rounded corners=3pt, fill=white},
+  header/.style={draw=black!50, fill=black!6, thin},
+  sidebar/.style={draw=black!50, fill=black!4, thin},
+  card/.style={draw=black!45, rounded corners=2pt, fill=white},
+  btn/.style={draw=black!60, fill=black!12, rounded corners=1pt, font=\tiny\bfseries\sffamily},
+  btnPrimary/.style={draw=mineralPrimary, fill=mineralPrimary!20, rounded corners=1pt, font=\tiny\bfseries\sffamily},
+  badge/.style={draw=black!40, rounded corners=2pt, fill=black!8, font=\tiny\sffamily},
+  badgeGreen/.style={draw=greenOk!60, rounded corners=2pt, fill=greenOk!15, font=\tiny\bfseries\sffamily, text=greenOk!80!black},
+  badgeRed/.style={draw=espochRed!60, rounded corners=2pt, fill=espochRed!15, font=\tiny\bfseries\sffamily, text=espochRed!80!black},
+  txt/.style={font=\tiny\sffamily, align=left},
+  input/.style={draw=black!45, rounded corners=1pt, fill=white, font=\tiny\ttfamily, minimum height=0.5cm}
+}
+
+\begin{document}
+
+% ============================================================
+% PORTADA
+% ============================================================
+\begin{titlepage}
+  \centering
+  \thispagestyle{empty}
+  \vspace*{0.3cm}
+
+  \includegraphics[width=3.2cm]{LogoESPOCH.png}\\[0.4cm]
+
+  {\normalsize\bfseries ESCUELA SUPERIOR POLITÉCNICA DE CHIMBORAZO}\\[0.15cm]
+  {\small\bfseries FACULTAD DE INFORMÁTICA Y ELECTRÓNICA}\\[0.1cm]
+  {\small\bfseries CARRERA DE TECNOLOGÍAS DE LA INFORMACIÓN}\\[1.0cm]
+
+  {\large\bfseries SISTEMA WEB DE MONITOREO Y GESTIÓN\\[0.15cm]
+  DE LA INFRAESTRUCTURA DE REDES - ESPOCH}\\[0.7cm]
+
+  {\normalsize\bfseries ESPECIFICACIÓN INTEGRAL DE MOCKUPS, WIREFRAMES\\[0.15cm]
+  Y ARQUITECTURA VISUAL DE PANTALLAS (UI/UX)}\\[0.2cm]
+  {\small Catálogo Estructural Pantalla a Pantalla del Sistema Web del Centro de Operaciones de Red (NOC)}\\[1.0cm]
+
+  \begin{minipage}[t]{0.45\textwidth}
+    {\small\textbf{Roles de Ingeniería:}}\\[0.25cm]
+    \begin{itemize}[leftmargin=1.2em,itemsep=2pt,parsep=0pt]
+      \small
+      \item Líder Técnico y Arquitecto Backend
+      \item Desarrollador Frontend y Diseñador UI/UX
+      \item Especialista en Bases de Datos y QA Lead
+      \item Ingeniero DevOps y Redes
+    \end{itemize}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.50\textwidth}
+    {\small\textbf{Docentes Responsables:}}\\[0.25cm]
+    \begin{itemize}[leftmargin=1.2em,itemsep=2pt,parsep=0pt]
+      \small
+      \item Diseño y Multimedia: Ing. Ramiro Bonilla
+      \item Tecnología Web: Ing. Pedro Aguilar
+      \item Infraestructura TI: Ing. Tatiana Landivar
+      \item Conmutación y Enrut.: Ing. Juan Pazmiño
+      \item Big Data: Ing. Geovanny Silva
+    \end{itemize}
+  \end{minipage}
+
+  \vfill
+
+  {\small\textbf{Período Académico:} Quinto Semestre (PAO 5)}\\[0.05cm]
+  {\small\textbf{Documento de Diseño Visual y Experiencia de Usuario (Versión 1.0)}}\\[0.6cm]
+
+  {\small Orellana - Ecuador}\\[0.15cm]
+  {\small Noviembre de 2026}
+\end{titlepage}
+
+% ============================================================
+% INDICES
+% ============================================================
+\tableofcontents
+\newpage
+\listoffigures
+\newpage
+\listoftables
+\newpage
+
+% ============================================================
+% CAPÍTULO 1: ARQUITECTURA DE INFORMACIÓN Y NAVEGACIÓN
+% ============================================================
+\chapter{Arquitectura de Información y Principios de Diseño}
+
+\section{Propósito del Catálogo de Wireframes}
+
+El presente documento recopila la especificación visual y estructural exhaustiva de cada pantalla que integra la plataforma web de monitoreo y gestión de red del laboratorio informático. Los diagramas se presentan bajo la metodología de \textbf{wireframes estructurales de media fidelidad}: planos técnicos limpios basados en cajas delimitadoras, componentes modulares, zonas funcionales y rutas de navegación claras, sin saturación cromática decorativa, garantizando que el equipo de desarrollo comprenda con exactitud la disposición de cada elemento antes de su maquetación final.
+
+\section{Principios de Diseño y Sistema de Retícula}
+
+El diseño de las interfaces se fundamenta en los siguientes estándares técnicos:
+\begin{itemize}
+  \item \textbf{Sistema de 8 puntos (8-pt Grid):} Todos los márgenes, paddings y alturas de componentes son múltiplos de 8px (o 4px para microespaciados), asegurando armonía geométrica.
+  \item \textbf{Layout Shell Unificado (Dashboard Shell):} Todas las vistas autenticadas comparten un encabezado superior fijo (Header) de 64px de altura y una barra lateral de navegación (Sidebar) de 240px de ancho, maximizando el área útil de trabajo central.
+  \item \textbf{Visibilidad Inmediata del Estado de Telemetría:} Cada pantalla proyecta el indicador de estado de conexión WebSocket con latencia en tiempo real y la hora exacta de la última sincronización.
+  \item \textbf{Accesibilidad WCAG 2.1 AA:} Contraste de texto elevado, etiquetas explícitas en todos los campos de formularios y soporte para navegación completa mediante teclado.
+\end{itemize}
+
+\section{Mapa de Navegación del Sistema (Sitemap)}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  scale=0.84, every node/.style={transform shape},
+  root/.style={rectangle, draw=espochBlue, very thick, fill=espochBlue!10, rounded corners=3pt, minimum height=0.9cm, text width=3.4cm, align=center, font=\small\bfseries},
+  nodeL1/.style={rectangle, draw=black!70, thick, fill=techGray, rounded corners=2pt, minimum height=0.8cm, text width=2.8cm, align=center, font=\scriptsize\bfseries},
+  nodeL2/.style={rectangle, draw=black!50, fill=white, rounded corners=2pt, minimum height=0.6cm, text width=2.6cm, align=center, font=\tiny},
+  arrow/.style={-{Stealth[scale=0.8]}, thick, black!60}
+]
+
+  % Nivel 0: Acceso
+  \node[root] (auth) at (0,6) {Portal de Acceso\newline\tiny (Login / Recovery)};
+
+  % Nivel 1: Dashboard Shell
+  \node[root, fill=mineralPrimary!15, draw=mineralPrimary] (shell) at (7,6) {NOC Shell\newline\tiny (Layout Autenticado)};
+
+  % Nivel 2: Modulos
+  \node[nodeL1] (m1) at (2.5,3.6) {Dashboard NOC};
+  \node[nodeL1] (m2) at (5.5,3.6) {Inventario};
+  \node[nodeL1] (m3) at (8.5,3.6) {Topología};
+  \node[nodeL1] (m4) at (11.5,3.6) {Alertas/Tickets};
+  \node[nodeL1] (m5) at (2.5,1.2) {Bitácora Logs};
+  \node[nodeL1] (m6) at (5.5,1.2) {Descubrimiento};
+  \node[nodeL1] (m7) at (8.5,1.2) {Analítica SLAs};
+  \node[nodeL1] (m8) at (11.5,1.2) {Administración};
+
+  % Nivel 3: Subvistas
+  \node[nodeL2] (sub_inv1) at (5.5,2.4) {Modal Registro / Detalle};
+  \node[nodeL2] (sub_adm1) at (11.5,0.0) {Usuarios y Configuración};
+
+  % Conexiones
+  \draw[arrow] (auth) -- node[above, font=\tiny] {JWT OK} (shell);
+  \draw[arrow] (shell.south) -- (m1.north);
+  \draw[arrow] (shell.south) -- (m2.north);
+  \draw[arrow] (shell.south) -- (m3.north);
+  \draw[arrow] (shell.south) -- (m4.north);
+  \draw[arrow] (shell.south) -- (m5.north);
+  \draw[arrow] (shell.south) -- (m6.north);
+  \draw[arrow] (shell.south) -- (m7.north);
+  \draw[arrow] (shell.south) -- (m8.north);
+
+  \draw[arrow, dashed] (m2.south) -- (sub_inv1.north);
+  \draw[arrow, dashed] (m8.south) -- (sub_adm1.north);
+
+\end{tikzpicture}
+\caption{Mapa de navegación y arquitectura de información del sitio web}\label{fig:sitemap}
+\end{figure}
+
+% ============================================================
+% CAPÍTULO 2: MÓDULO DE AUTENTICACIÓN Y ACCESO
+% ============================================================
+\newpage
+\chapter{Módulo de Autenticación y Control de Acceso}
+
+\section{Pantalla de Inicio de Sesión (Login)}
+
+\textbf{Objetivo y Reglas de Negocio (RF-01.01, RF-01.07):} Permitir el ingreso seguro al sistema mediante correo electrónico y contraseña. Tras 3 intentos fallidos consecutivos, el sistema bloquea temporalmente los intentos durante 3 minutos y muestra un aviso restrictivo con contador decreciente.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  scale=0.88, every node/.style={transform shape}
+]
+  % Ventana de navegador
+  \draw[browser] (0,0) rectangle (15.5,10.5);
+  % Barra navegador
+  \fill[black!12, rounded corners=3pt] (0,9.9) rectangle (15.5,10.5);
+  \fill[black!40] (0.4,10.2) circle (2.5pt);
+  \fill[black!40] (0.8,10.2) circle (2.5pt);
+  \fill[black!40] (1.2,10.2) circle (2.5pt);
+  \draw[draw=black!30, fill=white, rounded corners=2pt] (2.0,10.0) rectangle (13.5,10.4);
+  \node[font=\tiny\ttfamily, text=black!70] at (7.7,10.2) {https://noc.espoch.edu.ec/login};
+
+  % Fondo suave y Card central
+  \fill[black!3] (0,0) rectangle (15.5,9.9);
+  \draw[card, fill=white, thick] (4.5,1.2) rectangle (11.0,8.8);
+
+  % Contenido de la Card
+  \draw[draw=black!30, rounded corners=3pt, fill=black!5] (7.1,7.7) rectangle (8.4,8.4);
+  \node[font=\tiny\bfseries\sffamily] at (7.75,8.05) {NOC};
+  \node[font=\small\bfseries\sffamily] at (7.75,7.3) {Iniciar Sesión};
+  \node[font=\tiny\sffamily, text=black!60] at (7.75,6.9) {Centro de Monitoreo de Red - ESPOCH};
+
+  % Alerta de bloqueo o error (mockup de aviso)
+  \draw[draw=espochRed!60, fill=espochRed!10, rounded corners=2pt] (4.9,5.9) rectangle (10.6,6.6);
+  \node[font=\tiny\sffamily, text=espochRed!80!black, align=center] at (7.75,6.25) {Aviso: 3 intentos fallidos provocan bloqueo por 3 min.\newline Ingrese credenciales autorizadas.};
+
+  % Campo Email
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (4.9,5.5) {Correo Electrónico};
+  \draw[input] (4.9,4.9) rectangle (10.6,5.4);
+  \node[font=\tiny\ttfamily, text=black!50, anchor=west] at (5.1,5.15) {operador@espoch.edu.ec};
+
+  % Campo Password
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (4.9,4.5) {Contraseña};
+  \draw[input] (4.9,3.9) rectangle (10.6,4.4);
+  \node[font=\tiny\ttfamily, text=black!50, anchor=west] at (5.1,4.15) {$\bullet\bullet\bullet\bullet\bullet\bullet\bullet\bullet\bullet\bullet$};
+
+  % Opciones extra
+  \draw[draw=black!40, rounded corners=1pt] (4.9,3.4) rectangle (5.2,3.7);
+  \node[font=\tiny\sffamily, anchor=west] at (5.3,3.55) {Recordar sesión};
+  \node[font=\tiny\sffamily, text=mineralPrimary, anchor=east] at (10.6,3.55) {¿Olvidó contraseña?};
+
+  % Boton Submit
+  \draw[btnPrimary, fill=mineralPrimary!80, text=white] (4.9,2.4) rectangle (10.6,3.1);
+  \node[font=\tiny\bfseries\sffamily, text=white] at (7.75,2.75) {ACCEDER A LA CONSOLA};
+
+  % Footer card
+  \node[font=\tiny\sffamily, text=black!40, align=center] at (7.75,1.7) {Acceso restringido para personal técnico y docente.\newline ESPOCH FIE - Orellana};
+
+\end{tikzpicture}
+\caption{Wireframe 01: Pantalla de inicio de sesión con alertas de seguridad}\label{fig:wf_login}
+\end{figure}
+
+\newpage
+\section{Pantallas de Recuperación y Primer Acceso}
+
+\textbf{Objetivo (RF-01.03, RF-01.04, RF-01.06):} Permitir restablecer la contraseña vía token de un solo uso o forzar el cambio inmediato al ingresar por primera vez con credenciales temporales generadas por el administrador.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  scale=0.88, every node/.style={transform shape}
+]
+  % Ventana de navegador
+  \draw[browser] (0,0) rectangle (15.5,10.5);
+  % Barra navegador
+  \fill[black!12, rounded corners=3pt] (0,9.9) rectangle (15.5,10.5);
+  \fill[black!40] (0.4,10.2) circle (2.5pt);
+  \fill[black!40] (0.8,10.2) circle (2.5pt);
+  \fill[black!40] (1.2,10.2) circle (2.5pt);
+  \draw[draw=black!30, fill=white, rounded corners=2pt] (2.0,10.0) rectangle (13.5,10.4);
+  \node[font=\tiny\ttfamily, text=black!70] at (7.7,10.2) {https://noc.espoch.edu.ec/primer-acceso};
+
+  \fill[black!3] (0,0) rectangle (15.5,9.9);
+
+  % Panel Izquierdo: Solicitud Recuperacion
+  \draw[card, fill=white] (1.0,1.2) rectangle (7.5,8.8);
+  \node[font=\small\bfseries\sffamily] at (4.25,8.1) {Recuperar Acceso};
+  \node[font=\tiny\sffamily, text=black!60, align=center] at (4.25,7.5) {Se despachará un token criptográfico\newline válido por 15 minutos al correo corporativo.};
+
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (1.5,6.5) {Correo Electrónico};
+  \draw[input] (1.5,5.9) rectangle (7.0,6.4);
+  \node[font=\tiny\ttfamily, text=black!50, anchor=west] at (1.7,6.15) {usuario@espoch.edu.ec};
+
+  \draw[btnPrimary, fill=mineralPrimary!80, text=white] (1.5,4.7) rectangle (7.0,5.4);
+  \node[font=\tiny\bfseries\sffamily, text=white] at (4.25,5.05) {ENVIAR ENLACE DE RECUPERACIÓN};
+
+  \draw[card, fill=black!5] (1.5,2.6) rectangle (7.0,4.2);
+  \node[font=\tiny\sffamily, text=black!70, align=left] at (4.25,3.4) {\textbf{Nota de Seguridad:}\newline Por directriz de confidencialidad,\newline el sistema no notificará si la cuenta\newline existe o no en el directorio.};
+
+  \node[font=\tiny\sffamily, text=mineralPrimary] at (4.25,1.9) {$\leftarrow$ Volver al inicio de sesión};
+
+  % Panel Derecho: Primer Acceso / Cambio Obligatorio
+  \draw[card, fill=white] (8.0,1.2) rectangle (14.5,8.8);
+  \node[font=\small\bfseries\sffamily] at (11.25,8.1) {Establecer Nueva Contraseña};
+  \node[font=\tiny\sffamily, text=black!60, align=center] at (11.25,7.5) {Primer acceso detectado con clave temporal.\newline Se exige cambio para desbloquear la consola.};
+
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (8.5,6.8) {Contraseña Temporal Actual};
+  \draw[input] (8.5,6.2) rectangle (14.0,6.7);
+  \node[font=\tiny\ttfamily, text=black!50, anchor=west] at (8.7,6.45) {$\bullet\bullet\bullet\bullet\bullet\bullet\bullet\bullet$};
+
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (8.5,5.7) {Nueva Contraseña Definitiva};
+  \draw[input] (8.5,5.1) rectangle (14.0,5.6);
+  \node[font=\tiny\ttfamily, text=black!50, anchor=west] at (8.7,5.35) {$\bullet\bullet\bullet\bullet\bullet\bullet\bullet\bullet\bullet\bullet\bullet\bullet$};
+
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (8.5,4.6) {Confirmar Nueva Contraseña};
+  \draw[input] (8.5,4.0) rectangle (14.0,4.5);
+  \node[font=\tiny\ttfamily, text=black!50, anchor=west] at (8.7,4.25) {$\bullet\bullet\bullet\bullet\bullet\bullet\bullet\bullet\bullet\bullet\bullet\bullet$};
+
+  % Requisitos
+  \node[font=\tiny\sffamily, text=black!60, align=left] at (11.25,3.2) {\textbf{Requisitos mínimos:}\newline $\bullet$ Mínimo 8 caracteres\quad $\bullet$ Mayúsculas y dígitos\newline $\bullet$ Carácter especial obligatorio};
+
+  \draw[btnPrimary, fill=mineralPrimary!80, text=white] (8.5,1.9) rectangle (14.0,2.6);
+  \node[font=\tiny\bfseries\sffamily, text=white] at (11.25,2.25) {GUARDAR Y ENTRAR AL NOC};
+
+\end{tikzpicture}
+\caption{Wireframe 02: Recuperación de credenciales y cambio forzado de clave}\label{fig:wf_recovery}
+\end{figure}
+
+% ============================================================
+% CAPÍTULO 3: CONSOLA PRINCIPAL DE OPERACIONES (DASHBOARD)
+% ============================================================
+\newpage
+\chapter{Consola del Centro de Operaciones (Dashboard NOC)}
+
+\section{Panel de Supervisión General en Tiempo Real}
+
+\textbf{Objetivo (RF-08, RNF-01, RNF-02):} Ofrecer una panorámica unificada del estado operativo de la infraestructura de red. Agrupa tarjetas métricas globales, una gráfica esquemática de latencia en vivo y un panel de incidentes críticos recibidos mediante WebSocket.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  scale=0.88, every node/.style={transform shape}
+]
+  % Ventana de navegador
+  \draw[browser] (0,0) rectangle (15.5,10.5);
+  \fill[black!12, rounded corners=3pt] (0,9.9) rectangle (15.5,10.5);
+  \fill[black!40] (0.4,10.2) circle (2.5pt);
+  \fill[black!40] (0.8,10.2) circle (2.5pt);
+  \fill[black!40] (1.2,10.2) circle (2.5pt);
+  \draw[draw=black!30, fill=white, rounded corners=2pt] (2.0,10.0) rectangle (13.5,10.4);
+  \node[font=\tiny\ttfamily, text=black!70] at (7.7,10.2) {https://noc.espoch.edu.ec/dashboard};
+
+  % Header aplicacion
+  \draw[header] (0,9.1) rectangle (15.5,9.9);
+  \node[font=\footnotesize\bfseries\sffamily] at (1.5,9.5) {ESPOCH NOC};
+  \node[badgeGreen] at (8.0,9.5) {WS: Activo (14 ms)};
+  \node[badge] at (10.8,9.5) {Últ. Sondeo: hace 6s};
+  \node[badgeRed] at (12.8,9.5) {Alertas (2)};
+  \node[btn] at (14.5,9.5) {Admin $\triangledown$};
+
+  % Sidebar navegacion
+  \draw[sidebar] (0,0) rectangle (3.2,9.1);
+  \node[font=\tiny\bfseries\sffamily, text=black!60] at (1.6,8.7) {MENÚ PRINCIPAL};
+  \node[card, fill=mineralPrimary!20, text width=2.8cm, align=left] at (1.6,8.1) {\tiny\textbf{ Dashboard General}};
+  \node[card, text width=2.8cm, align=left] at (1.6,7.4) {\tiny Dispositivos (Inventario)};
+  \node[card, text width=2.8cm, align=left] at (1.6,6.7) {\tiny Topología de Red};
+  \node[card, text width=2.8cm, align=left] at (1.6,6.0) {\tiny Alertas e Incidencias};
+  \node[card, text width=2.8cm, align=left] at (1.6,5.3) {\tiny Eventos y Auditoría};
+  \node[card, text width=2.8cm, align=left] at (1.6,4.6) {\tiny Descubrimiento (Scans)};
+  \node[card, text width=2.8cm, align=left] at (1.6,3.9) {\tiny Analítica de SLAs};
+  \node[card, text width=2.8cm, align=left] at (1.6,3.2) {\tiny Gestión de Usuarios};
+  \node[card, text width=2.8cm, align=left] at (1.6,2.5) {\tiny Configuración};
+
+  \node[card, fill=black!6, text width=2.8cm, align=left] at (1.6,1.0) {\tiny\textbf{Segmento Activo:}\newline 192.168.50.0/24\newline Gateway: .1};
+
+  % Area Principal
+  % Fila 1: Tarjetas KPI
+  \draw[card] (3.5,7.6) rectangle (6.2,8.9);
+  \node[txt] at (4.85,8.5) {\textbf{Total Hosts Registrados}};
+  \node[font=\normalsize\bfseries\sffamily] at (4.85,8.0) {32};
+  \node[font=\tiny\sffamily, text=black!50] at (4.85,7.7) {Capacidad: 254 IPs};
+
+  \draw[card] (6.5,7.6) rectangle (9.2,8.9);
+  \node[txt] at (7.85,8.5) {\textbf{Disponibles (Online)}};
+  \node[font=\normalsize\bfseries\sffamily, text=greenOk] at (7.85,8.0) {28};
+  \node[badgeGreen] at (7.85,7.7) {87.5\% Uptime};
+
+  \draw[card] (9.5,7.6) rectangle (12.2,8.9);
+  \node[txt] at (10.85,8.5) {\textbf{No Disponibles (Down)}};
+  \node[font=\normalsize\bfseries\sffamily, text=espochRed] at (10.85,8.0) {2};
+  \node[badgeRed] at (10.85,7.7) {3 fallos ICMP};
+
+  \draw[card] (12.5,7.6) rectangle (15.2,8.9);
+  \node[txt] at (13.85,8.5) {\textbf{Inaccesibles / Pend.}};
+  \node[font=\normalsize\bfseries\sffamily, text=black!70] at (13.85,8.0) {2};
+  \node[badge] at (13.85,7.7) {Por falla padre};
+
+  % Fila 2: Grafica Esquematica de Latencia y RTT
+  \draw[card] (3.5,4.3) rectangle (15.2,7.3);
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (3.8,7.0) {Telemetría en Vivo: Latencia Promedio LAN (ms) e Histórico de RTT};
+  \node[badge] at (14.2,7.0) {Intervalo: 30s};
+  \draw[draw=black!20, step=0.5] (3.8,4.6) grid (14.9,6.6);
+  % Trazo simulado
+  \draw[very thick, draw=mineralPrimary] (3.8,5.1) -- (5.2,5.3) -- (6.5,4.9) -- (7.8,5.0) -- (9.0,6.2) -- (10.5,5.2) -- (12.0,5.1) -- (13.5,5.4) -- (14.9,5.0);
+  \node[font=\tiny\sffamily, text=mineralPrimary, anchor=west] at (9.1,6.3) {Pico 42ms (ARP Scan)};
+
+  % Fila 3: Feed de Alertas Criticas en Vivo
+  \draw[card] (3.5,0.3) rectangle (15.2,4.0);
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (3.8,3.7) {Feed de Alertas e Incidentes en Vivo (Push WebSocket)};
+  
+  % Tabla cabecera
+  \draw[draw=black!40, fill=black!10] (3.7,3.0) rectangle (15.0,3.4);
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (3.9,3.2) {Dispositivo};
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (6.8,3.2) {Dirección IP};
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (9.2,3.2) {Severidad / Causa};
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (12.3,3.2) {Acción Inmediata};
+
+  % Filas de tabla
+  \draw[draw=black!25] (3.7,2.3) rectangle (15.0,2.9);
+  \node[font=\tiny\sffamily, anchor=west] at (3.9,2.6) {Switch-Piso-02};
+  \node[font=\tiny\ttfamily, anchor=west] at (6.8,2.6) {192.168.50.3};
+  \node[badgeRed, anchor=west] at (9.2,2.6) {CRÍTICA: 3 fallos ICMP (Sin eco)};
+  \node[btnPrimary] at (13.7,2.6) {Crear Ticket};
+
+  \draw[draw=black!25] (3.7,1.6) rectangle (15.0,2.2);
+  \node[font=\tiny\sffamily, anchor=west] at (3.9,1.9) {PC-Lab-22};
+  \node[font=\tiny\ttfamily, anchor=west] at (6.8,1.9) {192.168.50.114};
+  \node[badge, anchor=west] at (9.2,1.9) {MEDIA: Inaccesible (Padre Down)};
+  \node[btn] at (13.7,1.9) {Ver Árbol};
+
+  \draw[draw=black!25] (3.7,0.9) rectangle (15.0,1.5);
+  \node[font=\tiny\sffamily, anchor=west] at (3.9,1.2) {AP-Docencia};
+  \node[font=\tiny\ttfamily, anchor=west] at (6.8,1.2) {192.168.50.20};
+  \node[badgeGreen, anchor=west] at (9.2,1.2) {INFO: Host recuperado (2 ecos OK)};
+  \node[btn] at (13.7,1.2) {Descartar};
+
+\end{tikzpicture}
+\caption{Wireframe 03: Consola NOC con KPIs globales, latencia y eventos en vivo}\label{fig:wf_dashboard}
+\end{figure}
+
+% ============================================================
+% CAPÍTULO 4: INVENTARIO DE DISPOSITIVOS
+% ============================================================
+\newpage
+\chapter{Gestión del Inventario de Dispositivos}
+
+\section{Listado, Búsqueda Avanzada y Filtrado Dinámico}
+
+\textbf{Objetivo (RF-03, RF-09):} Proporcionar la vista tabular exhaustiva del parque de dispositivos. Integra filtros combinados en tiempo real por estado, tipo, rango de red y origen (manual o automático), con capacidades de exportación y alta rápida.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  scale=0.88, every node/.style={transform shape}
+]
+  \draw[browser] (0,0) rectangle (15.5,10.5);
+  \fill[black!12, rounded corners=3pt] (0,9.9) rectangle (15.5,10.5);
+  \fill[black!40] (0.4,10.2) circle (2.5pt);
+  \fill[black!40] (0.8,10.2) circle (2.5pt);
+  \fill[black!40] (1.2,10.2) circle (2.5pt);
+  \draw[draw=black!30, fill=white, rounded corners=2pt] (2.0,10.0) rectangle (13.5,10.4);
+  \node[font=\tiny\ttfamily, text=black!70] at (7.7,10.2) {https://noc.espoch.edu.ec/dispositivos};
+
+  % Header
+  \draw[header] (0,9.1) rectangle (15.5,9.9);
+  \node[font=\footnotesize\bfseries\sffamily] at (1.5,9.5) {ESPOCH NOC};
+  \node[badgeGreen] at (11.5,9.5) {WS: Conectado};
+  \node[btn] at (14.2,9.5) {Admin $\triangledown$};
+
+  % Sidebar
+  \draw[sidebar] (0,0) rectangle (3.2,9.1);
+  \node[card, text width=2.8cm, align=left] at (1.6,8.1) {\tiny Dashboard General};
+  \node[card, fill=mineralPrimary!20, text width=2.8cm, align=left] at (1.6,7.4) {\tiny\textbf{ Dispositivos (Inventario)}};
+  \node[card, text width=2.8cm, align=left] at (1.6,6.7) {\tiny Topología de Red};
+  \node[card, text width=2.8cm, align=left] at (1.6,6.0) {\tiny Alertas e Incidencias};
+  \node[card, text width=2.8cm, align=left] at (1.6,5.3) {\tiny Eventos y Auditoría};
+  \node[card, text width=2.8cm, align=left] at (1.6,4.6) {\tiny Descubrimiento (Scans)};
+  \node[card, text width=2.8cm, align=left] at (1.6,3.9) {\tiny Analítica de SLAs};
+  \node[card, text width=2.8cm, align=left] at (1.6,3.2) {\tiny Gestión de Usuarios};
+  \node[card, text width=2.8cm, align=left] at (1.6,2.5) {\tiny Configuración};
+
+  % Area Principal
+  \node[font=\small\bfseries\sffamily, anchor=west] at (3.5,8.6) {Inventario Central de Dispositivos de Red};
+  \node[btnPrimary, anchor=east] at (15.2,8.6) {+ NUEVO DISPOSITIVO};
+  \node[btn, anchor=east] at (12.3,8.6) {Escanear Ahora};
+
+  % Barra de Filtros
+  \draw[card, fill=black!4] (3.5,7.4) rectangle (15.2,8.2);
+  \draw[input] (3.7,7.6) rectangle (7.5,8.0);
+  \node[font=\tiny\sffamily, text=black!50, anchor=west] at (3.9,7.8) {Buscar por IP, MAC, nombre...};
+
+  \draw[input] (7.7,7.6) rectangle (9.8,8.0);
+  \node[font=\tiny\sffamily, anchor=west] at (7.8,7.8) {Estado: Todos $\triangledown$};
+
+  \draw[input] (10.0,7.6) rectangle (12.2,8.0);
+  \node[font=\tiny\sffamily, anchor=west] at (10.1,7.8) {Tipo: Todos $\triangledown$};
+
+  \draw[input] (12.4,7.6) rectangle (14.2,8.0);
+  \node[font=\tiny\sffamily, anchor=west] at (12.5,7.8) {Origen: Todos $\triangledown$};
+
+  \node[btn] at (14.7,7.8) {Exportar};
+
+  % Tabla
+  \draw[card] (3.5,1.2) rectangle (15.2,7.2);
+  \draw[draw=black!40, fill=black!10] (3.5,6.6) rectangle (15.2,7.2);
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (3.7,6.9) {Estado};
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (5.2,6.9) {Nombre / Host};
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (7.8,6.9) {Dirección IP};
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (9.6,6.9) {Dirección MAC};
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (11.7,6.9) {Tipo};
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (13.6,6.9) {Acciones};
+
+  % Fila 1
+  \draw[draw=black!20] (3.5,5.7) rectangle (15.2,6.6);
+  \node[badgeGreen, anchor=west] at (3.7,6.15) {ONLINE};
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (5.2,6.25) {Router-Cisco-Gateway};
+  \node[font=\tiny\sffamily, text=black!50, anchor=west] at (5.2,5.95) {Cisco RV340};
+  \node[font=\tiny\ttfamily, anchor=west] at (7.8,6.15) {192.168.50.1};
+  \node[font=\tiny\ttfamily, text=black!60, anchor=west] at (9.6,6.15) {A4:B2:39:10:E1:01};
+  \node[font=\tiny\sffamily, anchor=west] at (11.7,6.15) {Router};
+  \node[btn] at (14.2,6.15) {Ver Ficha $\rightarrow$};
+
+  % Fila 2
+  \draw[draw=black!20] (3.5,4.8) rectangle (15.2,5.7);
+  \node[badgeGreen, anchor=west] at (3.7,5.25) {ONLINE};
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (5.2,5.35) {Servidor-Debian-NOC};
+  \node[font=\tiny\sffamily, text=black!50, anchor=west] at (5.2,5.05) {Dell OptiPlex Core i5};
+  \node[font=\tiny\ttfamily, anchor=west] at (7.8,5.25) {192.168.50.10};
+  \node[font=\tiny\ttfamily, text=black!60, anchor=west] at (9.6,5.25) {F0:DE:F1:44:89:12};
+  \node[font=\tiny\sffamily, anchor=west] at (11.7,5.25) {Servidor};
+  \node[btn] at (14.2,5.25) {Ver Ficha $\rightarrow$};
+
+  % Fila 3
+  \draw[draw=black!20] (3.5,3.9) rectangle (15.2,4.8);
+  \node[badgeRed, anchor=west] at (3.7,4.35) {DOWN};
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (5.2,4.45) {Switch-Cisco-Lab01};
+  \node[font=\tiny\sffamily, text=black!50, anchor=west] at (5.2,4.15) {SG250-26P (Administrable)};
+  \node[font=\tiny\ttfamily, anchor=west] at (7.8,4.35) {192.168.50.2};
+  \node[font=\tiny\ttfamily, text=black!60, anchor=west] at (9.6,4.35) {00:1E:BD:98:C3:77};
+  \node[font=\tiny\sffamily, anchor=west] at (11.7,4.35) {Switch L2};
+  \node[btn] at (14.2,4.35) {Ver Ficha $\rightarrow$};
+
+  % Fila 4
+  \draw[draw=black!20] (3.5,3.0) rectangle (15.2,3.9);
+  \node[badge, anchor=west] at (3.7,3.45) {UNREACH};
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (5.2,3.55) {PC-Docente-01};
+  \node[font=\tiny\sffamily, text=black!50, anchor=west] at (5.2,3.25) {HP EliteDesk};
+  \node[font=\tiny\ttfamily, anchor=west] at (7.8,3.45) {192.168.50.25};
+  \node[font=\tiny\ttfamily, text=black!60, anchor=west] at (9.6,3.45) {70:85:C2:55:A0:19};
+  \node[font=\tiny\sffamily, anchor=west] at (11.7,3.45) {PC Sobremesa};
+  \node[btn] at (14.2,3.45) {Ver Ficha $\rightarrow$};
+
+  % Fila 5
+  \draw[draw=black!20] (3.5,2.1) rectangle (15.2,3.0);
+  \node[badge, anchor=west] at (3.7,2.55) {NO MON};
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (5.2,2.65) {Switch-DLink-Mesa03};
+  \node[font=\tiny\sffamily, text=black!50, anchor=west] at (5.2,2.35) {D-Link DGS-1008D (No adm)};
+  \node[font=\tiny\ttfamily, text=black!40, anchor=west] at (7.8,2.55) {Sin IP (Capa 2)};
+  \node[font=\tiny\ttfamily, text=black!40, anchor=west] at (9.6,2.55) {N/A};
+  \node[font=\tiny\sffamily, anchor=west] at (11.7,2.55) {Switch No-Adm};
+  \node[btn] at (14.2,2.55) {Ver Ficha $\rightarrow$};
+
+  % Paginacion
+  \node[font=\tiny\sffamily, text=black!60, anchor=west] at (3.7,1.5) {Mostrando 1-5 de 32 dispositivos registrados};
+  \node[btn] at (13.5,1.5) {$\leftarrow$ Ant};
+  \node[btn] at (14.7,1.5) {Sig $\rightarrow$};
+
+\end{tikzpicture}
+\caption{Wireframe 04: Inventario dinámico con filtros, estados y acciones rápidas}\label{fig:wf_inventario}
+\end{figure}
+
+\newpage
+\section{Modal de Registro Manual y Detección de Colisiones}
+
+\textbf{Objetivo (RF-03):} Formulario dinámico que adapta los campos requeridos según el tipo de dispositivo seleccionado. Incluye validación de colisiones de IP y MAC en tiempo real para evitar registros duplicados accidentales.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  scale=0.88, every node/.style={transform shape}
+]
+  % Fondo atenuado de la ventana principal
+  \draw[browser, fill=black!10] (0,0) rectangle (15.5,10.5);
+  \fill[black!20, rounded corners=3pt] (0,9.9) rectangle (15.5,10.5);
+
+  % Backdrop Modal Centrado
+  \draw[card, fill=white, thick, drop shadow={blur shadow, shadow xshift=2pt, shadow yshift=-2pt}] (2.5,0.8) rectangle (13.0,9.6);
+
+  % Cabecera Modal
+  \fill[black!6, rounded corners=2pt] (2.5,8.9) rectangle (13.0,9.6);
+  \node[font=\small\bfseries\sffamily, anchor=west] at (2.8,9.25) {Registrar Nuevo Dispositivo en el Inventario};
+  \node[font=\small\bfseries\sffamily, text=black!60] at (12.6,9.25) {$\times$};
+
+  % Formulario en 2 Columnas
+  % Campo 1: Tipo de Dispositivo (Selector Dinamico)
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (2.8,8.5) {1. Tipo de Dispositivo *};
+  \draw[input, thick, draw=mineralPrimary] (2.8,7.9) rectangle (7.5,8.4);
+  \node[font=\tiny\sffamily, anchor=west] at (3.0,8.15) {Switch administrable $\triangledown$};
+
+  % Campo 2: Nombre
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (8.0,8.5) {2. Nombre Descriptivo del Host *};
+  \draw[input] (8.0,7.9) rectangle (12.7,8.4);
+  \node[font=\tiny\ttfamily, text=black!50, anchor=west] at (8.2,8.15) {Switch-Cisco-Distribucion};
+
+  % Campo 3: Direccion IP y Alerta de Colision
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (2.8,7.4) {3. Dirección IPv4 de Administración};
+  \draw[input, draw=mineralPrimary] (2.8,6.8) rectangle (7.5,7.3);
+  \node[font=\tiny\ttfamily, anchor=west] at (3.0,7.05) {192.168.50.2};
+
+  % Badge de deteccion de colision (RF-03.05)
+  \draw[draw=espochRed!60, fill=espochRed!10, rounded corners=2pt] (2.8,6.1) rectangle (7.5,6.65);
+  \node[font=\tiny\sffamily, text=espochRed!80!black, align=left] at (5.15,6.37) {¡Atención! La IP 192.168.50.2 ya pertenece a\newline «Switch-Cisco-Lab01». Evite duplicados.};
+
+  % Campo 4: Direccion MAC
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (8.0,7.4) {4. Dirección MAC Física};
+  \draw[input] (8.0,6.8) rectangle (12.7,7.3);
+  \node[font=\tiny\ttfamily, text=black!50, anchor=west] at (8.2,7.05) {00:1E:BD:44:2A:90};
+
+  % Campo 5: Marca y Modelo
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (2.8,5.7) {5. Fabricante / Marca};
+  \draw[input] (2.8,5.1) rectangle (7.5,5.6);
+  \node[font=\tiny\sffamily, text=black!50, anchor=west] at (3.0,5.35) {Cisco Systems};
+
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (8.0,5.7) {6. Modelo del Equipo};
+  \draw[input] (8.0,5.1) rectangle (12.7,5.6);
+  \node[font=\tiny\sffamily, text=black!50, anchor=west] at (8.2,5.35) {Catalyst 2960-X};
+
+  % Campo 7: Ubicacion Fisica
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (2.8,4.6) {7. Ubicación Física en Laboratorio};
+  \draw[input] (2.8,4.0) rectangle (7.5,4.5);
+  \node[font=\tiny\sffamily, text=black!50, anchor=west] at (3.0,4.25) {Rack Principal - Unidad U04};
+
+  % Campo 8: Dispositivo Padre / Uplink (Topologia)
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (8.0,4.6) {8. Dispositivo Padre (Uplink Gateway)};
+  \draw[input] (8.0,4.0) rectangle (12.7,4.5);
+  \node[font=\tiny\sffamily, anchor=west] at (8.2,4.25) {Router-Cisco-Gateway (.1) $\triangledown$};
+
+  % Opciones de monitoreo
+  \draw[card, fill=black!3] (2.8,2.2) rectangle (12.7,3.6);
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (3.0,3.3) {Parámetros Iniciales de Monitoreo:};
+  \node[font=\tiny\sffamily, align=left] at (7.75,2.75) {$\bullet$ Estado inicial: \textbf{Pendiente de verificación} (RF-03.06)\newline $\bullet$ Método preferente: \textbf{Sondeo ICMP ping} cada 30 segundos\newline $\bullet$ Regla de confirmación: Requiere 3 fallos consecutivos para alertar caída.};
+
+  % Footer modal con botones
+  \draw[draw=black!30] (2.5,1.7) -- (13.0,1.7);
+  \node[btn] at (10.0,1.25) {Cancelar};
+  \draw[btnPrimary, fill=mineralPrimary!80, text=white] (10.8,1.0) rectangle (12.7,1.5);
+  \node[font=\tiny\bfseries\sffamily, text=white] at (11.75,1.25) {GUARDAR EQUIPO};
+
+\end{tikzpicture}
+\caption{Wireframe 05: Modal de registro manual con detección reactiva de colisiones}\label{fig:wf_modal_registro}
+\end{figure}
+
+\newpage
+\section{Ficha Técnica y Detalle del Dispositivo}
+
+\textbf{Objetivo (RF-12):} Proyectar la información detallada del host seleccionado mediante pestañas organizadas: Telemetría en vivo, Histórico de RTT, Bitácora de Eventos y Consola interactiva de ping bajo demanda.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  scale=0.88, every node/.style={transform shape}
+]
+  \draw[browser] (0,0) rectangle (15.5,10.5);
+  \fill[black!12, rounded corners=3pt] (0,9.9) rectangle (15.5,10.5);
+  \draw[draw=black!30, fill=white, rounded corners=2pt] (2.0,10.0) rectangle (13.5,10.4);
+  \node[font=\tiny\ttfamily, text=black!70] at (7.7,10.2) {https://noc.espoch.edu.ec/dispositivos/6723ef9a01};
+
+  % Header
+  \draw[header] (0,9.1) rectangle (15.5,9.9);
+  \node[font=\footnotesize\bfseries\sffamily] at (1.5,9.5) {ESPOCH NOC};
+  \node[badgeGreen] at (11.5,9.5) {WS: Conectado};
+  \node[btn] at (14.2,9.5) {Admin $\triangledown$};
+
+  % Sidebar
+  \draw[sidebar] (0,0) rectangle (3.2,9.1);
+  \node[card, text width=2.8cm, align=left] at (1.6,7.4) {\tiny\textbf{ $\leftarrow$ Volver al Inventario}};
+  \node[card, fill=mineralPrimary!10, text width=2.8cm, align=left] at (1.6,6.7) {\tiny Ficha del Dispositivo};
+  \node[card, text width=2.8cm, align=left] at (1.6,6.0) {\tiny Topología de Red};
+  \node[card, text width=2.8cm, align=left] at (1.6,5.3) {\tiny Alertas del Host};
+
+  % Area Principal
+  % Banner superior del dispositivo
+  \draw[card, fill=white] (3.5,7.6) rectangle (15.2,8.9);
+  \node[badgeGreen] at (4.3,8.4) {ONLINE};
+  \node[font=\small\bfseries\sffamily, anchor=west] at (5.2,8.4) {Switch-Cisco-Lab01};
+  \node[font=\tiny\ttfamily, text=black!60, anchor=west] at (5.2,8.0) {IP: 192.168.50.2 \quad MAC: 00:1E:BD:98:C3:77 \quad Tipo: Switch L2};
+  \node[badge] at (12.2,8.4) {Uptime: 99.4\%};
+  \node[btnPrimary] at (14.2,8.4) {Ping Manual};
+
+  % Pestañas de Navegacion Interna
+  \draw[draw=black!40] (3.5,7.1) -- (15.2,7.1);
+  \draw[draw=black!60, fill=white, thick] (3.6,7.1) rectangle (5.8,7.5);
+  \node[font=\tiny\bfseries\sffamily] at (4.7,7.3) {Métricas y Telemetría};
+  \node[font=\tiny\sffamily, text=black!60] at (7.0,7.3) {Historial de Eventos};
+  \node[font=\tiny\sffamily, text=black!60] at (9.2,7.3) {Configuración de Red};
+  \node[font=\tiny\sffamily, text=black!60] at (11.5,7.3) {Vecinos y Topología};
+
+  % Contenido Pestaña 1
+  % Columna Izquierda: Datos de Hardware
+  \draw[card] (3.5,2.6) rectangle (8.5,6.8);
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (3.7,6.5) {Especificaciones del Host};
+  \draw[draw=black!20] (3.7,6.2) -- (8.3,6.2);
+  
+  \node[font=\tiny\sffamily, anchor=west] at (3.8,5.8) {\textbf{Fabricante:} Cisco Systems Inc.};
+  \node[font=\tiny\sffamily, anchor=west] at (3.8,5.3) {\textbf{Modelo:} SG250-26P Smart Switch};
+  \node[font=\tiny\sffamily, anchor=west] at (3.8,4.8) {\textbf{Ubicación:} Rack Central - U08};
+  \node[font=\tiny\sffamily, anchor=west] at (3.8,4.3) {\textbf{Método Monitoreo:} ICMP echo (ping)};
+  \node[font=\tiny\sffamily, anchor=west] at (3.8,3.8) {\textbf{Intervalo de Sondeo:} Cada 30 seg.};
+  \node[font=\tiny\sffamily, anchor=west] at (3.8,3.3) {\textbf{Dispositivo Padre:} Router-Gateway (.1)};
+  \node[font=\tiny\sffamily, anchor=west] at (3.8,2.8) {\textbf{Registrado por:} Admin (Manual)};
+
+  % Columna Derecha: Grafico RTT en Vivo
+  \draw[card] (8.8,2.6) rectangle (15.2,6.8);
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (9.0,6.5) {Tiempo de Respuesta RTT (Última hora)};
+  \draw[draw=black!20, step=0.4] (9.0,3.0) grid (15.0,6.0);
+  \draw[very thick, draw=mineralPrimary] (9.0,4.2) -- (10.0,4.3) -- (11.0,4.1) -- (12.0,4.2) -- (13.0,5.2) -- (14.0,4.2) -- (15.0,4.1);
+  \node[badgeGreen] at (14.0,6.4) {RTT Actual: 2.1 ms};
+
+  % Consola de Ping Interactivo en la parte inferior
+  \draw[card, fill=black!90] (3.5,0.4) rectangle (15.2,2.3);
+  \node[font=\tiny\ttfamily, text=greenOk, anchor=west] at (3.7,2.0) {\$ ping -c 3 192.168.50.2};
+  \node[font=\tiny\ttfamily, text=white, anchor=west] at (3.7,1.5) {64 bytes from 192.168.50.2: icmp\_seq=1 ttl=64 time=2.14 ms};
+  \node[font=\tiny\ttfamily, text=white, anchor=west] at (3.7,1.0) {64 bytes from 192.168.50.2: icmp\_seq=2 ttl=64 time=1.98 ms};
+  \node[font=\tiny\ttfamily, text=greenOk, anchor=west] at (3.7,0.6) {--- 2 packets transmitted, 2 received, 0\% packet loss, rtt avg 2.06 ms};
+
+\end{tikzpicture}
+\caption{Wireframe 06: Ficha técnica del host con telemetría y consola de ping}\label{fig:wf_detalle_host}
+\end{figure}
+
+% ============================================================
+% CAPÍTULO 5: VISUALIZACIÓN DE TOPOLOGÍA DE RED
+% ============================================================
+\newpage
+\chapter{Visualizador de Topología de Red}
+
+\section{Mapa Interactivo de Nodos y Enlaces (React Flow)}
+
+\textbf{Objetivo (RF-14, RNF-01):} Representar gráficamente las relaciones lógicas y físicas de la LAN mediante un lienzo interactivo desarrollado con React Flow (@xyflow/react). Proyecta nodos coloreados según su estado y un drawer lateral de inspección rápida.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  scale=0.88, every node/.style={transform shape}
+]
+  \draw[browser] (0,0) rectangle (15.5,10.5);
+  \fill[black!12, rounded corners=3pt] (0,9.9) rectangle (15.5,10.5);
+  \draw[draw=black!30, fill=white, rounded corners=2pt] (2.0,10.0) rectangle (13.5,10.4);
+  \node[font=\tiny\ttfamily, text=black!70] at (7.7,10.2) {https://noc.espoch.edu.ec/topologia};
+
+  % Header
+  \draw[header] (0,9.1) rectangle (15.5,9.9);
+  \node[font=\footnotesize\bfseries\sffamily] at (1.5,9.5) {ESPOCH NOC};
+  \node[badgeGreen] at (11.5,9.5) {Topología: Sincronizada};
+  \node[btn] at (14.2,9.5) {Admin $\triangledown$};
+
+  % Sidebar
+  \draw[sidebar] (0,0) rectangle (3.2,9.1);
+  \node[card, text width=2.8cm, align=left] at (1.6,8.1) {\tiny Dashboard General};
+  \node[card, text width=2.8cm, align=left] at (1.6,7.4) {\tiny Dispositivos};
+  \node[card, fill=mineralPrimary!20, text width=2.8cm, align=left] at (1.6,6.7) {\tiny\textbf{ Topología de Red}};
+  \node[card, text width=2.8cm, align=left] at (1.6,6.0) {\tiny Alertas (2)};
+  \node[card, text width=2.8cm, align=left] at (1.6,5.3) {\tiny Eventos};
+  \node[card, text width=2.8cm, align=left] at (1.6,4.6) {\tiny Descubrimiento};
+  \node[card, text width=2.8cm, align=left] at (1.6,3.9) {\tiny Analítica SLAs};
+  \node[card, text width=2.8cm, align=left] at (1.6,3.2) {\tiny Usuarios};
+  \node[card, text width=2.8cm, align=left] at (1.6,2.5) {\tiny Configuración};
+
+  % Area Principal: Lienzo React Flow
+  \fill[black!2] (3.2,0) rectangle (12.2,9.1);
+  % Cuadricula Canvas
+  \draw[draw=black!10, step=0.8] (3.2,0) grid (12.2,9.1);
+
+  % Barra de herramientas flotante del mapa
+  \draw[card, fill=white] (3.5,8.2) rectangle (8.0,8.8);
+  \node[btn] at (4.0,8.5) {+ Zoom};
+  \node[btn] at (4.9,8.5) {- Zoom};
+  \node[btn] at (5.9,8.5) {Ajustar};
+  \node[btn] at (7.1,8.5) {Modo Edición};
+
+  % Nodos de Topologia
+  % Nodo 1: Router Gateway (Cima)
+  \draw[card, draw=mineralPrimary, very thick, fill=white] (6.5,6.8) rectangle (8.9,7.8);
+  \node[badgeGreen] at (7.7,7.55) {ONLINE};
+  \node[font=\tiny\bfseries\sffamily] at (7.7,7.25) {Router-Cisco};
+  \node[font=\tiny\ttfamily, text=black!60] at (7.7,6.95) {192.168.50.1};
+
+  % Nodo 2: Switch Core (Nivel medio)
+  \draw[card, draw=espochRed, very thick, fill=white] (4.5,4.2) rectangle (6.9,5.2);
+  \node[badgeRed] at (5.7,4.95) {DOWN};
+  \node[font=\tiny\bfseries\sffamily] at (5.7,4.65) {Switch-Cisco-01};
+  \node[font=\tiny\ttfamily, text=black!60] at (5.7,4.35) {192.168.50.2};
+
+  % Nodo 3: Access Point (Nivel medio)
+  \draw[card, draw=mineralPrimary, thick, fill=white] (8.5,4.2) rectangle (10.9,5.2);
+  \node[badgeGreen] at (9.7,4.95) {ONLINE};
+  \node[font=\tiny\bfseries\sffamily] at (9.7,4.65) {AP-Unifi-Lab};
+  \node[font=\tiny\ttfamily, text=black!60] at (9.7,4.35) {192.168.50.20};
+
+  % Nodos terminales
+  \draw[card, fill=white] (3.6,1.8) rectangle (5.2,2.6);
+  \node[font=\tiny\sffamily] at (4.4,2.2) {PC-Lab-01\newline\tiny (Inaccesible)};
+
+  \draw[card, fill=white] (5.6,1.8) rectangle (7.2,2.6);
+  \node[font=\tiny\sffamily] at (6.4,2.2) {PC-Lab-02\newline\tiny (Inaccesible)};
+
+  \draw[card, fill=white] (8.0,1.8) rectangle (9.6,2.6);
+  \node[font=\tiny\sffamily] at (8.8,2.2) {Laptop-Doc\newline\tiny (Online)};
+
+  \draw[card, fill=white] (10.0,1.8) rectangle (11.6,2.6);
+  \node[font=\tiny\sffamily] at (10.8,2.2) {Móvil-WiFi\newline\tiny (Online)};
+
+  % Aristas / Enlaces
+  \draw[very thick, draw=espochRed] (7.7,6.8) -- (5.7,5.2);
+  \draw[very thick, draw=greenOk] (7.7,6.8) -- (9.7,5.2);
+  \draw[thick, draw=black!40, dashed] (5.7,4.2) -- (4.4,2.6);
+  \draw[thick, draw=black!40, dashed] (5.7,4.2) -- (6.4,2.6);
+  \draw[thick, draw=greenOk] (9.7,4.2) -- (8.8,2.6);
+  \draw[thick, draw=greenOk] (9.7,4.2) -- (10.8,2.6);
+
+  % Minimapa en esquina inferior izquierda del canvas
+  \draw[card, fill=white] (3.5,0.4) rectangle (5.2,1.5);
+  \node[font=\tiny\sffamily, text=black!40] at (4.35,0.95) {Minimapa};
+
+  % Drawer Lateral Derecho de Inspeccion de Nodo
+  \draw[card, fill=white, thick] (12.2,0) rectangle (15.5,9.1);
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (12.4,8.7) {Detalle del Nodo Activo};
+  \draw[draw=black!20] (12.4,8.4) -- (15.3,8.4);
+  \node[badgeRed] at (13.8,8.0) {FALLA CONFIRMADA};
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (12.4,7.4) {Host: Switch-Cisco-01};
+  \node[font=\tiny\ttfamily, text=black!60, anchor=west] at (12.4,7.0) {IP: 192.168.50.2};
+  \node[font=\tiny\sffamily, anchor=west] at (12.4,6.5) {Hijos afectados: \textbf{2 PCs}};
+  \node[font=\tiny\sffamily, text=espochRed, anchor=west] at (12.4,6.0) {Estado: Sin eco (3x)};
+  \node[font=\tiny\sffamily, anchor=west] at (12.4,5.4) {Último visto: hace 4 min};
+  \node[btnPrimary] at (13.85,4.7) {Abrir Ticket};
+  \node[btn] at (13.85,4.0) {Ver Historial};
+
+\end{tikzpicture}
+\caption{Wireframe 07: Visualizador de topología en React Flow con drawer lateral}\label{fig:wf_topologia}
+\end{figure}
+
+% ============================================================
+% CAPÍTULO 6: SISTEMA DE ALERTAS E INCIDENCIAS
+% ============================================================
+\newpage
+\chapter{Sistema de Alertas e Incidencias}
+
+\section{Consola Operativa de Alertas y Tickets}
+
+\textbf{Objetivo (RF-07):} Centralizar la detección y tratamiento de eventos anómalos. Permite filtrar alertas por severidad y ciclo de vida (Abierta, Reconocida, Resuelta), con apertura de modales para el registro formal de incidencias.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  scale=0.88, every node/.style={transform shape}
+]
+  \draw[browser] (0,0) rectangle (15.5,10.5);
+  \fill[black!12, rounded corners=3pt] (0,9.9) rectangle (15.5,10.5);
+  \draw[draw=black!30, fill=white, rounded corners=2pt] (2.0,10.0) rectangle (13.5,10.4);
+  \node[font=\tiny\ttfamily, text=black!70] at (7.7,10.2) {https://noc.espoch.edu.ec/alertas};
+
+  % Header
+  \draw[header] (0,9.1) rectangle (15.5,9.9);
+  \node[font=\footnotesize\bfseries\sffamily] at (1.5,9.5) {ESPOCH NOC};
+  \node[badgeRed] at (11.5,9.5) {2 Alertas Críticas};
+  \node[btn] at (14.2,9.5) {Admin $\triangledown$};
+
+  % Sidebar
+  \draw[sidebar] (0,0) rectangle (3.2,9.1);
+  \node[card, text width=2.8cm, align=left] at (1.6,8.1) {\tiny Dashboard General};
+  \node[card, text width=2.8cm, align=left] at (1.6,7.4) {\tiny Dispositivos};
+  \node[card, text width=2.8cm, align=left] at (1.6,6.7) {\tiny Topología de Red};
+  \node[card, fill=mineralPrimary!20, text width=2.8cm, align=left] at (1.6,6.0) {\tiny\textbf{ Alertas e Incidencias}};
+  \node[card, text width=2.8cm, align=left] at (1.6,5.3) {\tiny Eventos y Logs};
+  \node[card, text width=2.8cm, align=left] at (1.6,4.6) {\tiny Descubrimiento};
+  \node[card, text width=2.8cm, align=left] at (1.6,3.9) {\tiny Analítica SLAs};
+  \node[card, text width=2.8cm, align=left] at (1.6,3.2) {\tiny Usuarios};
+  \node[card, text width=2.8cm, align=left] at (1.6,2.5) {\tiny Configuración};
+
+  % Area Principal
+  \node[font=\small\bfseries\sffamily, anchor=west] at (3.5,8.6) {Bandeja de Alertas del Sistema e Incidentes};
+
+  % Pestañas de estado
+  \draw[draw=black!40] (3.5,8.1) -- (15.2,8.1);
+  \draw[draw=black!60, fill=white, thick] (3.6,8.1) rectangle (5.6,8.5);
+  \node[font=\tiny\bfseries\sffamily] at (4.6,8.3) {Abiertas (2)};
+  \node[font=\tiny\sffamily, text=black!60] at (6.8,8.3) {Reconocidas (1)};
+  \node[font=\tiny\sffamily, text=black!60] at (9.0,8.3) {Resueltas (14)};
+  \node[font=\tiny\sffamily, text=black!60] at (11.2,8.3) {Histórico Total};
+
+  % Resumen de Severidades
+  \draw[card, fill=espochRed!10, draw=espochRed!60] (3.5,7.1) rectangle (6.2,7.8);
+  \node[font=\tiny\bfseries\sffamily, text=espochRed!80!black] at (4.85,7.55) {Críticas: 2};
+  \node[font=\tiny\sffamily, text=black!60] at (4.85,7.3) {Caídas confirmadas};
+
+  \draw[card, fill=black!5] (6.5,7.1) rectangle (9.2,7.8);
+  \node[font=\tiny\bfseries\sffamily] at (7.85,7.55) {Advertencias: 1};
+  \node[font=\tiny\sffamily, text=black!60] at (7.85,7.3) {Inaccesibilidad indirecta};
+
+  \draw[card, fill=black!5] (9.5,7.1) rectangle (12.2,7.8);
+  \node[font=\tiny\bfseries\sffamily] at (10.85,7.55) {Informativas: 0};
+  \node[font=\tiny\sffamily, text=black!60] at (10.85,7.3) {Nuevos descubrimientos};
+
+  \node[btnPrimary, anchor=east] at (15.2,7.45) {Reconocer Todas};
+
+  % Tabla de Alertas
+  \draw[card] (3.5,1.2) rectangle (15.2,6.8);
+  \draw[draw=black!40, fill=black!10] (3.5,6.2) rectangle (15.2,6.8);
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (3.7,6.5) {Severidad};
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (5.2,6.5) {Dispositivo / IP};
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (8.5,6.5) {Causa Técnica Detectada};
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (12.2,6.5) {Tiempo};
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (13.6,6.5) {Operación};
+
+  % Fila Alerta 1
+  \draw[draw=black!25] (3.5,4.7) rectangle (15.2,6.2);
+  \node[badgeRed, anchor=west] at (3.7,5.6) {CRÍTICA};
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (5.2,5.7) {Switch-Cisco-Lab01};
+  \node[font=\tiny\ttfamily, text=black!60, anchor=west] at (5.2,5.2) {IP: 192.168.50.2};
+  \node[font=\tiny\sffamily, align=left, anchor=west] at (8.5,5.45) {Sin respuesta a comprobaciones ICMP.\newline 3 sondeos fallidos consecutivos (90s).};
+  \node[font=\tiny\sffamily, text=black!60, anchor=west] at (12.2,5.45) {hace 4 min};
+  \node[btnPrimary] at (14.4,5.7) {Atender Ticket};
+  \node[btn] at (14.4,5.1) {Silenciar};
+
+  % Fila Alerta 2
+  \draw[draw=black!25] (3.5,3.2) rectangle (15.2,4.7);
+  \node[badgeRed, anchor=west] at (3.7,4.1) {CRÍTICA};
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (5.2,4.2) {Servidor-DNS-Secundario};
+  \node[font=\tiny\ttfamily, text=black!60, anchor=west] at (5.2,3.7) {IP: 192.168.50.15};
+  \node[font=\tiny\sffamily, align=left, anchor=west] at (8.5,3.95) {Pérdida total de paquetes ICMP.\newline 3 fallos consecutivos en segmento LAN.};
+  \node[font=\tiny\sffamily, text=black!60, anchor=west] at (12.2,3.95) {hace 11 min};
+  \node[btnPrimary] at (14.4,4.2) {Atender Ticket};
+  \node[btn] at (14.4,3.6) {Silenciar};
+
+  % Fila Alerta 3 (Reconocida)
+  \draw[draw=black!25] (3.5,1.7) rectangle (15.2,3.2);
+  \node[badge, anchor=west] at (3.7,2.6) {MEDIA};
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (5.2,2.7) {PC-Docente-01};
+  \node[font=\tiny\ttfamily, text=black!60, anchor=west] at (5.2,2.2) {IP: 192.168.50.25};
+  \node[font=\tiny\sffamily, align=left, anchor=west] at (8.5,2.45) {Host inaccesible derivado de la caída de su\newline switch de enlace (Switch-Cisco-Lab01).};
+  \node[font=\tiny\sffamily, text=black!60, anchor=west] at (12.2,2.45) {hace 4 min};
+  \node[badge] at (14.4,2.45) {En espera padre};
+
+\end{tikzpicture}
+\caption{Wireframe 08: Consola de alertas operativas clasificadas por severidad}\label{fig:wf_alertas}
+\end{figure}
+
+% ============================================================
+% CAPÍTULO 7: BITÁCORA DE EVENTOS Y AUDITORÍA
+% ============================================================
+\newpage
+\chapter{Registro Histórico de Eventos y Auditoría}
+
+\section{Bitácora de Eventos y Trazabilidad Administrativa}
+
+\textbf{Objetivo (RF-06):} Consultar el registro inmutable de acontecimientos del sistema: cambios de estado, descubrimientos, inicios de sesión y modificaciones de configuración efectuadas por administradores.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  scale=0.88, every node/.style={transform shape}
+]
+  \draw[browser] (0,0) rectangle (15.5,10.5);
+  \fill[black!12, rounded corners=3pt] (0,9.9) rectangle (15.5,10.5);
+  \draw[draw=black!30, fill=white, rounded corners=2pt] (2.0,10.0) rectangle (13.5,10.4);
+  \node[font=\tiny\ttfamily, text=black!70] at (7.7,10.2) {https://noc.espoch.edu.ec/eventos};
+
+  % Header
+  \draw[header] (0,9.1) rectangle (15.5,9.9);
+  \node[font=\footnotesize\bfseries\sffamily] at (1.5,9.5) {ESPOCH NOC};
+  \node[badgeGreen] at (11.5,9.5) {Logs: Actualizados};
+  \node[btn] at (14.2,9.5) {Admin $\triangledown$};
+
+  % Sidebar
+  \draw[sidebar] (0,0) rectangle (3.2,9.1);
+  \node[card, text width=2.8cm, align=left] at (1.6,8.1) {\tiny Dashboard General};
+  \node[card, text width=2.8cm, align=left] at (1.6,7.4) {\tiny Dispositivos};
+  \node[card, text width=2.8cm, align=left] at (1.6,6.7) {\tiny Topología de Red};
+  \node[card, text width=2.8cm, align=left] at (1.6,6.0) {\tiny Alertas e Incidencias};
+  \node[card, fill=mineralPrimary!20, text width=2.8cm, align=left] at (1.6,5.3) {\tiny\textbf{ Eventos y Auditoría}};
+  \node[card, text width=2.8cm, align=left] at (1.6,4.6) {\tiny Descubrimiento};
+  \node[card, text width=2.8cm, align=left] at (1.6,3.9) {\tiny Analítica SLAs};
+  \node[card, text width=2.8cm, align=left] at (1.6,3.2) {\tiny Usuarios};
+  \node[card, text width=2.8cm, align=left] at (1.6,2.5) {\tiny Configuración};
+
+  % Area Principal
+  \node[font=\small\bfseries\sffamily, anchor=west] at (3.5,8.6) {Bitácora Histórica de Eventos y Auditoría};
+
+  % Filtros
+  \draw[card, fill=black!4] (3.5,7.4) rectangle (15.2,8.2);
+  \draw[input] (3.7,7.6) rectangle (6.5,8.0);
+  \node[font=\tiny\sffamily, text=black!50, anchor=west] at (3.9,7.8) {Fecha: Hoy (Nov 11) $\triangledown$};
+
+  \draw[input] (6.7,7.6) rectangle (9.5,8.0);
+  \node[font=\tiny\sffamily, anchor=west] at (6.9,7.8) {Tipo de Evento: Todos $\triangledown$};
+
+  \draw[input] (9.7,7.6) rectangle (12.2,8.0);
+  \node[font=\tiny\sffamily, anchor=west] at (9.9,7.8) {Severidad: Todas $\triangledown$};
+
+  \node[btn] at (13.5,7.8) {Descargar CSV};
+  \node[btn] at (14.6,7.8) {JSON};
+
+  % Tabla
+  \draw[card] (3.5,1.2) rectangle (15.2,7.2);
+  \draw[draw=black!40, fill=black!10] (3.5,6.6) rectangle (15.2,7.2);
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (3.7,6.9) {Timestamp};
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (5.7,6.9) {Tipo de Evento};
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (8.5,6.9) {Dispositivo / Origen};
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (11.8,6.9) {Descripción Detallada};
+
+  % Fila 1
+  \draw[draw=black!20] (3.5,5.7) rectangle (15.2,6.6);
+  \node[font=\tiny\ttfamily, anchor=west] at (3.7,6.15) {10:45:12};
+  \node[badgeRed, anchor=west] at (5.7,6.15) {STATUS\_CHANGED};
+  \node[font=\tiny\sffamily, anchor=west] at (8.5,6.15) {Switch-Cisco-Lab01};
+  \node[font=\tiny\sffamily, anchor=west] at (11.8,6.15) {Transición de ONLINE a DOWN (3 fallos)};
+
+  % Fila 2
+  \draw[draw=black!20] (3.5,4.8) rectangle (15.2,5.7);
+  \node[font=\tiny\ttfamily, anchor=west] at (3.7,5.25) {10:42:00};
+  \node[badge, anchor=west] at (5.7,5.25) {SCAN\_COMPLETED};
+  \node[font=\tiny\sffamily, anchor=west] at (8.5,5.25) {Daemon Monitoreo};
+  \node[font=\tiny\sffamily, anchor=west] at (11.8,5.25) {Barrido ARP finalizado. 28 hosts activos};
+
+  % Fila 3
+  \draw[draw=black!20] (3.5,3.9) rectangle (15.2,4.8);
+  \node[font=\tiny\ttfamily, anchor=west] at (3.7,4.35) {10:35:18};
+  \node[badgeGreen, anchor=west] at (5.7,4.35) {DEVICE\_DISCOVERED};
+  \node[font=\tiny\sffamily, anchor=west] at (8.5,4.35) {192.168.50.45};
+  \node[font=\tiny\sffamily, anchor=west] at (11.8,4.35) {Nueva MAC descubierta: 40:B0:76:A1:02};
+
+  % Fila 4
+  \draw[draw=black!20] (3.5,3.0) rectangle (15.2,3.9);
+  \node[font=\tiny\ttfamily, anchor=west] at (3.7,3.45) {10:15:02};
+  \node[badge, anchor=west] at (5.7,3.45) {CONFIG\_UPDATED};
+  \node[font=\tiny\sffamily, anchor=west] at (8.5,3.45) {Usuario: Admin};
+  \node[font=\tiny\sffamily, anchor=west] at (11.8,3.45) {Modificado intervalo ping de 20s a 30s};
+
+  % Fila 5
+  \draw[draw=black!20] (3.5,2.1) rectangle (15.2,3.0);
+  \node[font=\tiny\ttfamily, anchor=west] at (3.7,2.55) {09:58:33};
+  \node[badgeGreen, anchor=west] at (5.7,2.55) {AUTH\_SUCCESS};
+  \node[font=\tiny\sffamily, anchor=west] at (8.5,2.55) {operador@espoch...};
+  \node[font=\tiny\sffamily, anchor=west] at (11.8,2.55) {Inicio de sesión exitoso desde 192.168.50.10};
+
+  % Paginacion
+  \node[font=\tiny\sffamily, text=black!60, anchor=west] at (3.7,1.5) {Página 1 de 42 (Mostrando 5 de 208 registros)};
+  \node[btn] at (13.5,1.5) {$\leftarrow$ Ant};
+  \node[btn] at (14.7,1.5) {Sig $\rightarrow$};
+
+\end{tikzpicture}
+\caption{Wireframe 09: Bitácora de eventos y auditoría con filtrado temporal}\label{fig:wf_eventos}
+\end{figure}
+
+% ============================================================
+% CAPÍTULO 8: DESCUBRIMIENTO DE RED
+% ============================================================
+\newpage
+\chapter{Motor de Descubrimiento de Red}
+
+\section{Panel de Escaneos y Clasificación de Nuevos Hosts}
+
+\textbf{Objetivo (RF-04):} Administrar los barridos periódicos mediante arp-scan y Nmap en los segmentos CIDR autorizados. Permite homologar o descartar dispositivos nuevos detectados antes de incorporarlos formalmente al inventario.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  scale=0.88, every node/.style={transform shape}
+]
+  \draw[browser] (0,0) rectangle (15.5,10.5);
+  \fill[black!12, rounded corners=3pt] (0,9.9) rectangle (15.5,10.5);
+  \draw[draw=black!30, fill=white, rounded corners=2pt] (2.0,10.0) rectangle (13.5,10.4);
+  \node[font=\tiny\ttfamily, text=black!70] at (7.7,10.2) {https://noc.espoch.edu.ec/descubrimiento};
+
+  % Header
+  \draw[header] (0,9.1) rectangle (15.5,9.9);
+  \node[font=\footnotesize\bfseries\sffamily] at (1.5,9.5) {ESPOCH NOC};
+  \node[btn] at (14.2,9.5) {Admin $\triangledown$};
+
+  % Sidebar
+  \draw[sidebar] (0,0) rectangle (3.2,9.1);
+  \node[card, text width=2.8cm, align=left] at (1.6,8.1) {\tiny Dashboard General};
+  \node[card, text width=2.8cm, align=left] at (1.6,7.4) {\tiny Dispositivos};
+  \node[card, text width=2.8cm, align=left] at (1.6,6.7) {\tiny Topología de Red};
+  \node[card, text width=2.8cm, align=left] at (1.6,6.0) {\tiny Alertas e Incidencias};
+  \node[card, text width=2.8cm, align=left] at (1.6,5.3) {\tiny Eventos y Logs};
+  \node[card, fill=mineralPrimary!20, text width=2.8cm, align=left] at (1.6,4.6) {\tiny\textbf{ Descubrimiento (Scans)}};
+  \node[card, text width=2.8cm, align=left] at (1.6,3.9) {\tiny Analítica SLAs};
+  \node[card, text width=2.8cm, align=left] at (1.6,3.2) {\tiny Usuarios};
+  \node[card, text width=2.8cm, align=left] at (1.6,2.5) {\tiny Configuración};
+
+  % Area Principal
+  \node[font=\small\bfseries\sffamily, anchor=west] at (3.5,8.6) {Motor de Descubrimiento de Nuevos Hosts};
+  \node[btnPrimary, anchor=east] at (15.2,8.6) {INICIAR ESCANEO MANUAL};
+
+  % Tarjeta Estado del Motor
+  \draw[card, fill=white] (3.5,7.0) rectangle (15.2,8.2);
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (3.7,7.8) {Estado del Proceso de Sondeo Periódico (Daemon Debian)};
+  \node[badgeGreen] at (13.5,7.8) {Daemon en Ejecución};
+  \node[font=\tiny\sffamily, text=black!70, anchor=west] at (3.7,7.3) {Segmento objetivo: \texttt{192.168.50.0/24} \quad Método: \texttt{arp-scan} (Capa 2) \quad Próximo ciclo en: \textbf{4m 12s}};
+
+  % Tabla de Hosts Nuevos Descubiertos (Pendientes de Aprobacion)
+  \draw[card] (3.5,1.2) rectangle (15.2,6.7);
+  \draw[draw=black!40, fill=black!10] (3.5,6.1) rectangle (15.2,6.7);
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (3.7,6.4) {IP Observada};
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (5.7,6.4) {MAC Física};
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (8.5,6.4) {Fabricante OUI Inferido};
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (11.5,6.4) {Detección};
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (13.5,6.4) {Homologación};
+
+  % Fila 1
+  \draw[draw=black!20] (3.5,4.9) rectangle (15.2,6.1);
+  \node[font=\tiny\ttfamily, anchor=west] at (3.7,5.5) {192.168.50.88};
+  \node[font=\tiny\ttfamily, anchor=west] at (5.7,5.5) {3C:52:82:11:09:FF};
+  \node[font=\tiny\sffamily, anchor=west] at (8.5,5.5) {Apple, Inc.};
+  \node[font=\tiny\sffamily, text=black!60, anchor=west] at (11.5,5.5) {hace 6 min};
+  \node[btnPrimary] at (13.8,5.5) {Aprobar};
+  \node[btn] at (14.8,5.5) {Ignorar};
+
+  % Fila 2
+  \draw[draw=black!20] (3.5,3.7) rectangle (15.2,4.9);
+  \node[font=\tiny\ttfamily, anchor=west] at (3.7,4.3) {192.168.50.104};
+  \node[font=\tiny\ttfamily, anchor=west] at (5.7,4.3) {B8:27:EB:4F:92:1A};
+  \node[font=\tiny\sffamily, anchor=west] at (8.5,4.3) {Raspberry Pi Foundation};
+  \node[font=\tiny\sffamily, text=black!60, anchor=west] at (11.5,4.3) {hace 18 min};
+  \node[btnPrimary] at (13.8,4.3) {Aprobar};
+  \node[btn] at (14.8,4.3) {Ignorar};
+
+  % Fila 3
+  \draw[draw=black!20] (3.5,2.5) rectangle (15.2,3.7);
+  \node[font=\tiny\ttfamily, anchor=west] at (3.7,3.1) {192.168.50.150};
+  \node[font=\tiny\ttfamily, anchor=west] at (5.7,3.1) {70:85:C2:E8:22:11};
+  \node[font=\tiny\sffamily, anchor=west] at (8.5,3.1) {HP Inc. (Desktop)};
+  \node[font=\tiny\sffamily, text=black!60, anchor=west] at (11.5,3.1) {hace 35 min};
+  \node[btnPrimary] at (13.8,3.1) {Aprobar};
+  \node[btn] at (14.8,3.1) {Ignorar};
+
+  \node[font=\tiny\sffamily, text=black!60, anchor=west] at (3.7,1.8) {* Los dispositivos aprobados se integran automáticamente al inventario activo.};
+
+\end{tikzpicture}
+\caption{Wireframe 10: Módulo de descubrimiento con bandeja de homologación}\label{fig:wf_escaneos}
+\end{figure}
+
+% ============================================================
+% CAPÍTULO 9: ANALÍTICA Y MÉTRICAS (BIG DATA)
+% ============================================================
+\newpage
+\chapter{Analítica y Métricas de Disponibilidad}
+
+\section{Dashboard de SLAs y Rendimiento Histórico}
+
+\textbf{Objetivo (RF-11):} Visualizar indicadores consolidados a largo plazo generados a partir de los datos persistidos en MongoDB: porcentaje de cumplimiento de SLA, ranking de dispositivos con mayor inestabilidad y mapa de calor de latencia.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  scale=0.88, every node/.style={transform shape}
+]
+  \draw[browser] (0,0) rectangle (15.5,10.5);
+  \fill[black!12, rounded corners=3pt] (0,9.9) rectangle (15.5,10.5);
+  \draw[draw=black!30, fill=white, rounded corners=2pt] (2.0,10.0) rectangle (13.5,10.4);
+  \node[font=\tiny\ttfamily, text=black!70] at (7.7,10.2) {https://noc.espoch.edu.ec/metricas};
+
+  % Header
+  \draw[header] (0,9.1) rectangle (15.5,9.9);
+  \node[font=\footnotesize\bfseries\sffamily] at (1.5,9.5) {ESPOCH NOC};
+  \node[btn] at (14.2,9.5) {Admin $\triangledown$};
+
+  % Sidebar
+  \draw[sidebar] (0,0) rectangle (3.2,9.1);
+  \node[card, text width=2.8cm, align=left] at (1.6,8.1) {\tiny Dashboard General};
+  \node[card, text width=2.8cm, align=left] at (1.6,7.4) {\tiny Dispositivos};
+  \node[card, text width=2.8cm, align=left] at (1.6,6.7) {\tiny Topología de Red};
+  \node[card, text width=2.8cm, align=left] at (1.6,6.0) {\tiny Alertas e Incidencias};
+  \node[card, text width=2.8cm, align=left] at (1.6,5.3) {\tiny Eventos y Logs};
+  \node[card, text width=2.8cm, align=left] at (1.6,4.6) {\tiny Descubrimiento};
+  \node[card, fill=mineralPrimary!20, text width=2.8cm, align=left] at (1.6,3.9) {\tiny\textbf{ Analítica SLAs}};
+  \node[card, text width=2.8cm, align=left] at (1.6,3.2) {\tiny Usuarios};
+  \node[card, text width=2.8cm, align=left] at (1.6,2.5) {\tiny Configuración};
+
+  % Area Principal
+  \node[font=\small\bfseries\sffamily, anchor=west] at (3.5,8.6) {Métricas Agregadas y Desempeño de Red (SLAs)};
+  \draw[input] (11.0,8.4) rectangle (15.2,8.8);
+  \node[font=\tiny\sffamily, anchor=west] at (11.2,8.6) {Rango: Últimos 30 días $\triangledown$};
+
+  % Fila 1: KPIs de SLA
+  \draw[card] (3.5,7.0) rectangle (6.8,8.1);
+  \node[txt] at (5.15,7.8) {\textbf{Disponibilidad Global}};
+  \node[font=\large\bfseries\sffamily, text=greenOk] at (5.15,7.35) {98.72\%};
+
+  \draw[card] (7.2,7.0) rectangle (11.0,8.1);
+  \node[txt] at (9.1,7.8) {\textbf{MTTR (Tiempo Medio Reparación)}};
+  \node[font=\large\bfseries\sffamily] at (9.1,7.35) {14m 20s};
+
+  \draw[card] (11.4,7.0) rectangle (15.2,8.1);
+  \node[txt] at (13.3,7.8) {\textbf{MTBF (Tiempo Medio Entre Fallos)}};
+  \node[font=\large\bfseries\sffamily] at (13.3,7.35) {72h 45m};
+
+  % Fila 2: Grafico de Barras de Caidas por Dispositivo (Top Inestables)
+  \draw[card] (3.5,3.4) rectangle (9.2,6.7);
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (3.7,6.4) {Top 4 Equipos con Mayor Frecuencia de Caídas};
+  % Barras simuladas
+  \node[font=\tiny\sffamily, anchor=west] at (3.7,5.7) {Switch-Cisco-01};
+  \fill[espochRed!70] (6.0,5.55) rectangle (8.8,5.85);
+  \node[font=\tiny\bfseries\sffamily, text=white] at (7.4,5.7) {12 caídas};
+
+  \node[font=\tiny\sffamily, anchor=west] at (3.7,4.9) {AP-Docencia};
+  \fill[mineralPrimary!70] (6.0,4.75) rectangle (8.0,5.05);
+  \node[font=\tiny\bfseries\sffamily, text=white] at (7.0,4.9) {7 caídas};
+
+  \node[font=\tiny\sffamily, anchor=west] at (3.7,4.1) {PC-Lab-18};
+  \fill[mineralPrimary!50] (6.0,3.95) rectangle (7.3,4.25);
+  \node[font=\tiny\sffamily, text=white] at (6.65,4.1) {4};
+
+  \node[font=\tiny\sffamily, anchor=west] at (3.7,3.3) {Router-Cisco};
+  \fill[greenOk!70] (6.0,3.15) rectangle (6.5,3.45);
+  \node[font=\tiny\sffamily, text=white] at (6.25,3.3) {1};
+
+  % Fila 2: Mapa de Calor Horario de Latencia
+  \draw[card] (9.5,3.4) rectangle (15.2,6.7);
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (9.7,6.4) {Distribución Horaria de Latencia LAN};
+  \draw[draw=black!20, step=0.4] (9.7,3.7) grid (15.0,6.0);
+  \node[font=\tiny\sffamily, text=black!50] at (12.35,4.8) {[Matriz de Calor: Horas Pico vs Días]};
+  \node[font=\tiny\sffamily, text=mineralPrimary] at (12.35,4.3) {Picos detectados: 10:00 a 12:00};
+
+  % Fila 3: Politica de Retencion MongoDB TTL
+  \draw[card, fill=black!3] (3.5,0.4) rectangle (15.2,3.0);
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (3.7,2.7) {Políticas de Almacenamiento y Depuración TTL (MongoDB 7.0)};
+  \node[font=\tiny\sffamily, align=left, text width=11.2cm] at (9.35,1.55) {$\bullet$ \textbf{Telemetría ICMP bruta (pings):} Se expira automáticamente a los 30 días vía índice TTL.\newline $\bullet$ \textbf{Métricas agregadas (promedios por hora):} Se conservan durante 1 año para análisis de tendencias.\newline $\bullet$ \textbf{Bitácora de seguridad y auditoría:} Retención estricta de 90 días conforme a directivas de la facultad.};
+
+\end{tikzpicture}
+\caption{Wireframe 11: Analítica de disponibilidad, ranking de caídas y SLA}\label{fig:wf_metricas}
+\end{figure}
+
+% ============================================================
+% CAPÍTULO 10: ADMINISTRACIÓN DE USUARIOS Y ROLES
+% ============================================================
+\newpage
+\chapter{Administración de Usuarios y Permisos}
+
+\section{Gestión de Cuentas y Control de Accesos}
+
+\textbf{Objetivo (RF-01, RF-02):} Panel de control exclusivo para el rol Administrador. Permite crear nuevos operadores técnicos, gestionar roles, restablecer contraseñas y desbloquear cuentas suspendidas por fallos reiterados.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  scale=0.88, every node/.style={transform shape}
+]
+  \draw[browser] (0,0) rectangle (15.5,10.5);
+  \fill[black!12, rounded corners=3pt] (0,9.9) rectangle (15.5,10.5);
+  \draw[draw=black!30, fill=white, rounded corners=2pt] (2.0,10.0) rectangle (13.5,10.4);
+  \node[font=\tiny\ttfamily, text=black!70] at (7.7,10.2) {https://noc.espoch.edu.ec/usuarios};
+
+  % Header
+  \draw[header] (0,9.1) rectangle (15.5,9.9);
+  \node[font=\footnotesize\bfseries\sffamily] at (1.5,9.5) {ESPOCH NOC};
+  \node[badge] at (11.5,9.5) {Módulo de Seguridad};
+  \node[btn] at (14.2,9.5) {Admin $\triangledown$};
+
+  % Sidebar
+  \draw[sidebar] (0,0) rectangle (3.2,9.1);
+  \node[card, text width=2.8cm, align=left] at (1.6,8.1) {\tiny Dashboard General};
+  \node[card, text width=2.8cm, align=left] at (1.6,7.4) {\tiny Dispositivos};
+  \node[card, text width=2.8cm, align=left] at (1.6,6.7) {\tiny Topología de Red};
+  \node[card, text width=2.8cm, align=left] at (1.6,6.0) {\tiny Alertas e Incidencias};
+  \node[card, text width=2.8cm, align=left] at (1.6,5.3) {\tiny Eventos y Logs};
+  \node[card, text width=2.8cm, align=left] at (1.6,4.6) {\tiny Descubrimiento};
+  \node[card, text width=2.8cm, align=left] at (1.6,3.9) {\tiny Analítica SLAs};
+  \node[card, fill=mineralPrimary!20, text width=2.8cm, align=left] at (1.6,3.2) {\tiny\textbf{ Gestión de Usuarios}};
+  \node[card, text width=2.8cm, align=left] at (1.6,2.5) {\tiny Configuración};
+
+  % Area Principal
+  \node[font=\small\bfseries\sffamily, anchor=west] at (3.5,8.6) {Directorio de Usuarios y Control de Roles};
+  \node[btnPrimary, anchor=east] at (15.2,8.6) {+ CREAR CUENTA TÉCNICA};
+
+  % Tabla de Usuarios
+  \draw[card] (3.5,1.2) rectangle (15.2,8.1);
+  \draw[draw=black!40, fill=black!10] (3.5,7.5) rectangle (15.2,8.1);
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (3.7,7.8) {Usuario / Correo};
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (7.0,7.8) {Rol Asignado};
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (9.2,7.8) {Estado de Cuenta};
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (11.7,7.8) {Último Acceso};
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (13.7,7.8) {Acciones};
+
+  % Fila 1: Admin
+  \draw[draw=black!20] (3.5,6.1) rectangle (15.2,7.5);
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (3.7,6.95) {administrador@espoch.edu.ec};
+  \node[font=\tiny\sffamily, text=black!50, anchor=west] at (3.7,6.5) {Líder de Infraestructura FIE};
+  \node[badgeGreen, anchor=west] at (7.0,6.8) {ADMINISTRADOR};
+  \node[badgeGreen, anchor=west] at (9.2,6.8) {ACTIVA};
+  \node[font=\tiny\sffamily, text=black!60, anchor=west] at (11.7,6.8) {Hoy, 09:30};
+  \node[btn] at (14.2,6.8) {Editar};
+
+  % Fila 2: Operador Activo
+  \draw[draw=black!20] (3.5,4.7) rectangle (15.2,6.1);
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (3.7,5.55) {operador.noc1@espoch.edu.ec};
+  \node[font=\tiny\sffamily, text=black!50, anchor=west] at (3.7,5.1) {Técnico Soporte Laboratorio};
+  \node[badge, anchor=west] at (7.0,5.4) {OPERADOR};
+  \node[badgeGreen, anchor=west] at (9.2,5.4) {ACTIVA};
+  \node[font=\tiny\sffamily, text=black!60, anchor=west] at (11.7,5.4) {Ayer, 16:45};
+  \node[btn] at (14.2,5.4) {Editar};
+
+  % Fila 3: Cuenta Bloqueada por Intentos
+  \draw[draw=black!20] (3.5,3.3) rectangle (15.2,4.7);
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (3.7,4.15) {operador.noc2@espoch.edu.ec};
+  \node[font=\tiny\sffamily, text=black!50, anchor=west] at (3.7,3.7) {Técnico Turno Tarde};
+  \node[badge, anchor=west] at (7.0,4.0) {OPERADOR};
+  \node[badgeRed, anchor=west] at (9.2,4.0) {BLOQUEADA (3 min)};
+  \node[font=\tiny\sffamily, text=black!60, anchor=west] at (11.7,4.0) {Hoy, 10:40};
+  \node[btnPrimary] at (14.2,4.0) {Desbloquear};
+
+  % Fila 4: Pendiente Primer Acceso
+  \draw[draw=black!20] (3.5,1.9) rectangle (15.2,3.3);
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (3.7,2.75) {practicante.ti@espoch.edu.ec};
+  \node[font=\tiny\sffamily, text=black!50, anchor=west] at (3.7,2.3) {Asistente Redes};
+  \node[badge, anchor=west] at (7.0,2.6) {OPERADOR};
+  \node[badge, anchor=west] at (9.2,2.6) {CLAVE TEMPORAL};
+  \node[font=\tiny\sffamily, text=black!60, anchor=west] at (11.7,2.6) {Nunca};
+  \node[btn] at (14.2,2.6) {Reenviar Clave};
+
+  \node[font=\tiny\sffamily, text=black!60, anchor=west] at (3.7,1.5) {* El rol Operador tiene acceso de solo lectura en configuración e inventario.};
+
+\end{tikzpicture}
+\caption{Wireframe 12: Gestión de usuarios, asignación de roles y desbloqueo}\label{fig:wf_usuarios}
+\end{figure}
+
+% ============================================================
+% CAPÍTULO 11: CONFIGURACIÓN GLOBAL DEL SISTEMA
+% ============================================================
+\newpage
+\chapter{Configuración Global del Sistema}
+
+\section{Ajuste de Parámetros de Monitoreo y Red}
+
+\textbf{Objetivo (RF-10):} Permitir al Administrador calibrar los tiempos de sondeo ICMP, umbrales de fallos consecutivos, intervalos de descubrimiento arp-scan y segmentos CIDR autorizados.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  scale=0.88, every node/.style={transform shape}
+]
+  \draw[browser] (0,0) rectangle (15.5,10.5);
+  \fill[black!12, rounded corners=3pt] (0,9.9) rectangle (15.5,10.5);
+  \draw[draw=black!30, fill=white, rounded corners=2pt] (2.0,10.0) rectangle (13.5,10.4);
+  \node[font=\tiny\ttfamily, text=black!70] at (7.7,10.2) {https://noc.espoch.edu.ec/configuracion};
+
+  % Header
+  \draw[header] (0,9.1) rectangle (15.5,9.9);
+  \node[font=\footnotesize\bfseries\sffamily] at (1.5,9.5) {ESPOCH NOC};
+  \node[btn] at (14.2,9.5) {Admin $\triangledown$};
+
+  % Sidebar
+  \draw[sidebar] (0,0) rectangle (3.2,9.1);
+  \node[card, text width=2.8cm, align=left] at (1.6,8.1) {\tiny Dashboard General};
+  \node[card, text width=2.8cm, align=left] at (1.6,7.4) {\tiny Dispositivos};
+  \node[card, text width=2.8cm, align=left] at (1.6,6.7) {\tiny Topología de Red};
+  \node[card, text width=2.8cm, align=left] at (1.6,6.0) {\tiny Alertas e Incidencias};
+  \node[card, text width=2.8cm, align=left] at (1.6,5.3) {\tiny Eventos y Logs};
+  \node[card, text width=2.8cm, align=left] at (1.6,4.6) {\tiny Descubrimiento};
+  \node[card, text width=2.8cm, align=left] at (1.6,3.9) {\tiny Analítica SLAs};
+  \node[card, text width=2.8cm, align=left] at (1.6,3.2) {\tiny Usuarios};
+  \node[card, fill=mineralPrimary!20, text width=2.8cm, align=left] at (1.6,2.5) {\tiny\textbf{ Configuración}};
+
+  % Area Principal
+  \node[font=\small\bfseries\sffamily, anchor=west] at (3.5,8.6) {Parámetros Globales del Motor de Monitoreo};
+  \node[btnPrimary, anchor=east] at (15.2,8.6) {GUARDAR CAMBIOS};
+  \node[btn, anchor=east] at (12.3,8.6) {Restablecer Defaults};
+
+  % Bloque 1: Motor ICMP Ping
+  \draw[card] (3.5,5.1) rectangle (9.1,8.1);
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (3.7,7.8) {1. Monitoreo ICMP de Disponibilidad};
+  
+  \node[font=\tiny\sffamily, anchor=west] at (3.7,7.3) {Intervalo entre sondeos (seg):};
+  \draw[input] (7.5,7.05) rectangle (8.8,7.55);
+  \node[font=\tiny\ttfamily] at (8.15,7.3) {30};
+
+  \node[font=\tiny\sffamily, anchor=west] at (3.7,6.6) {Timeout por comprobación (seg):};
+  \draw[input] (7.5,6.35) rectangle (8.8,6.85);
+  \node[font=\tiny\ttfamily] at (8.15,6.6) {3};
+
+  \node[font=\tiny\sffamily, anchor=west] at (3.7,5.9) {Fallos consecutivos para caída:};
+  \draw[input] (7.5,5.65) rectangle (8.8,6.15);
+  \node[font=\tiny\ttfamily] at (8.15,5.9) {3};
+
+  \node[font=\tiny\sffamily, anchor=west] at (3.7,5.2) {Éxitos para declarar recuperación:};
+  \draw[input] (7.5,4.95) rectangle (8.8,5.45);
+  \node[font=\tiny\ttfamily] at (8.15,5.2) {2};
+
+  % Bloque 2: Motor de Descubrimiento
+  \draw[card] (9.5,5.1) rectangle (15.2,8.1);
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (9.7,7.8) {2. Motor de Descubrimiento de Red};
+
+  \node[font=\tiny\sffamily, anchor=west] at (9.7,7.3) {Intervalo de barrido automático:};
+  \draw[input] (13.6,7.05) rectangle (14.9,7.55);
+  \node[font=\tiny\ttfamily] at (14.25,7.3) {10 min};
+
+  \node[font=\tiny\sffamily, anchor=west] at (9.7,6.6) {Herramienta de sondeo LAN:};
+  \draw[input] (13.6,6.35) rectangle (14.9,6.85);
+  \node[font=\tiny\ttfamily] at (14.25,6.6) {arp-scan};
+
+  \node[font=\tiny\sffamily, anchor=west] at (9.7,5.9) {Concurrencia máxima (p-limit):};
+  \draw[input] (13.6,5.65) rectangle (14.9,6.15);
+  \node[font=\tiny\ttfamily] at (14.25,5.9) {15};
+
+  % Bloque 3: Segmentos CIDR Autorizados
+  \draw[card] (3.5,1.2) rectangle (15.2,4.8);
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (3.7,4.5) {3. Segmentos y Rangos de Red Autorizados (Seguridad RF-04.01)};
+  
+  \draw[draw=black!40, fill=black!10] (3.7,3.8) rectangle (15.0,4.2);
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (3.9,4.0) {Segmento CIDR};
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (6.5,4.0) {Descripción / Uso};
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (10.0,4.0) {Gateway};
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (12.2,4.0) {Estado};
+  \node[font=\tiny\bfseries\sffamily, anchor=west] at (13.8,4.0) {Acción};
+
+  \draw[draw=black!25] (3.7,3.1) rectangle (15.0,3.7);
+  \node[font=\tiny\ttfamily, anchor=west] at (3.9,3.4) {192.168.50.0/24};
+  \node[font=\tiny\sffamily, anchor=west] at (6.5,3.4) {Laboratorio Principal de TI};
+  \node[font=\tiny\ttfamily, anchor=west] at (10.0,3.4) {192.168.50.1};
+  \node[badgeGreen] at (12.6,3.4) {ACTIVO};
+  \node[btn] at (14.3,3.4) {Editar};
+
+  \draw[draw=black!25] (3.7,2.4) rectangle (15.0,3.0);
+  \node[font=\tiny\ttfamily, anchor=west] at (3.9,2.7) {192.168.51.0/24};
+  \node[font=\tiny\sffamily, anchor=west] at (6.5,2.7) {Subred Wi-Fi Docente};
+  \node[font=\tiny\ttfamily, anchor=west] at (10.0,2.7) {192.168.51.1};
+  \node[badge] at (12.6,2.7) {PAUSADO};
+  \node[btn] at (14.3,2.7) {Activar};
+
+  \node[btnPrimary] at (5.0,1.8) {+ Agregar Rango CIDR};
+
+\end{tikzpicture}
+\caption{Wireframe 13: Configuración global de umbrales y segmentos autorizados}\label{fig:wf_configuracion}
+\end{figure}
+
+% ============================================================
+% CAPÍTULO 12: MATRIZ DE TRAZABILIDAD
+% ============================================================
+\newpage
+\chapter{Matriz de Trazabilidad Requerimientos - Pantallas}
+
+\section{Cobertura Integral de la Especificación de Software}
+
+A continuación se presenta la correspondencia formal entre cada Requerimiento Funcional (RF) y No Funcional (RNF) especificado en el proyecto y el conjunto de wireframes diseñados:
+
+\begin{table}[htbp]
+\centering
+\caption{Matriz de trazabilidad entre requerimientos y wireframes}\label{tab:matriz_trazabilidad_ui}
+\footnotesize
+\begin{tabularx}{\textwidth}{p{2.0cm} p{4.8cm} p{3.2cm} X}
+\toprule
+\textbf{Código RF} & \textbf{Descripción Funcional} & \textbf{Wireframe Asociado} & \textbf{Controles Principales} \\
+\midrule
+RF-01.01 & Inicio de sesión seguro & WF-01 (Login) & Formulario email/password, alertas. \\
+\midrule
+RF-01.07 & Bloqueo tras 3 fallos (3 min) & WF-01 (Login) & Card de aviso y bloqueo temporal. \\
+\midrule
+RF-01.04 & Cambio de clave temporal & WF-02 (Recuperación) & Formulario de cambio obligatorio. \\
+\midrule
+RF-01.06 & Recuperación de cuenta & WF-02 (Recuperación) & Envío de token a correo institucional. \\
+\midrule
+RF-08 & Panel de monitoreo global & WF-03 (Dashboard) & KPIs en vivo, gráfico latencia, WebSocket. \\
+\midrule
+RF-03 & Registro manual y colisiones & WF-04, WF-05 (Modal) & Catálogo de tipos, alerta de colisión. \\
+\midrule
+RF-12 & Ficha técnica y detalle & WF-06 (Detalle Host) & Tabs telemetría, ping manual en vivo. \\
+\midrule
+RF-14 & Topología de red visual & WF-07 (React Flow) & Grafo interactivo, drawer lateral. \\
+\midrule
+RF-07 & Alertas e incidencias & WF-08 (Alertas) & Clasificación severidad, tickets. \\
+\midrule
+RF-06 & Bitácora de eventos y logs & WF-09 (Eventos) & Registro cronológico, exportación. \\
+\midrule
+RF-04 & Descubrimiento automático & WF-10 (Descubrimiento) & Monitor daemon arp-scan, aprobación. \\
+\midrule
+RF-11 & Analítica y SLAs (Big Data) & WF-11 (Métricas) & Uptime porcentual, ranking caídas, TTL. \\
+\midrule
+RF-02 & Gestión de usuarios y roles & WF-12 (Usuarios) & Directorio de cuentas, desbloqueo. \\
+\midrule
+RF-10 & Configuración del sistema & WF-13 (Configuración) & Umbrales ICMP, concurrencia, CIDRs. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Conclusiones del Diseño Visual}
+
+\begin{enumerate}
+  \item Se diseñó la totalidad de las 13 pantallas requeridas por el sistema mediante wireframes técnicos de media fidelidad basados en el sistema de 8 puntos, garantizando coherencia visual y modularidad.
+  \item Cada vista resuelve un requerimiento específico del sistema NOC, desde el monitoreo reactivo en tiempo real mediante WebSockets hasta la gestión de inventario y configuración de red.
+  \item La interfaz prioriza la ergonomía del operador técnico, minimizando recargas de página y ofreciendo feedback inmediato ante incidentes de infraestructura.
+\end{enumerate}
+
+\end{document}
