@@ -1,9 +1,12 @@
 import { isIP } from "node:net";
 
-export async function enqueueInitialDeviceCheck(device, queue) {
-  const ipAddress = device.ipAddress?.trim() ?? "";
+export function canCheckDevice(device) {
+  const ipAddress = device?.ipAddress?.trim() ?? "";
+  return device?.isMonitorable === true && isIP(ipAddress) !== 0;
+}
 
-  if (device.isMonitorable !== true || isIP(ipAddress) === 0) {
+export async function enqueueInitialDeviceCheck(device, queue) {
+  if (!canCheckDevice(device)) {
     return { enqueued: false, monitoringStatus: "idle" };
   }
 
