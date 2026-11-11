@@ -3,7 +3,7 @@ import { Modal } from "../common/Modal";
 import { Badge } from "../common/Badge";
 import { Button } from "../common/Button";
 
-export function DuplicateDeviceAlertModal({
+export function DuplicateAlert({
   isOpen,
   onClose,
   onViewDevice,

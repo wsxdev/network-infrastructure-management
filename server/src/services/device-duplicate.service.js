@@ -10,7 +10,7 @@ function findActiveDevice(addressFilter) {
     .lean();
 }
 
-export async function checkDeviceConflicts({ ip, mac } = {}) {
+export async function checkDeviceDuplicates({ ip, mac } = {}) {
   const ipAddress = ip?.trim();
   const macAddress = mac?.trim();
   const macPattern =
@@ -42,7 +42,7 @@ function duplicateError(field, conflicts) {
 
 export async function createDeviceWithDuplicateCheck(data) {
   const addresses = { ip: data.ipAddress, mac: data.macAddress };
-  const conflicts = await checkDeviceConflicts(addresses);
+  const conflicts = await checkDeviceDuplicates(addresses);
 
   if (conflicts.ipConflict || conflicts.macConflict) {
     throw duplicateError(conflicts.ipConflict ? "ip" : "mac", conflicts);
@@ -56,7 +56,7 @@ export async function createDeviceWithDuplicateCheck(data) {
       throw error;
     }
 
-    const currentConflicts = await checkDeviceConflicts(addresses);
+    const currentConflicts = await checkDeviceDuplicates(addresses);
     throw duplicateError(ipAddress ? "ip" : "mac", currentConflicts);
   }
 }

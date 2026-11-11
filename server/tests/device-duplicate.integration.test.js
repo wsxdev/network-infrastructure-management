@@ -4,7 +4,7 @@ import { after, before, test } from "node:test";
 import mongoose from "mongoose";
 import { Device } from "../src/models/device.model.js";
 import {
-  checkDeviceConflicts,
+  checkDeviceDuplicates,
   createDeviceWithDuplicateCheck,
 } from "../src/services/device-duplicate.service.js";
 import { once } from "node:events";
@@ -45,7 +45,7 @@ test("detecta duplicados activos y permite reutilizar direcciones dadas de baja"
     macAddress: mac,
   });
 
-  const conflicts = await checkDeviceConflicts({
+  const conflicts = await checkDeviceDuplicates({
     ip,
     mac: "02:00:00:00:03:ab",
   });
@@ -68,7 +68,7 @@ test("detecta duplicados activos y permite reutilizar direcciones dadas de baja"
   original.isDeleted = true;
   await original.save();
 
-  assert.deepEqual(await checkDeviceConflicts({ ip, mac }), {
+  assert.deepEqual(await checkDeviceDuplicates({ ip, mac }), {
     ipConflict: null,
     macConflict: null,
   });
