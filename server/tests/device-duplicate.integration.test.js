@@ -7,6 +7,11 @@ import {
   checkDeviceConflicts,
   createDeviceWithDuplicateCheck,
 } from "../src/services/device-duplicate.service.js";
+import { once } from "node:events";
+import express from "express";
+import { asyncHandler } from "../src/middlewares/async-handler.js";
+import { errorHandler } from "../src/middlewares/error.middleware.js";
+import { createDeviceDuplicateRouter } from "../src/routes/device-duplicate.routes.js";
 
 const databaseName = `rf0303_test_${randomUUID()}`;
 
@@ -100,4 +105,55 @@ test("rechaza el alta duplicada y conserva el equipo original", async () => {
 
   assert.equal(await Device.countDocuments({ ipAddress }), 1);
   assert.equal((await Device.findById(original._id)).name, "Equipo original");
+});
+
+test("devuelve la coincidencia en la consulta y HTTP 409 al guardar", async (t) => {
+  const app = express();
+  const allowTestRequest = (_req, _res, next) => next();
+
+  app.use(express.json());
+  app.use(
+    "/api/devices",
+    createDeviceDuplicateRouter({
+      authenticate: allowTestRequest,
+      authorizeAdmin: allowTestRequest,
+    }),
+  );
+  app.post(
+    "/api/devices",
+    asyncHandler(async (req, res) => {
+      const device = await createDeviceWithDuplicateCheck(req.body);
+      res.status(201).json({ success: true, data: device });
+    }),
+  );
+  app.use(errorHandler);
+
+  const ipAddress = "192.0.2.90";
+  const original = await Device.create({ name: "Equipo HTTP", ipAddress });
+  const server = app.listen(0, "127.0.0.1");
+  t.after(() => new Promise((resolve) => server.close(resolve)));
+  await once(server, "listening");
+
+  const url = `http://127.0.0.1:${server.address().port}/api/devices`;
+
+  const check = await fetch(`${url}/check-duplicate?ip=${ipAddress}`);
+  assert.equal(check.status, 200);
+  const result = await check.json();
+  assert.equal(result.data.ipConflict._id, String(original._id));
+
+  const invalid = await fetch(`${url}/check-duplicate?ip=invalida`);
+  assert.equal(invalid.status, 400);
+  await invalid.json();
+
+  t.mock.method(console, "error", () => {});
+  const save = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name: "Equipo repetido", ipAddress }),
+  });
+  assert.equal(save.status, 409);
+  const duplicate = await save.json();
+  assert.equal(duplicate.code, "DUPLICATE_IP");
+  assert.equal(duplicate.field, "ip");
+  assert.equal(duplicate.data.ipConflict._id, String(original._id));
 });
