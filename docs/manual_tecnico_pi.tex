@@ -50,9 +50,20 @@
 \usepackage{tabularx}
 \usepackage{longtable}
 \usepackage{array}
+\usepackage{float}
 \usepackage{caption}
 \captionsetup[table]{position=top,skip=6pt,font={small,bf},labelfont=bf}
 \captionsetup[figure]{position=bottom,skip=6pt,font={small,bf},labelfont=bf}
+
+% Colores para esquemas JSON
+\definecolor{mongoDark}{RGB}{0,30,43}
+\definecolor{jsonKey}{RGB}{33,70,139}
+\definecolor{jsonString}{RGB}{20,125,50}
+\definecolor{jsonNum}{RGB}{192,40,40}
+\definecolor{jsonId}{RGB}{150,75,0}
+\definecolor{jsonBool}{RGB}{120,40,140}
+\definecolor{ttlColor}{RGB}{220,100,20}
+\definecolor{commentGray}{RGB}{120,130,140}
 
 % Listados de codigo preformateado
 \usepackage{listings}
@@ -111,6 +122,7 @@
 }
 
 \begin{document}
+\shorthandoff{"}
 
 % ============================================================
 % 1. PORTADA
@@ -306,12 +318,13 @@ El proyecto adopta \textbf{Scrum} como marco de trabajo ágil, adaptado al conte
 \end{tabularx}
 \end{table}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}[
   scale=0.82, every node/.style={transform shape},
-  phase/.style={rectangle, draw=espochBlue, thick, fill=espochBlue!10, rounded corners=3pt, minimum height=0.9cm, align=center, font=\small},
-  arrow/.style={-{Stealth[scale=0.8]}, thick, espochBlue}
+  phase/.style={rectangle, draw=black, thick, fill=white, rounded corners=3pt, minimum height=0.9cm, align=center, font=\small},
+  phaseLast/.style={rectangle, draw=black, very thick, fill=black!8, rounded corners=3pt, minimum height=0.9cm, align=center, font=\small},
+  arrow/.style={-{Stealth[scale=0.8]}, thick, black}
 ]
   \node[phase, text width=2.6cm] (s1) at (0,0) {Sprint 1\newline\scriptsize Análisis};
   \node[phase, text width=2.6cm] (s2) at (3.2,0) {Sprint 2\newline\scriptsize Diseño};
@@ -319,7 +332,7 @@ El proyecto adopta \textbf{Scrum} como marco de trabajo ágil, adaptado al conte
   \node[phase, text width=2.6cm] (s4) at (9.6,0) {Sprint 4\newline\scriptsize Frontend};
   \node[phase, text width=2.6cm] (s5) at (0,-2.2) {Sprint 5\newline\scriptsize Alertas};
   \node[phase, text width=2.6cm] (s6) at (3.2,-2.2) {Sprint 6\newline\scriptsize Integración};
-  \node[phase, text width=2.6cm, draw=espochRed, fill=espochRed!10] (s7) at (6.4,-2.2) {Sprint 7\newline\scriptsize Entrega};
+  \node[phaseLast, text width=2.6cm] (s7) at (6.4,-2.2) {Sprint 7\newline\scriptsize Entrega};
 
   \draw[arrow] (s1) -- (s2);
   \draw[arrow] (s2) -- (s3);
@@ -339,86 +352,114 @@ El proyecto adopta \textbf{Scrum} como marco de trabajo ágil, adaptado al conte
 % --- 6.1 ANALISIS Y REQUERIMIENTOS ---
 \section{Análisis y Especificación de Requerimientos}
 
+El proceso de ingeniería de requerimientos se llevó a cabo considerando las condiciones operativas reales del laboratorio de computación de la Facultad de Informática y Electrónica (FIE) en la ESPOCH, sede Orellana. La especificación cubre la totalidad de las necesidades de supervisión en tiempo real, administración del inventario de hosts, detección proactiva de fallos y auditoría de seguridad.
+
 \subsection{Requerimientos Funcionales}
 
-\begin{table}[htbp]
+Los requerimientos funcionales definen las capacidades operativas y de negocio que el sistema ejecuta para responder a las interacciones de los usuarios y a los eventos del entorno de red. A continuación se detallan los catorce requerimientos funcionales aprobados:
+
+\begin{table}[H]
 \centering
-\caption{Requerimientos funcionales principales}\label{tab:req_funcionales}
+\caption{Especificación completa de requerimientos funcionales}\label{tab:req_funcionales}
 \small
 \begin{tabularx}{\textwidth}{p{1.4cm} p{3.2cm} X}
 \toprule
-\textbf{ID} & \textbf{Módulo} & \textbf{Descripción} \\
+\textbf{ID} & \textbf{Módulo} & \textbf{Descripción Técnica y Regla de Negocio} \\
 \midrule
-RF-01 & Autenticación & Inicio de sesión, creación de usuarios por administrador, contraseña temporal, bloqueo tras 3 intentos fallidos (3 min), recuperación por correo. \\
+RF-01 & Autenticación y Cuentas & Inicio de sesión con correo y contraseña. Alta de cuentas por administrador. Envío de contraseña temporal con cambio forzado en primer acceso. Bloqueo temporal por 3 minutos tras 3 fallos consecutivos. Recuperación vía token seguro por email. \\
 \midrule
-RF-02 & Control de permisos & Roles de Administrador y Operador con validación en servidor; respuestas HTTP 401/403 ante accesos no autorizados. \\
+RF-02 & Control de Permisos & Control de acceso basado en roles (RBAC): Administrador (gestión total) y Operador (supervisión y soporte). Validación estricta en servidor con respuestas HTTP 401/403. \\
 \midrule
-RF-03 & Registro manual & Formulario dinámico por tipo de dispositivo, validación de IP/MAC, detección de duplicados, estado inicial ``Pendiente de verificación''. \\
+RF-03 & Registro Manual & Formulario dinámico por tipo de dispositivo (router, switch, servidor, PC, AP, otro). Validación de colisiones de IP y MAC en tiempo real. Soporte para switches no administrables sin IP. Estado inicial: Pendiente de verificación. \\
 \midrule
-RF-04 & Descubrimiento & Escaneo automático cada 10 min con ARP-scan/Nmap, incorporación al inventario sin duplicados, registro de ejecución. \\
+RF-04 & Descubrimiento de Red & Barrido periódico cada 10 min en rangos CIDR autorizados usando arp-scan y Nmap. Incorporación al inventario sin duplicados ni suposición de campos desconocidos. Registro de ejecución. \\
 \midrule
-RF-05 & Monitoreo & Comprobaciones ICMP cada 30 s, timeout de 3 s, 3 fallos consecutivos confirman caída, 2 éxitos confirman recuperación. \\
+RF-05 & Monitoreo de Disponibilidad & Sondeo ICMP cada 30 s con timeout de 3 s y pool de concurrencia (\texttt{p-limit} 15). Política de umbrales: 3 fallos consecutivos confirman caída (DOWN); 2 éxitos consecutivos confirman recuperación (UP). \\
 \midrule
-RF-06 & Eventos & Registro histórico de descubrimientos, transiciones de estado, cambios de IP, errores y acciones administrativas. \\
+RF-06 & Registro de Eventos & Bitácora inmutable de descubrimientos, transiciones de estado, cambios de IP y fallos de autenticación con marcas de tiempo generadas por el servidor. \\
 \midrule
-RF-07 & Alertas & Generación automática ante caídas confirmadas, estados abierta/reconocida/cerrada, prioridades por severidad. \\
+RF-07 & Alertas e Incidencias & Generación automática de alertas técnicas por caídas confirmadas. Estados: abierta, reconocida y resuelta. Creación de tickets de incidencias operativas con notas de diagnóstico. \\
 \midrule
-RF-08 & Panel de monitoreo & Dashboard con contadores en tiempo real, lista de dispositivos con estado, indicador de última actualización. \\
+RF-08 & Panel de Monitoreo & Consola NOC en tiempo real con contadores de estado (Online, Down, Inaccesible, Pendiente), latencia en vivo y notificaciones reactivas push vía WebSocket. \\
 \midrule
-RF-09 & Búsqueda y filtrado & Filtros por estado, tipo, IP, MAC, nombre; ordenamiento y paginación del inventario. \\
+RF-09 & Búsqueda y Filtrado & Búsqueda reactiva por IP, MAC o nombre; filtros combinados por estado, tipo, rango de red y origen; ordenamiento y paginación en inventario. \\
 \midrule
-RF-10 & Configuración & Intervalos de descubrimiento y monitoreo, umbrales de fallos, rangos de red autorizados. \\
+RF-10 & Configuración del Sistema & Calibración de intervalos de sondeo, timeouts, umbrales de fallos consecutivos y gestión de segmentos CIDR autorizados. \\
+\midrule
+RF-11 & Analítica y SLAs & Consolidación diaria de disponibilidad (Downsampling Big Data), porcentaje de SLA Uptime, ranking de hosts inestables y mapa de calor de latencia. \\
+\midrule
+RF-12 & Detalle del Dispositivo & Ficha técnica completa con telemetría RTT histórica, gráfico de disponibilidad y consola interactiva de ping de diagnóstico bajo demanda. \\
+\midrule
+RF-13 & Auditoría Administrativa & Registro de trazabilidad conforme a ISO/IEC 27001 para modificaciones de configuración, roles y dispositivos, conservado por 180 días. \\
+\midrule
+RF-14 & Topología de Red & Representación gráfica interactiva del mapa de red en React Flow, distinguiendo enlaces físicos confirmados de enlaces inferidos e identificando equipos padre (uplink). \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
 \subsection{Requerimientos No Funcionales}
 
-\begin{table}[htbp]
+Los requerimientos no funcionales establecen los atributos de calidad, rendimiento, seguridad y confiabilidad conforme al estándar ISO/IEC 25010:
+
+\begin{table}[H]
 \centering
-\caption{Requerimientos no funcionales}\label{tab:req_no_funcionales}
+\caption{Especificación completa de requerimientos no funcionales}\label{tab:req_no_funcionales}
 \small
 \begin{tabularx}{\textwidth}{p{1.4cm} p{2.8cm} X}
 \toprule
-\textbf{ID} & \textbf{Categoría} & \textbf{Descripción} \\
+\textbf{ID} & \textbf{Categoría} & \textbf{Criterio y Condición de Calidad} \\
 \midrule
-RNF-01 & Rendimiento & La latencia de notificación WebSocket no debe superar 200 ms para eventos críticos. \\
+RNF-01 & Rendimiento & Latencia de notificación WebSocket inferior a 200 ms desde la detección del evento. Límite de concurrencia a 15 sockets simultáneos para evitar saturación del stack IP. \\
 \midrule
-RNF-02 & Disponibilidad & El servicio de monitoreo debe operar de forma continua, independiente de la interfaz web. \\
+RNF-02 & Disponibilidad Continua & El daemon de sondeo y descubrimiento se ejecuta como servicio desacoplado 24/7 en Debian 12, independiente de que existan sesiones web abiertas. \\
 \midrule
-RNF-03 & Seguridad & Contraseñas almacenadas con bcrypt/Argon2id. Tokens JWT con expiración. Sin datos sensibles en logs. \\
+RNF-03 & Seguridad & Contraseñas con algoritmo hash Argon2id o bcrypt. Tokens JWT con tiempo de expiración. Aislamiento de red mediante segmentos privados y ejecución con privilegios restringidos. \\
 \midrule
-RNF-04 & Escalabilidad & El sistema debe soportar al menos 30 dispositivos con comprobaciones concurrentes controladas (pool de 15). \\
+RNF-04 & Tolerancia a Fallos & Prevención de tormentas de alertas mediante el estado \texttt{unreachable} cuando el gateway o switch padre se encuentra caído. Reconexión automática de MongoDB y Socket.io. \\
 \midrule
-RNF-05 & Mantenibilidad & Código organizado por módulos con separación de responsabilidades. Documentación de API. \\
+RNF-05 & Mantenibilidad & Arquitectura modular dirigida por eventos (EDA) desacoplada mediante un bus central \texttt{EventEmitter}, facilitando pruebas y evolución independiente de módulos. \\
 \midrule
-RNF-06 & Compatibilidad & Interfaz web compatible con Chrome, Firefox y Edge en sus versiones actuales. \\
+RNF-06 & Usabilidad y UI/UX & Sistema de diseño basado en la retícula de 8 puntos, interfaz de Centro de Operaciones de Red (NOC) y cumplimiento de accesibilidad visual WCAG 2.1 AA. \\
+\midrule
+RNF-07 & Compatibilidad & Interfaz web SPA compatible con navegadores modernos (Google Chrome, Mozilla Firefox y Microsoft Edge) sin dependencias de plugins propietarios. \\
+\midrule
+RNF-08 & Políticas de Datos TTL & Purga automática en MongoDB mediante índices TTL: comprobaciones crudas a los 30 días, eventos a los 90 días y sesiones vencidas a las 24 horas. \\
+\midrule
+RNF-09 & Trazabilidad y Respaldos & Respaldo automatizado diario de la base de datos con rotación a 7 días y conservación de registros de auditoría administrativa por 180 días. \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
 \subsection{Actores del Sistema}
 
-\begin{figure}[htbp]
+El sistema interactúa con tres entidades claramente diferenciadas por su perfil de permisos y naturaleza operativa:
+
+\begin{itemize}
+  \item \textbf{Administrador del Sistema:} Usuario técnico con privilegios totales. Administra cuentas de usuario, asigna roles, define los rangos de red autorizados, calibra los parámetros globales de monitoreo, gestiona el inventario y audita los registros de seguridad.
+  \item \textbf{Operador de Red:} Personal de soporte técnico y supervisión. Accede al dashboard en tiempo real, consulta la ficha de los dispositivos, ejecuta pruebas de ping bajo demanda, atiende y reconoce alertas, y da seguimiento a los tickets de incidencias operativas.
+  \item \textbf{Daemon Autónomo de Monitoreo (Actor de Sistema):} Proceso continuo que opera en segundo plano en el servidor Debian. Ejecuta los ciclos de comprobación ICMP y escaneo ARP, procesa las respuestas del kernel y emite eventos tipados al bus central sin requerir intervención humana.
+\end{itemize}
+
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}[
   scale=0.88, every node/.style={transform shape},
   actor/.style={circle, draw=black, thick, fill=white, minimum size=0.5cm},
-  sysbox/.style={rectangle, draw=espochBlue, very thick, fill=espochBlue!5, rounded corners=4pt, minimum height=5.0cm, minimum width=8.5cm, align=center},
-  usecase/.style={ellipse, draw=black, thick, fill=techGray, minimum height=0.8cm, text width=3.2cm, align=center, font=\scriptsize}
+  sysbox/.style={rectangle, draw=black, very thick, fill=techGray, rounded corners=4pt, minimum height=5.2cm, minimum width=8.5cm, align=center},
+  usecase/.style={ellipse, draw=black, thick, fill=white, minimum height=0.8cm, text width=3.2cm, align=center, font=\scriptsize}
 ]
   % Sistema
   \node[sysbox] (sys) at (4.5,0) {};
-  \node[font=\small\bfseries, espochBlue] at (4.5,2.8) {Sistema de Monitoreo de Red};
+  \node[font=\small\bfseries] at (4.5,2.9) {Sistema de Monitoreo de Red};
 
   % Casos de uso
-  \node[usecase] (uc1) at (3.2, 1.8) {Gestionar usuarios y roles};
-  \node[usecase] (uc2) at (5.8, 1.8) {Configurar monitoreo};
-  \node[usecase] (uc3) at (3.2, 0.5) {Registrar dispositivos};
-  \node[usecase] (uc4) at (5.8, 0.5) {Consultar dashboard};
-  \node[usecase] (uc5) at (3.2, -0.8) {Gestionar alertas};
-  \node[usecase] (uc6) at (5.8, -0.8) {Consultar eventos};
-  \node[usecase] (uc7) at (4.5, -2.0) {Ver topología de red};
+  \node[usecase] (uc1) at (3.2, 1.9) {Gestionar usuarios y roles};
+  \node[usecase] (uc2) at (5.8, 1.9) {Configurar monitoreo};
+  \node[usecase] (uc3) at (3.2, 0.6) {Registrar dispositivos};
+  \node[usecase] (uc4) at (5.8, 0.6) {Consultar dashboard};
+  \node[usecase] (uc5) at (3.2, -0.7) {Gestionar alertas};
+  \node[usecase] (uc6) at (5.8, -0.7) {Consultar eventos};
+  \node[usecase] (uc7) at (4.5, -1.9) {Ver topología de red};
 
   % Actor Administrador
   \node[actor] (adm_head) at (-1.5, 1.0) {};
@@ -455,6 +496,8 @@ RNF-06 & Compatibilidad & Interfaz web compatible con Chrome, Firefox y Edge en 
 
 % --- 6.2 DISEÑO DE LA SOLUCIÓN ---
 \section{Diseño de la Solución Tecnológica}
+
+El diseño del sistema materializa los requerimientos mediante una arquitectura desacoplada, reactiva y de alto rendimiento. Para dar respuesta a las demandas de monitoreo en tiempo real sobre la infraestructura del laboratorio, se establecen modelos que describen la estructura modular del software, el flujo de eventos, la persistencia documental y el despliegue físico de los nodos de red.
 
 \subsection{Arquitectura del Sistema: Monolito Modular Dirigido por Eventos (EDA)}
 
@@ -624,79 +667,110 @@ TOPOLOGY\_LINK\_CHANGED & ModuloControlador & Notificaciones & Actualiza grafo d
 \newpage
 \subsection{Modelo de Datos (MongoDB)}
 
-\begin{figure}[htbp]
+La persistencia del sistema se basa en una base de datos documental no relacional (MongoDB 7.0 / Clúster Atlas), la cual almacena los registros en formato BSON nativo. Esta arquitectura documental permite modelar estados variables de red, almacenar series temporales de métricas de sondeo y gestionar bitácoras inmutables sin la rigidez de esquemas tabulares relacionales.
+
+Las relaciones entre entidades se estructuran mediante referencias cruzadas tipadas (\texttt{ObjectId}) y documentos embebidos para datos compuestos. Asimismo, el ciclo de vida de los datos se gestiona automáticamente mediante índices de expiración temporal (TTL - \textit{Time To Live}), purgando comprobaciones crudas a los 30 días y eventos a los 90 días para evitar el crecimiento descontrolado del almacenamiento.
+
+A continuación, la Figura~\ref{fig:modelo_datos} ilustra el esquema estructural de las cuatro colecciones primarias del sistema representadas en su formato documental JSON real:
+
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}[
-  scale=0.85, every node/.style={transform shape},
-  entity/.style={rectangle, draw=espochBlue, thick, fill=white, rounded corners=3pt, text width=5.0cm, align=left, font=\small, inner sep=6pt}
+  scale=0.74, every node/.style={transform shape},
+  jsonBox/.style={
+    rectangle,
+    draw=black,
+    line width=1.0pt,
+    rounded corners=4pt,
+    fill=white,
+    inner sep=5pt
+  },
+  refArrow/.style={
+    -{Stealth[scale=0.85]},
+    thick,
+    draw=black!80
+  }
 ]
 
-  % Dispositivos
-  \node[entity] (dev) at (0,0) {
-    \textbf{\textcolor{espochBlue}{Dispositivos}}\\[3pt]
-    \hrule\vspace{3pt}
-    \texttt{\_id}: ObjectId (PK)\\
-    \texttt{tipo}: String\\
-    \texttt{nombre}: String\\
-    \texttt{ip}: String\\
-    \texttt{mac}: String\\
-    \texttt{marca}: String\\
-    \texttt{modelo}: String\\
-    \texttt{ubicacion}: String\\
-    \texttt{origen}: enum\\
-    \texttt{estado}: enum\\
-    \texttt{monitorizable}: Boolean\\
-    \texttt{createdAt}: Date\\
-    \texttt{updatedAt}: Date
+  % Dispositivos (Top Left)
+  \node[jsonBox, text width=7.4cm] (devices) at (-4.2, 4.0) {
+    \textbf{\sffamily\footnotesize \colorbox{mongoDark}{\textcolor{white}{ \ db.devices \ (Inventario de Red) }}}\\[3pt]
+    \ttfamily\scriptsize
+    \{\\
+    \ \ \textcolor{jsonKey}{"\_id"}: \textcolor{jsonId}{ObjectId}(\textcolor{jsonString}{"6724a1b0c9e1\dots"}),\\
+    \ \ \textcolor{jsonKey}{"name"}: \textcolor{jsonString}{"Switch-Cisco-Lab01"},\\
+    \ \ \textcolor{jsonKey}{"type"}: \textcolor{jsonString}{"switch"}, \textcolor{commentGray}{// router|server|pc|ap}\\
+    \ \ \textcolor{jsonKey}{"ip"}: \textcolor{jsonString}{"192.168.50.2"}, \textcolor{commentGray}{// [B-Tree Index]}\\
+    \ \ \textcolor{jsonKey}{"mac"}: \textcolor{jsonString}{"00:1E:BD:98:C3:77"},\\
+    \ \ \textcolor{jsonKey}{"vendor"}: \textcolor{jsonString}{"Cisco Systems"},\\
+    \ \ \textcolor{jsonKey}{"location"}: \textcolor{jsonString}{"Rack Central - U04"},\\
+    \ \ \textcolor{jsonKey}{"status"}: \textcolor{jsonString}{"up"}, \textcolor{commentGray}{// up|down|unreachable}\\
+    \ \ \textcolor{jsonKey}{"isMonitorable"}: \textcolor{jsonBool}{true},\\
+    \ \ \textcolor{jsonKey}{"counters"}: \{\\
+    \ \ \ \ \textcolor{jsonKey}{"consecutiveFailures"}: \textcolor{jsonNum}{0},\\
+    \ \ \ \ \textcolor{jsonKey}{"consecutiveSuccesses"}: \textcolor{jsonNum}{14}\\
+    \ \ \},\\
+    \ \ \textcolor{jsonKey}{"lastSeenAt"}: \textcolor{jsonId}{ISODate}(\textcolor{jsonString}{"2026-11-11T10:45:00Z"})\\
+    \}
   };
 
-  % Eventos
-  \node[entity] (evt) at (7,0.5) {
-    \textbf{\textcolor{espochBlue}{Eventos}}\\[3pt]
-    \hrule\vspace{3pt}
-    \texttt{\_id}: ObjectId (PK)\\
-    \texttt{tipo}: String\\
-    \texttt{descripcion}: String\\
-    \texttt{severidad}: enum\\
-    \texttt{dispositivoId}: ObjectId (FK)\\
-    \texttt{usuarioId}: ObjectId (FK)\\
-    \texttt{timestamp}: Date\\
-    \texttt{metadata}: Object
+  % Usuarios (Bottom Left)
+  \node[jsonBox, text width=7.4cm] (users) at (-4.2, -3.2) {
+    \textbf{\sffamily\footnotesize \colorbox{mongoDark}{\textcolor{white}{ \ db.users \ (Cuentas y RBAC) }}}\\[3pt]
+    \ttfamily\scriptsize
+    \{\\
+    \ \ \textcolor{jsonKey}{"\_id"}: \textcolor{jsonId}{ObjectId}(\textcolor{jsonString}{"6724f001b3c4\dots"}),\\
+    \ \ \textcolor{jsonKey}{"email"}: \textcolor{jsonString}{"admin@espoch.edu.ec"},\\
+    \ \ \textcolor{jsonKey}{"passwordHash"}: \textcolor{jsonString}{"\$argon2id\$v=19\dots"},\\
+    \ \ \textcolor{jsonKey}{"role"}: \textcolor{jsonString}{"administrador"}, \textcolor{commentGray}{// admin|operador}\\
+    \ \ \textcolor{jsonKey}{"isActive"}: \textcolor{jsonBool}{true},\\
+    \ \ \textcolor{jsonKey}{"failedAttempts"}: \textcolor{jsonNum}{0},\\
+    \ \ \textcolor{jsonKey}{"blockedUntil"}: \textcolor{jsonBool}{null},\\
+    \ \ \textcolor{jsonKey}{"createdAt"}: \textcolor{jsonId}{ISODate}(\textcolor{jsonString}{"2026-10-15T09:00:00Z"})\\
+    \}
   };
 
-  % Usuarios
-  \node[entity] (usr) at (0,-6.5) {
-    \textbf{\textcolor{espochBlue}{Usuarios}}\\[3pt]
-    \hrule\vspace{3pt}
-    \texttt{\_id}: ObjectId (PK)\\
-    \texttt{email}: String (unique)\\
-    \texttt{passwordHash}: String\\
-    \texttt{rol}: enum\\
-    \texttt{activo}: Boolean\\
-    \texttt{intentosFallidos}: Number\\
-    \texttt{bloqueadoHasta}: Date\\
-    \texttt{createdAt}: Date
+  % Eventos (Top Right)
+  \node[jsonBox, text width=7.4cm] (events) at (4.2, 4.0) {
+    \textbf{\sffamily\footnotesize \colorbox{mongoDark}{\textcolor{white}{ \ db.events \ }}} \ \colorbox{ttlColor}{\tiny\textbf{\textcolor{white}{TTL: 90 DÍAS}}}\\[3pt]
+    \ttfamily\scriptsize
+    \{\\
+    \ \ \textcolor{jsonKey}{"\_id"}: \textcolor{jsonId}{ObjectId}(\textcolor{jsonString}{"6724d101a0f2\dots"}),\\
+    \ \ \textcolor{jsonKey}{"type"}: \textcolor{jsonString}{"STATUS\_CHANGED"},\\
+    \ \ \textcolor{jsonKey}{"severity"}: \textcolor{jsonString}{"critical"}, \textcolor{commentGray}{// info|warn|crit}\\
+    \ \ \textcolor{jsonKey}{"description"}: \textcolor{jsonString}{"Host caído tras 3 fallos"},\\
+    \ \ \textcolor{jsonKey}{"deviceId"}: \textcolor{jsonId}{ObjectId}(\textcolor{jsonString}{"6724a1b0c9e1\dots"}),\\
+    \ \ \textcolor{jsonKey}{"timestamp"}: \textcolor{jsonId}{ISODate}(\textcolor{jsonString}{"2026-11-11T10:45:12Z"}),\\
+    \ \ \ \ \textcolor{commentGray}{// [Índice TTL: 7776000s = 90d]}\\
+    \ \ \textcolor{jsonKey}{"metadata"}: \{\\
+    \ \ \ \ \textcolor{jsonKey}{"previousStatus"}: \textcolor{jsonString}{"up"},\\
+    \ \ \ \ \textcolor{jsonKey}{"currentStatus"}: \textcolor{jsonString}{"down"},\\
+    \ \ \ \ \textcolor{jsonKey}{"ip"}: \textcolor{jsonString}{"192.168.50.2"}\\
+    \ \ \}\\
+    \}
   };
 
-  % Alertas
-  \node[entity] (alrt) at (7,-6.0) {
-    \textbf{\textcolor{espochBlue}{Alertas}}\\[3pt]
-    \hrule\vspace{3pt}
-    \texttt{\_id}: ObjectId (PK)\\
-    \texttt{dispositivoId}: ObjectId (FK)\\
-    \texttt{estado}: enum\\
-    \texttt{prioridad}: enum\\
-    \texttt{descripcion}: String\\
-    \texttt{creadaEn}: Date\\
-    \texttt{cerradaEn}: Date\\
-    \texttt{reconocidaPor}: ObjectId (FK)
+  % Alertas (Bottom Right)
+  \node[jsonBox, text width=7.4cm] (alerts) at (4.2, -3.2) {
+    \textbf{\sffamily\footnotesize \colorbox{mongoDark}{\textcolor{white}{ \ db.alerts \ (Alertas Técnicas) }}}\\[3pt]
+    \ttfamily\scriptsize
+    \{\\
+    \ \ \textcolor{jsonKey}{"\_id"}: \textcolor{jsonId}{ObjectId}(\textcolor{jsonString}{"6724e201d5e6\dots"}),\\
+    \ \ \textcolor{jsonKey}{"deviceId"}: \textcolor{jsonId}{ObjectId}(\textcolor{jsonString}{"6724a1b0c9e1\dots"}),\\
+    \ \ \textcolor{jsonKey}{"severity"}: \textcolor{jsonString}{"critical"},\\
+    \ \ \textcolor{jsonKey}{"status"}: \textcolor{jsonString}{"abierta"}, \textcolor{commentGray}{// abierta|resuelta}\\
+    \ \ \textcolor{jsonKey}{"title"}: \textcolor{jsonString}{"Caída en Switch-Cisco-Lab01"},\\
+    \ \ \textcolor{jsonKey}{"cause"}: \textcolor{jsonString}{"3 fallos ICMP consecutivos"},\\
+    \ \ \textcolor{jsonKey}{"openedAt"}: \textcolor{jsonId}{ISODate}(\textcolor{jsonString}{"2026-11-11T10:45:12Z"}),\\
+    \ \ \textcolor{jsonKey}{"acknowledgedBy"}: \textcolor{jsonId}{ObjectId}(\textcolor{jsonString}{"6724f001\dots"}),\\
+    \ \ \textcolor{jsonKey}{"closedAt"}: \textcolor{jsonBool}{null}\\
+    \}
   };
 
-  % Relaciones
-  \draw[-{Stealth}, thick] (dev.east) -- node[above, font=\scriptsize] {1:N} (evt.west);
-  \draw[-{Stealth}, thick] (dev.south) -- ++(0,-0.5) -| node[near start, above, font=\scriptsize] {1:N} (alrt.south);
-  \draw[-{Stealth}, thick, dashed] (usr.east) -- node[above, font=\scriptsize] {1:N} (alrt.west);
-  \draw[-{Stealth}, thick, dashed] (usr.north east) -- node[right, font=\scriptsize] {1:N} (evt.south west);
+  % Relaciones documentales
+  \draw[refArrow] (events.west) -- node[above, font=\scriptsize\sffamily] {Ref: \texttt{deviceId}} (devices.east);
+  \draw[refArrow] (alerts.west) -- node[above, font=\scriptsize\sffamily] {Ref: \texttt{acknowledgedBy}} (users.east);
+  \draw[refArrow] (alerts.north west) -- node[above, sloped, font=\scriptsize\sffamily] {Ref: \texttt{deviceId}} (devices.south east);
 
 \end{tikzpicture}
 \caption{Modelo de datos del sistema (colecciones MongoDB)}\label{fig:modelo_datos}
@@ -705,46 +779,46 @@ TOPOLOGY\_LINK\_CHANGED & ModuloControlador & Notificaciones & Actualiza grafo d
 \newpage
 \subsection{Topología de Red}
 
-\begin{figure}[htbp]
+La infraestructura física monitoreada corresponde a la red de área local del laboratorio de computación de la FIE en la ESPOCH (segmento \texttt{192.168.50.0/24}). El entorno cuenta con un enlace ascendente (WAN) conectado a la red troncal universitaria, un router de borde que actúa como gateway predeterminado, un switch central administrable para las conexiones cableadas Gigabit Ethernet y un punto de acceso (Access Point) inalámbrico que provee conectividad de alta velocidad en doble banda (2.4 GHz y 5 GHz).
+
+El servidor de monitoreo opera en una dirección IP estática dedicada dentro de la infraestructura cableada, garantizando latencia mínima y estabilidad en la ejecución de los sondeos. La Figura~\ref{fig:topologia_red} presenta el diagrama esquemático en blanco y negro de la topología de red sin solapamientos entre elementos.
+
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}[
-  scale=0.85, every node/.style={transform shape},
-  device/.style={rectangle, draw=black, thick, fill=white, rounded corners=3pt, minimum height=1.0cm, text width=3.5cm, align=center, font=\small},
-  cloud/.style={ellipse, draw=black, thick, fill=techGray, minimum height=1.0cm, minimum width=3.5cm, align=center, font=\small},
-  link/.style={thick}
+  scale=0.88, every node/.style={transform shape},
+  cloud/.style={ellipse, draw=black, thick, fill=black!5, minimum height=1.1cm, minimum width=4.5cm, align=center, font=\small\bfseries},
+  routerbox/.style={rectangle, draw=black, very thick, fill=black!8, rounded corners=4pt, minimum height=1.2cm, text width=4.2cm, align=center, font=\small},
+  switchbox/.style={rectangle, draw=black, thick, fill=white, rounded corners=3pt, minimum height=1.2cm, text width=3.8cm, align=center, font=\small},
+  hostbox/.style={rectangle, draw=black, thick, fill=white, rounded corners=3pt, minimum height=1.1cm, text width=2.8cm, align=center, font=\footnotesize},
+  link/.style={draw=black, thick}
 ]
-  % Internet / Red universidad
-  \node[cloud] (inet) at (0,6) {Red Universidad};
 
-  % Router
-  \node[device, draw=espochBlue, fill=espochBlue!8] (router) at (0,4) {\textbf{Router}\newline\scriptsize 192.168.50.1};
+  % Capa 1: Internet / Red Universidad
+  \node[cloud] (wan) at (0, 6.2) {Red Universidad / WAN\newline\scriptsize Campus ESPOCH};
 
-  % Switch
-  \node[device] (switch) at (-3,2) {\textbf{Switch}\newline\scriptsize LAN cableada};
+  % Capa 2: Router de Borde
+  \node[routerbox] (router) at (0, 4.2) {\textbf{Router de Borde}\newline\scriptsize Gateway: 192.168.50.1 / DHCP / NAT};
 
-  % AP
-  \node[device] (ap) at (3,2) {\textbf{Access Point}\newline\scriptsize Wi-Fi};
+  % Capa 3: Distribución LAN y WLAN
+  \node[switchbox] (switch) at (-3.6, 2.0) {\textbf{Switch LAN Central}\newline\scriptsize Capa 2 / 1000BASE-T};
+  \node[switchbox] (ap) at (3.6, 2.0) {\textbf{Access Point Wi-Fi}\newline\scriptsize SSID: LabFIE (802.11ac)};
 
-  % Servidor
-  \node[device, draw=espochRed, fill=espochRed!5] (server) at (-5,0) {\textbf{Servidor Debian}\newline\scriptsize 192.168.50.10};
-
-  % PCs
-  \node[device] (pc1) at (-2,0) {\textbf{PCs}\newline\scriptsize Escritorio};
-
-  % Laptops
-  \node[device] (lap) at (2,0) {\textbf{Laptops}\newline\scriptsize Wi-Fi};
-
-  % Moviles
-  \node[device] (mob) at (5,0) {\textbf{Móviles}\newline\scriptsize Wi-Fi};
+  % Capa 4: Nodos y Estaciones Terminales
+  \node[hostbox, fill=black!8] (server) at (-5.4, -0.6) {\textbf{Servidor Debian}\newline\scriptsize 192.168.50.10\newline\tiny (Daemon + MongoDB)};
+  \node[hostbox] (pcs) at (-1.8, -0.6) {\textbf{PCs Laboratorio}\newline\scriptsize 192.168.50.20--.40\newline\tiny LAN Cableada};
+  \node[hostbox] (laptops) at (1.8, -0.6) {\textbf{Laptops FIE}\newline\scriptsize 192.168.50.100--.150\newline\tiny Wi-Fi 5 GHz};
+  \node[hostbox] (mobiles) at (5.4, -0.6) {\textbf{Dispositivos Móviles}\newline\scriptsize 192.168.50.200--.250\newline\tiny Wi-Fi 2.4/5 GHz};
 
   % Conexiones
-  \draw[link] (inet) -- node[right, font=\scriptsize] {WAN} (router);
-  \draw[link] (router) -- node[left, font=\scriptsize] {Ethernet} (switch);
-  \draw[link] (router) -- node[right, font=\scriptsize] {Wi-Fi} (ap);
-  \draw[link] (switch) -- (server);
-  \draw[link] (switch) -- (pc1);
-  \draw[link] (ap) -- (lap);
-  \draw[link] (ap) -- (mob);
+  \draw[link] (wan) -- node[right, font=\scriptsize] {WAN Uplink} (router);
+  \draw[link] (router) -- node[left, font=\scriptsize] {Trunk 1G} (switch);
+  \draw[link] (router) -- node[right, font=\scriptsize] {PoE 1G} (ap);
+
+  \draw[link] (switch) -- node[left, font=\tiny] {eth0} (server);
+  \draw[link] (switch) -- node[right, font=\tiny] {Cat6} (pcs);
+  \draw[link, dashed] (ap) -- node[left, font=\tiny] {WLAN} (laptops);
+  \draw[link, dashed] (ap) -- node[right, font=\tiny] {WLAN} (mobiles);
 
 \end{tikzpicture}
 \caption{Topología de red del laboratorio}\label{fig:topologia_red}
@@ -752,32 +826,73 @@ TOPOLOGY\_LINK\_CHANGED & ModuloControlador & Notificaciones & Actualiza grafo d
 
 \subsection{Diagrama de Despliegue}
 
-\begin{figure}[htbp]
+El despliegue del sistema sigue una arquitectura cliente-servidor desacoplada. En el nivel de cliente, la consola NOC se ejecuta en navegadores web modernos como una aplicación de página única (SPA) desarrollada en React 18, comunicándose mediante peticiones asíncronas RESTful y suscripciones en tiempo real a través de WebSockets.
+
+En el nivel de servidor, todos los componentes se ejecutan sobre un servidor físico con el sistema operativo Debian 12 GNU/Linux. El servidor web Nginx actúa como proxy inverso en el puerto 80, enrutando el tráfico estático y delegando las peticiones de API y WebSockets a la aplicación Node.js en el puerto 3000. El daemon de sondeo y descubrimiento opera en segundo plano comunicándose directamente con el kernel y persistiendo métricas en MongoDB 7.0 (puerto 27017). Todo el ciclo de vida de los procesos está supervisado por Systemd.
+
+La Figura~\ref{fig:despliegue} detalla el diagrama de despliegue físico y lógico del sistema con el encabezado del servidor Debian 12 plenamente visible y libre de solapamientos.
+
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}[
-  scale=0.85, every node/.style={transform shape},
-  node_box/.style={rectangle, draw=espochBlue, thick, fill=white, rounded corners=3pt, minimum height=1.8cm, text width=5.0cm, align=center, font=\small, inner sep=6pt},
-  service/.style={rectangle, draw=black, fill=techGray, rounded corners=2pt, minimum height=0.5cm, font=\scriptsize, inner sep=3pt},
-  arrow/.style={-{Stealth[scale=0.8]}, thick}
+  scale=0.88, every node/.style={transform shape},
+  outerbox/.style={rectangle, draw=black, very thick, fill=white, rounded corners=5pt},
+  srvbox/.style={rectangle, draw=black, thick, fill=white, rounded corners=3pt, minimum height=1.3cm, text width=4.8cm, align=center, font=\small},
+  clientbox/.style={rectangle, draw=black, thick, fill=black!5, rounded corners=4pt, minimum height=1.4cm, text width=8.5cm, align=center, font=\small},
+  basebox/.style={rectangle, draw=black, thick, fill=black!8, rounded corners=3pt, minimum height=0.9cm, text width=10.4cm, align=center, font=\small},
+  arrow/.style={-{Stealth[scale=0.85]}, thick, draw=black}
 ]
 
-  % Navegador
-  \node[node_box] (browser) at (0,3.5) {\textbf{Navegador Web}\newline\scriptsize Chrome / Firefox / Edge\newline\scriptsize React 18 SPA};
+  % Navegador Cliente
+  \node[clientbox] (client) at (0, 5.0) {
+    \textbf{Estación de Trabajo / Navegador Web del Operador}\\[2pt]
+    \footnotesize Google Chrome / Mozilla Firefox / Microsoft Edge\newline
+    \scriptsize Single Page Application (SPA) en React 18 + Socket.io Client
+  };
 
-  % Servidor Debian
-  \node[node_box, minimum height=4.5cm, text width=9cm] (server) at (0,-1) {\textbf{Servidor Debian 12}};
+  % Servidor Debian 12 (Contenedor físico)
+  \draw[outerbox] (-5.8, -3.2) rectangle (5.8, 2.7);
+  % Barra de encabezado visible sin solapamiento
+  \fill[black!12, rounded corners=4pt] (-5.8, 2.0) rectangle (5.8, 2.7);
+  \node[font=\small\bfseries, align=center] at (0, 2.35) {Servidor Físico del Laboratorio: Debian 12 GNU/Linux (192.168.50.10)};
 
-  \node[service] (nginx) at (-2.5,-0.0) {Nginx (Proxy Inverso)};
-  \node[service] (node) at (2.0,0.0) {Node.js + Express};
-  \node[service] (daemon) at (-2.5,-1.2) {Daemon Monitoreo};
-  \node[service] (mongo) at (2.0,-1.2) {MongoDB 7.0};
-  \node[service] (systemd) at (0,-2.2) {Systemd (Orquestador)};
+  % Servicios Fila 1
+  \node[srvbox] (nginx) at (-2.8, 0.9) {
+    \textbf{Nginx 1.22}\newline
+    \scriptsize Servidor Web / Proxy Inverso\newline
+    \tiny Puerto 80 (HTTP) $\rightarrow$ 3000
+  };
+  \node[srvbox] (node) at (2.8, 0.9) {
+    \textbf{Node.js v20 + Express}\newline
+    \scriptsize API REST + Socket.io Server\newline
+    \tiny Puerto 3000 (Backend / Eventos)
+  };
 
-  % Conexiones
-  \draw[arrow] (browser) -- node[right, font=\scriptsize] {HTTP/WS} (server.north);
-  \draw[arrow] (nginx) -- (node);
-  \draw[arrow] (daemon) -- (mongo);
-  \draw[arrow] (node) -- (mongo);
+  % Servicios Fila 2
+  \node[srvbox] (daemon) at (-2.8, -1.0) {
+    \textbf{Daemon de Monitoreo}\newline
+    \scriptsize Motor de Sondeo Autónomo\newline
+    \tiny ICMP Ping / ARP-Scan (p-limit 15)
+  };
+  \node[srvbox] (mongo) at (2.8, -1.0) {
+    \textbf{MongoDB 7.0}\newline
+    \scriptsize Base de Datos Documental BSON\newline
+    \tiny Puerto 27017 / Índices TTL
+  };
+
+  % Fila 3: Orquestador base
+  \node[basebox] (systemd) at (0, -2.5) {
+    \textbf{Systemd (Gestor de Servicios del SO)}\quad\scriptsize Supervisión continua y auto-reinicio 24/7
+  };
+
+  % Conexiones de red y procesos
+  \draw[arrow] (client.south) -- node[right, font=\scriptsize] {HTTP REST / WebSocket (Puerto 80)} (0, 2.7);
+  \draw[arrow] (nginx.east) -- node[above, font=\tiny] {Proxy} (node.west);
+  \draw[arrow] (node.south) -- node[right, font=\tiny] {Mongoose} (mongo.north);
+  \draw[arrow] (daemon.east) -- node[above, font=\tiny] {BSON} (mongo.west);
+  \draw[arrow] (daemon.north) -- node[left, font=\tiny] {EventBus} (nginx.south);
+  \draw[arrow, dashed] (systemd.north -| daemon) -- (daemon.south);
+  \draw[arrow, dashed] (systemd.north -| node) -- (node.south);
 
 \end{tikzpicture}
 \caption{Diagrama de despliegue del sistema}\label{fig:despliegue}
