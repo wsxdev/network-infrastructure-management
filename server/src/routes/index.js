@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import deviceRouter from './device.routes.js';
 
 const apiRouter = Router();
 
@@ -13,5 +14,8 @@ apiRouter.get('/health', (req, res) => {
     timestamp: new Date().toISOString()
   });
 });
+
+// RF-03.08: registro manual de dispositivos.
+apiRouter.use('/devices', deviceRouter);
 
 export default apiRouter;

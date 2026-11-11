@@ -12,16 +12,27 @@ export const DEVICE_STATUS = Object.freeze({
   UP: 'up',
   DOWN: 'down',
   UNREACHABLE: 'unreachable',
-  PENDING: 'pending'
+  PENDING: 'pending',
+  // RF-03.08: equipo sin monitoreo directo.
+  UNMONITORED: 'unmonitored'
 });
 
 export const DEVICE_TYPES = Object.freeze({
   ROUTER: 'router',
   SWITCH: 'switch',
+  // RF-03.08: switch no administrable, sin IP de administración.
+  SWITCH_UNMANAGED: 'switch_unmanaged',
   SERVER: 'server',
   WORKSTATION: 'workstation',
   ACCESS_POINT: 'ap',
   OTHER: 'other'
+});
+
+export const MONITORING_CAPABILITIES = Object.freeze({
+  NONE: 'none',
+  ICMP_ONLY: 'icmp_only',
+  SNMP_ONLY: 'snmp_only',
+  ICMP_SNMP: 'icmp_snmp'
 });
 
 export const ALERT_SEVERITY = Object.freeze({
