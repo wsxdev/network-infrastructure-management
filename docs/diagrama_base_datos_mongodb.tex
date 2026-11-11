@@ -1,0 +1,368 @@
+\documentclass[11pt,a3paper,landscape]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-nodecimaldot,es-tabla,es-noquoting]{babel}
+
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric,shapes.misc,arrows.meta,positioning,calc,fit,backgrounds,shadows.blur}
+\usepackage{newtxtext,newtxmath}
+\usepackage{geometry}
+\geometry{
+  papersize={420mm,297mm},
+  top=1.5cm,
+  bottom=1.5cm,
+  left=1.5cm,
+  right=1.5cm
+}
+
+\usepackage[table]{xcolor}
+% Paleta Profesional MongoDB y ESPOCH
+\definecolor{mongoGreen}{RGB}{19,170,82}
+\definecolor{mongoDark}{RGB}{0,30,43}
+\definecolor{mongoSlate}{RGB}{33,49,60}
+\definecolor{espochBlue}{RGB}{0,51,102}
+\definecolor{espochRed}{RGB}{192,0,0}
+\definecolor{techGray}{RGB}{245,247,250}
+\definecolor{cardBorder}{RGB}{180,195,205}
+\definecolor{ttlColor}{RGB}{220,100,20}
+
+\tikzset{
+  collection/.style={
+    rectangle,
+    draw=mongoDark,
+    line width=1pt,
+    rounded corners=4pt,
+    fill=white,
+    inner sep=0pt,
+    drop shadow={blur shadow, shadow xshift=2pt, shadow yshift=-2pt, shadow blur radius=3pt, opacity=0.25}
+  },
+  header/.style={
+    font=\small\bfseries\sffamily,
+    text=white,
+    fill=mongoDark,
+    minimum height=0.7cm,
+    text width=\pgfkeysvalueof{/tikz/collection width}-0.4cm,
+    align=left,
+    rounded corners=3pt,
+    inner sep=4pt
+  },
+  field/.style={
+    font=\scriptsize\sffamily,
+    text=mongoDark,
+    align=left,
+    text width=\pgfkeysvalueof{/tikz/collection width}-0.4cm,
+    inner sep=3pt
+  },
+  ttlBadge/.style={
+    font=\tiny\bfseries\sffamily,
+    text=white,
+    fill=ttlColor,
+    rounded corners=2pt,
+    inner sep=2pt
+  },
+  refArrow/.style={
+    -{Stealth[scale=0.9]},
+    thick,
+    draw=mongoSlate!80
+  },
+  embedArrow/.style={
+    -{Circle[scale=0.8]},
+    thick,
+    dashed,
+    draw=mongoGreen!90!black
+  }
+}
+
+\pgfkeys{/tikz/collection width/.initial=6.4cm}
+
+\begin{document}
+\thispagestyle{empty}
+
+\begin{center}
+  {\Large\bfseries\sffamily MODELO DE DATOS DOCUMENTAL (MONGODB 7.0 / CLUSTER ATLAS)}\\[0.15cm]
+  {\small\sffamily Plataforma de Monitoreo y Gestión de Infraestructura de Red - ESPOCH FIE (PAO 5)}\\[0.25cm]
+  {\footnotesize\sffamily Base de Datos: \texttt{netmonitor} \quad|\quad Clúster: \texttt{cluster0.my6izak.mongodb.net} \quad|\quad Arquitectura: NoSQL Documental Híbrida (Referencias + Embebidos)}
+\end{center}
+
+\vspace{0.3cm}
+
+\begin{tikzpicture}[
+  scale=0.95, every node/.style={transform shape}
+]
+
+  % ==========================================================
+  % 1. COLECCIÓN CENTRAL: DEVICES (INVENTARIO)
+  % ==========================================================
+  \node[collection] (devices) at (0, 7.5) {
+    \begin{tabular}{p{6.4cm}}
+      \rowcolor{mongoDark}
+      \textcolor{white}{\textbf{\sffamily \ \ devices (Inventario de Red)}} \\
+      \rowcolor{mongoGreen!15}
+      \scriptsize\sffamily \textbf{\_id}: ObjectId \hfill \textit{[PK]} \\
+      \scriptsize\sffamily \textbf{name}: String \\
+      \scriptsize\sffamily \textbf{type}: Enum('router','switch','server','pc','ap','other') \\
+      \scriptsize\sffamily \textbf{ip}: String \hfill \textit{[Index]} \\
+      \scriptsize\sffamily \textbf{mac}: String \hfill \textit{[Index Sparse]} \\
+      \scriptsize\sffamily \textbf{vendor}: String \hfill \textit{(OUI inferido / doc)} \\
+      \scriptsize\sffamily \textbf{model}: String \\
+      \scriptsize\sffamily \textbf{location}: String \hfill \textit{(Rack / Laboratorio)} \\
+      \scriptsize\sffamily \textbf{status}: Enum('up','down','unreachable','pending') \\
+      \scriptsize\sffamily \textbf{isMonitorable}: Boolean \\
+      \scriptsize\sffamily \textbf{method}: Enum('icmp','arp','tcp','snmp') \\
+      \scriptsize\sffamily \textbf{parentId}: ObjectId $\rightarrow$ \texttt{devices.\_id} \hfill \textit{[Uplink]} \\
+      \scriptsize\sffamily \textbf{origin}: Enum('manual','auto\_discovery') \\
+      \scriptsize\sffamily \textbf{failureCount}: Number \hfill \textit{(3x $\rightarrow$ down)} \\
+      \scriptsize\sffamily \textbf{successCount}: Number \hfill \textit{(2x $\rightarrow$ up)} \\
+      \scriptsize\sffamily \textbf{lastSeenAt}: Date \\
+      \scriptsize\sffamily \textbf{createdAt / updatedAt}: Date \\
+    \end{tabular}
+  };
+
+  % ==========================================================
+  % 2. COLECCIÓN: TOPOLOGY_LINKS (CONMUTACIÓN Y ENLACES)
+  % ==========================================================
+  \node[collection] (links) at (0, 0.0) {
+    \begin{tabular}{p{6.4cm}}
+      \rowcolor{mongoDark}
+      \textcolor{white}{\textbf{\sffamily topology\_links (Grafo de Red)}} \\
+      \rowcolor{mongoGreen!15}
+      \scriptsize\sffamily \textbf{\_id}: ObjectId \hfill \textit{[PK]} \\
+      \scriptsize\sffamily \textbf{sourceDeviceId}: ObjectId $\rightarrow$ \texttt{devices.\_id} \hfill \textit{[Idx]} \\
+      \scriptsize\sffamily \textbf{targetDeviceId}: ObjectId $\rightarrow$ \texttt{devices.\_id} \hfill \textit{[Idx]} \\
+      \scriptsize\sffamily \textbf{linkType}: Enum('ethernet','wireless','uplink') \\
+      \scriptsize\sffamily \textbf{evidence}: Enum('manual\_admin','snmp\_cam','inferred') \\
+      \scriptsize\sffamily \textbf{status}: Enum('active','degraded','down') \\
+      \scriptsize\sffamily \textbf{bandwidthMbps}: Number \hfill \textit{(Opcional)} \\
+      \scriptsize\sffamily \textbf{portSource / portTarget}: String \\
+      \scriptsize\sffamily \textbf{updatedAt}: Date \\
+    \end{tabular}
+  };
+
+  % ==========================================================
+  % 3. COLECCIÓN: CHECKS (TELEMETRÍA CRUDA CON TTL)
+  % ==========================================================
+  \node[collection] (checks) at (8.5, 9.5) {
+    \begin{tabular}{p{6.4cm}}
+      \rowcolor{mongoDark}
+      \textcolor{white}{\textbf{\sffamily checks (Telemetría ICMP)}} \ \colorbox{ttlColor}{\tiny\textbf{TTL 30d}} \\
+      \rowcolor{mongoGreen!15}
+      \scriptsize\sffamily \textbf{\_id}: ObjectId \hfill \textit{[PK]} \\
+      \scriptsize\sffamily \textbf{deviceId}: ObjectId $\rightarrow$ \texttt{devices.\_id} \hfill \textit{[Index]} \\
+      \scriptsize\sffamily \textbf{timestamp}: Date \hfill \textit{[Índice TTL 2,592,000s]} \\
+      \scriptsize\sffamily \textbf{status}: Enum('success','timeout','error') \\
+      \scriptsize\sffamily \textbf{responseTimeMs}: Number \hfill \textit{(Latencia RTT)} \\
+      \scriptsize\sffamily \textbf{packetLoss}: Number \hfill \textit{(0-100\%)} \\
+      \scriptsize\sffamily \textbf{ipChecked}: String \\
+      \scriptsize\sffamily \textbf{checkMethod}: String \hfill \textit{('ping\_exec')} \\
+    \end{tabular}
+  };
+
+  % ==========================================================
+  % 4. COLECCIÓN: DAILY_METRICS (CONSOLIDACIÓN BIG DATA)
+  % ==========================================================
+  \node[collection] (metrics) at (8.5, 4.3) {
+    \begin{tabular}{p{6.4cm}}
+      \rowcolor{mongoDark}
+      \textcolor{white}{\textbf{\sffamily daily\_metrics (Downsampling Big Data)}} \\
+      \rowcolor{mongoGreen!15}
+      \scriptsize\sffamily \textbf{\_id}: ObjectId \hfill \textit{[PK]} \\
+      \scriptsize\sffamily \textbf{deviceId}: ObjectId $\rightarrow$ \texttt{devices.\_id} \hfill \textit{[Idx]} \\
+      \scriptsize\sffamily \textbf{date}: Date \hfill \textit{[Compuesto con deviceId]} \\
+      \scriptsize\sffamily \textbf{uptimePercentage}: Number \hfill \textit{(SLA \%)} \\
+      \scriptsize\sffamily \textbf{totalChecks}: Number \hfill \textit{(Muestras)} \\
+      \scriptsize\sffamily \textbf{failedChecks}: Number \\
+      \scriptsize\sffamily \textbf{avgLatencyMs}: Number \hfill \textit{(Media diaria)} \\
+      \scriptsize\sffamily \textbf{minLatencyMs / maxLatencyMs}: Number \\
+      \scriptsize\sffamily \textbf{outagesCount}: Number \hfill \textit{(Interrupciones)} \\
+      \scriptsize\sffamily \textbf{consolidatedAt}: Date \hfill \textit{(Batch nocturno)} \\
+    \end{tabular}
+  };
+
+  % ==========================================================
+  % 5. COLECCIÓN: SYSTEM_CONFIG (PARÁMETROS Y RANGOS)
+  % ==========================================================
+  \node[collection] (config) at (8.5, -1.0) {
+    \begin{tabular}{p{6.4cm}}
+      \rowcolor{mongoDark}
+      \textcolor{white}{\textbf{\sffamily system\_config (Parámetros y Reglas)}} \\
+      \rowcolor{mongoGreen!15}
+      \scriptsize\sffamily \textbf{\_id}: ObjectId \hfill \textit{[PK]} \\
+      \scriptsize\sffamily \textbf{icmp}: Subdocument \{ \dots \} \hfill \textit{[Embebido]} \\
+      \scriptsize\sffamily \quad $\llcorner$ \textbf{intervalSec}: 30, \textbf{timeoutMs}: 3000 \\
+      \scriptsize\sffamily \quad $\llcorner$ \textbf{failuresDown}: 3, \textbf{successesUp}: 2 \\
+      \scriptsize\sffamily \textbf{discovery}: Subdocument \{ \dots \} \\
+      \scriptsize\sffamily \quad $\llcorner$ \textbf{intervalMin}: 10, \textbf{maxConcurrency}: 15 \\
+      \scriptsize\sffamily \textbf{authorizedRanges}: Array[Subdocument] \\
+      \scriptsize\sffamily \quad $\llcorner$ [ \{ cidr: '192.168.50.0/24', active: true \} ] \\
+      \scriptsize\sffamily \textbf{retention}: Subdocument \{ ttlChecks, ttlEvents \} \\
+      \scriptsize\sffamily \textbf{updatedBy}: ObjectId $\rightarrow$ \texttt{users.\_id} \\
+    \end{tabular}
+  };
+
+  % ==========================================================
+  % 6. COLECCIÓN: EVENTS (BITÁCORA ASÍNCRONA EDA)
+  % ==========================================================
+  \node[collection] (events) at (17.0, 9.5) {
+    \begin{tabular}{p{6.4cm}}
+      \rowcolor{mongoDark}
+      \textcolor{white}{\textbf{\sffamily events (Bus de Eventos EDA)}} \ \colorbox{ttlColor}{\tiny\textbf{TTL 90d}} \\
+      \rowcolor{mongoGreen!15}
+      \scriptsize\sffamily \textbf{\_id}: ObjectId \hfill \textit{[PK]} \\
+      \scriptsize\sffamily \textbf{type}: String \hfill \textit{[Index: PING\_RESULT, etc.]} \\
+      \scriptsize\sffamily \textbf{severity}: Enum('info','warning','critical') \\
+      \scriptsize\sffamily \textbf{description}: String \\
+      \scriptsize\sffamily \textbf{deviceId}: ObjectId $\rightarrow$ \texttt{devices.\_id} \hfill \textit{[Idx]} \\
+      \scriptsize\sffamily \textbf{userId}: ObjectId $\rightarrow$ \texttt{users.\_id} \hfill \textit{(Si aplica)} \\
+      \scriptsize\sffamily \textbf{timestamp}: Date \hfill \textit{[Índice TTL 7,776,000s]} \\
+      \scriptsize\sffamily \textbf{metadata}: Object \hfill \textit{(BSON polimórfico)} \\
+    \end{tabular}
+  };
+
+  % ==========================================================
+  % 7. COLECCIÓN: ALERTS (GESTIÓN TÉCNICA)
+  % ==========================================================
+  \node[collection] (alerts) at (17.0, 4.3) {
+    \begin{tabular}{p{6.4cm}}
+      \rowcolor{mongoDark}
+      \textcolor{white}{\textbf{\sffamily alerts (Alertas Técnicas)}} \\
+      \rowcolor{mongoGreen!15}
+      \scriptsize\sffamily \textbf{\_id}: ObjectId \hfill \textit{[PK]} \\
+      \scriptsize\sffamily \textbf{deviceId}: ObjectId $\rightarrow$ \texttt{devices.\_id} \hfill \textit{[Idx]} \\
+      \scriptsize\sffamily \textbf{severity}: Enum('info','warning','critical') \\
+      \scriptsize\sffamily \textbf{status}: Enum('abierta','reconocida','resuelta') \\
+      \scriptsize\sffamily \textbf{title}: String \\
+      \scriptsize\sffamily \textbf{cause}: String \hfill \textit{(ej. '3 fallos ICMP')} \\
+      \scriptsize\sffamily \textbf{openedAt}: Date \\
+      \scriptsize\sffamily \textbf{acknowledgedBy}: ObjectId $\rightarrow$ \texttt{users.\_id} \\
+      \scriptsize\sffamily \textbf{resolvedAt}: Date \\
+      \scriptsize\sffamily \textbf{incidentId}: ObjectId $\rightarrow$ \texttt{incidents.\_id} \\
+    \end{tabular}
+  };
+
+  % ==========================================================
+  % 8. COLECCIÓN: INCIDENTS (TICKETS OPERATIVOS)
+  % ==========================================================
+  \node[collection] (incidents) at (17.0, -1.0) {
+    \begin{tabular}{p{6.4cm}}
+      \rowcolor{mongoDark}
+      \textcolor{white}{\textbf{\sffamily incidents (Tickets de Incidencia)}} \\
+      \rowcolor{mongoGreen!15}
+      \scriptsize\sffamily \textbf{\_id}: ObjectId \hfill \textit{[PK]} \\
+      \scriptsize\sffamily \textbf{ticketNumber}: String \hfill \textit{[Index Único]} \\
+      \scriptsize\sffamily \textbf{alertId}: ObjectId $\rightarrow$ \texttt{alerts.\_id} \\
+      \scriptsize\sffamily \textbf{deviceId}: ObjectId $\rightarrow$ \texttt{devices.\_id} \\
+      \scriptsize\sffamily \textbf{assignedTo}: ObjectId $\rightarrow$ \texttt{users.\_id} \\
+      \scriptsize\sffamily \textbf{status}: Enum('abierto','en\_proceso','resuelto') \\
+      \scriptsize\sffamily \textbf{diagnosisNotes}: Array[Subdocument] \\
+      \scriptsize\sffamily \quad $\llcorner$ [ \{ author, note, timestamp \} ] \\
+      \scriptsize\sffamily \textbf{resolution}: String \\
+      \scriptsize\sffamily \textbf{createdAt / closedAt}: Date \\
+    \end{tabular}
+  };
+
+  % ==========================================================
+  % 9. COLECCIÓN: USERS (SEGURIDAD Y CONTROL DE ACCESO)
+  % ==========================================================
+  \node[collection] (users) at (25.5, 9.5) {
+    \begin{tabular}{p{6.4cm}}
+      \rowcolor{mongoDark}
+      \textcolor{white}{\textbf{\sffamily users (Usuarios y Roles)}} \\
+      \rowcolor{mongoGreen!15}
+      \scriptsize\sffamily \textbf{\_id}: ObjectId \hfill \textit{[PK]} \\
+      \scriptsize\sffamily \textbf{email}: String \hfill \textit{[Index Único, normalizado]} \\
+      \scriptsize\sffamily \textbf{passwordHash}: String \hfill \textit{(Argon2id / bcrypt)} \\
+      \scriptsize\sffamily \textbf{role}: Enum('administrador','operador') \\
+      \scriptsize\sffamily \textbf{isActive}: Boolean \\
+      \scriptsize\sffamily \textbf{isTemporaryPassword}: Boolean \\
+      \scriptsize\sffamily \textbf{failedAttempts}: Number \hfill \textit{(3 intentos)} \\
+      \scriptsize\sffamily \textbf{lockUntil}: Date \hfill \textit{(Bloqueo 3 min)} \\
+      \scriptsize\sffamily \textbf{createdAt / updatedAt}: Date \\
+    \end{tabular}
+  };
+
+  % ==========================================================
+  % 10. COLECCIÓN: SESSIONS (SESIONES Y TOKENS)
+  % ==========================================================
+  \node[collection] (sessions) at (25.5, 4.3) {
+    \begin{tabular}{p{6.4cm}}
+      \rowcolor{mongoDark}
+      \textcolor{white}{\textbf{\sffamily sessions (Sesiones JWT)}} \ \colorbox{ttlColor}{\tiny\textbf{TTL 24h}} \\
+      \rowcolor{mongoGreen!15}
+      \scriptsize\sffamily \textbf{\_id}: ObjectId \hfill \textit{[PK]} \\
+      \scriptsize\sffamily \textbf{userId}: ObjectId $\rightarrow$ \texttt{users.\_id} \hfill \textit{[Index]} \\
+      \scriptsize\sffamily \textbf{tokenHash}: String \hfill \textit{[Index Único]} \\
+      \scriptsize\sffamily \textbf{ipAddress}: String \\
+      \scriptsize\sffamily \textbf{userAgent}: String \\
+      \scriptsize\sffamily \textbf{createdAt}: Date \\
+      \scriptsize\sffamily \textbf{expiresAt}: Date \hfill \textit{[Índice TTL 86,400s]} \\
+    \end{tabular}
+  };
+
+  % ==========================================================
+  % 11. COLECCIÓN: AUDIT_LOGS (AUDITORÍA ADMINISTRATIVA)
+  % ==========================================================
+  \node[collection] (audit) at (25.5, -1.0) {
+    \begin{tabular}{p{6.4cm}}
+      \rowcolor{mongoDark}
+      \textcolor{white}{\textbf{\sffamily audit\_logs (Trazabilidad ISO)}} \\
+      \rowcolor{mongoGreen!15}
+      \scriptsize\sffamily \textbf{\_id}: ObjectId \hfill \textit{[PK]} \\
+      \scriptsize\sffamily \textbf{userId}: ObjectId $\rightarrow$ \texttt{users.\_id} \hfill \textit{[Index]} \\
+      \scriptsize\sffamily \textbf{action}: String \hfill \textit{[Index: CONFIG\_UPDATE, etc.]} \\
+      \scriptsize\sffamily \textbf{targetCollection}: String \\
+      \scriptsize\sffamily \textbf{targetId}: ObjectId \\
+      \scriptsize\sffamily \textbf{changes}: Object \{ before, after \} \\
+      \scriptsize\sffamily \textbf{ipAddress}: String \\
+      \scriptsize\sffamily \textbf{timestamp}: Date \hfill \textit{[Retención 180 días]} \\
+    \end{tabular}
+  };
+
+  % ==========================================================
+  % RELACIONES Y REFERENCIAS (ARROWS)
+  % ==========================================================
+  
+  % Devices -> Checks
+  \draw[refArrow] (devices.north east) to[bend left=10] node[above, font=\tiny\bfseries, sloped] {1 : N (Telemetría)} (checks.west);
+
+  % Devices -> Daily Metrics
+  \draw[refArrow] (devices.east) -- node[above, font=\tiny\bfseries] {1 : N (Consolidación)} (metrics.west);
+
+  % Devices -> Links (Source y Target)
+  \draw[refArrow] (devices.south) -- node[left, font=\tiny\bfseries] {1 : N (Source/Target)} (links.north);
+
+  % Devices -> Alerts
+  \draw[refArrow] (devices.east) to[bend right=8] node[above, font=\tiny\bfseries, sloped] {1 : N (Alertas)} (alerts.west);
+
+  % Devices -> Events
+  \draw[refArrow] (devices.north east) to[bend left=20] node[above, font=\tiny\bfseries, sloped] {1 : N (Disparador)} (events.west);
+
+  % Alerts -> Incidents
+  \draw[refArrow] (alerts.south) -- node[right, font=\tiny\bfseries] {1 : 1 (Ticket)} (incidents.north);
+
+  % Users -> Sessions
+  \draw[refArrow] (users.south) -- node[right, font=\tiny\bfseries] {1 : N (Tokens)} (sessions.north);
+
+  % Users -> Audit Logs
+  \draw[refArrow] (users.south) to[bend left=18] node[right, font=\tiny\bfseries] {1 : N (Autoría)} (audit.north east);
+
+  % Users -> Incidents (Asignación)
+  \draw[refArrow] (users.south west) to[bend right=15] node[above, font=\tiny\bfseries, sloped] {1 : N (Responsable)} (incidents.east);
+
+  % Users -> Config
+  \draw[refArrow] (users.south west) to[bend right=25] node[below, font=\tiny\bfseries, sloped] {1 : N (Modificador)} (config.east);
+
+  % Leyenda Técnica
+  \node[draw=mongoDark, fill=white, rounded corners=3pt, thick, anchor=south west] at (0, -3.8) {
+    \begin{tabular}{llll}
+      \textbf{\footnotesize\sffamily Leyenda Técnica de Arquitectura NoSQL MongoDB:} & & & \\
+      \tikz{\draw[refArrow] (0,0) -- (0.7,0);} \scriptsize\sffamily Referencia foránea (\texttt{ObjectId}) \quad &
+      \tikz{\node[fill=ttlColor, text=white, font=\tiny\bfseries] {TTL};} \scriptsize\sffamily Índice de expiración automática \quad &
+      \textit{[PK]} \scriptsize\sffamily Identificador único inmutable (\texttt{\_id}) \quad &
+      \textit{[Idx]} \scriptsize\sffamily Índice B-Tree de alto rendimiento \\
+    \end{tabular}
+  };
+
+\end{tikzpicture}
+
+\end{document}
