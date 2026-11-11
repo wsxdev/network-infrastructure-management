@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Badge } from '../common/Badge';
 import { Button } from '../common/Button';
-import { Search, Filter, RefreshCw, Edit, Trash2, Zap, MoreVertical } from 'lucide-react';
+import { Search, Server, Plus, Edit, Trash2, Zap, RotateCcw } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 export function DeviceTable({
   devices = [],
   isLoading = false,
+  onAddNewDevice,
   onEditDevice,
   onDeleteDevice,
   onPingDevice,
@@ -39,7 +40,7 @@ export function DeviceTable({
 
   return (
     <div className="space-y-4">
-      {/* Search and Filters Bar */}
+      {/* Barra de búsqueda y filtros */}
       <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3 flex-1 min-w-[280px]">
           <div className="relative flex-1">
@@ -73,17 +74,21 @@ export function DeviceTable({
             className="text-xs py-2 px-3 rounded-lg border border-slate-200 bg-white text-slate-700 focus:outline-none focus:border-mineral-green-600"
           >
             <option value="">Todos los Tipos</option>
-            <option value="router">Router</option>
-            <option value="switch">Switch</option>
+            <option value="desktop">Computadora de escritorio</option>
+            <option value="laptop">Laptop</option>
             <option value="server">Servidor</option>
-            <option value="workstation">Estación / PC</option>
-            <option value="ap">Access Point</option>
+            <option value="router">Router</option>
+            <option value="switch_managed">Switch administrable</option>
+            <option value="switch_unmanaged">Switch no administrable</option>
+            <option value="access_point">Punto de acceso inalámbrico</option>
+            <option value="network_printer">Impresora de red</option>
+            <option value="smartphone">Smartphone</option>
             <option value="other">Otro</option>
           </select>
         </div>
       </div>
 
-      {/* Table Container */}
+      {/* Contenedor de la tabla */}
       <div className="bg-white rounded-xl border border-slate-200/80 shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
@@ -102,14 +107,64 @@ export function DeviceTable({
             <tbody className="divide-y divide-slate-100 text-slate-700">
               {isLoading ? (
                 <tr>
-                  <td colSpan="8" className="py-8 text-center text-slate-400">
-                    Cargando inventario de infraestructura...
+                  <td colSpan="8" className="py-12 text-center">
+                    <div className="flex flex-col items-center justify-center space-y-2">
+                      <div className="w-6 h-6 border-2 border-mineral-green-700 border-t-transparent rounded-full animate-spin"></div>
+                      <span className="text-xs text-slate-400">Cargando inventario de infraestructura...</span>
+                    </div>
+                  </td>
+                </tr>
+              ) : devices.length === 0 ? (
+                /* Estado Vacío - Sin dispositivos agregados */
+                <tr>
+                  <td colSpan="8" className="py-16 text-center">
+                    <div className="max-w-md mx-auto flex flex-col items-center justify-center space-y-3 px-4">
+                      <div className="w-16 h-16 rounded-2xl bg-mineral-green-50 text-mineral-green-700 flex items-center justify-center border border-mineral-green-200/80 shadow-xs">
+                        <Server className="w-8 h-8" />
+                      </div>
+                      <div className="space-y-1">
+                        <h3 className="text-sm font-bold text-slate-800">
+                          No hay dispositivos registrados en el inventario
+                        </h3>
+                        <p className="text-xs text-slate-500 max-w-sm">
+                          Aún no se ha registrado ningún equipo de red en el sistema. Registra el primer dispositivo para mantener el inventario técnico estandarizado y comenzar el monitoreo.
+                        </p>
+                      </div>
+                      {isAdmin && onAddNewDevice && (
+                        <Button
+                          variant="primary"
+                          size="sm"
+                          onClick={onAddNewDevice}
+                          className="mt-3 gap-1.5"
+                        >
+                          <Plus className="w-4 h-4" />
+                          <span>+ Registrar Primer Dispositivo</span>
+                        </Button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ) : filteredDevices.length === 0 ? (
+                /* Estado sin coincidencias de filtro */
                 <tr>
-                  <td colSpan="8" className="py-8 text-center text-slate-400">
-                    No se encontraron dispositivos con los criterios seleccionados.
+                  <td colSpan="8" className="py-12 text-center">
+                    <div className="flex flex-col items-center justify-center space-y-2">
+                      <p className="text-xs text-slate-500">
+                        No se encontraron dispositivos que coincidan con los criterios seleccionados.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSearchTerm('');
+                          setStatusFilter('');
+                          setTypeFilter('');
+                        }}
+                        className="inline-flex items-center gap-1 text-xs text-mineral-green-700 font-semibold underline hover:text-mineral-green-800"
+                      >
+                        <RotateCcw className="w-3 h-3" />
+                        <span>Restablecer filtros</span>
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ) : (
@@ -147,7 +202,7 @@ export function DeviceTable({
                         ? `${device.responseTimeMs} ms`
                         : '—'}
                     </td>
-                    <td className="py-3 px-4 text-slate-500">{device.location}</td>
+                    <td className="py-3 px-4 text-slate-500">{device.location || 'Laboratorio 1 - Rack A'}</td>
                     <td className="py-3 px-4 text-right" onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center justify-end gap-1.5">
                         {device.ipAddress && (

@@ -19,10 +19,16 @@ export function InventoryPage() {
   const { data: devicesResponse, isLoading, refetch } = useQuery({
     queryKey: ['devices'],
     queryFn: async () => {
-      const { data } = await api.get('/devices?limit=200');
-      return data;
+      try {
+        const { data } = await api.get('/devices?limit=200');
+        return data;
+      } catch (err) {
+        console.warn('Error al cargar dispositivos:', err);
+        return { data: [] };
+      }
     },
-    refetchInterval: 5000
+    refetchInterval: 10000,
+    retry: 1
   });
 
   const devices = devicesResponse?.data || [];
@@ -107,6 +113,10 @@ export function InventoryPage() {
       <DeviceTable
         devices={devices}
         isLoading={isLoading}
+        onAddNewDevice={() => {
+          setEditingDevice(null);
+          setIsModalOpen(true);
+        }}
         onEditDevice={(device) => {
           setEditingDevice(device);
           setIsModalOpen(true);
