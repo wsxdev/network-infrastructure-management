@@ -2,16 +2,20 @@ import { DEVICE_STATUS } from "../config/constants.js";
 import { evaluateDeviceHealth } from "./health-evaluation.service.js";
 
 export function prepareDeviceCheckResult(device, result) {
-  const { checkedAt, probeType, isSuccess, technicalCause } = result;
+  const { checkedAt, probeType, isSuccess, technicalCause, responseTimeMs } =
+    result;
   const previousStatus = device.status ?? DEVICE_STATUS.PENDING;
   const nextHealth = evaluateDeviceHealth(device, isSuccess);
 
   const log = {
     deviceId: device._id,
-    checkedAt,
-    probeType,
+    ipAddress: device.ipAddress,
+    status: isSuccess ? DEVICE_STATUS.UP : DEVICE_STATUS.DOWN,
+    responseTimeMs: isSuccess ? (responseTimeMs ?? null) : null,
     isSuccess,
-    technicalCause: isSuccess ? null : technicalCause,
+    errorMessage: isSuccess ? null : technicalCause,
+    createdAt: checkedAt,
+    probeType,
   };
 
   const deviceUpdate = {
