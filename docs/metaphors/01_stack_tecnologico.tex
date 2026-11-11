@@ -1,0 +1,407 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-nodecimaldot,es-tabla,es-noquoting]{babel}
+
+% Paquetes de graficos y diagramas
+\usepackage{graphicx}
+\graphicspath{{../img/}{img/}}
+\usepackage{pdflscape}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric,shapes.misc,arrows.meta,positioning,calc,fit,backgrounds,shadows.blur}
+
+% Tipografia Times New Roman estandar en 12pt
+\usepackage{newtxtext,newtxmath}
+
+% Margenes estandar normalizados (3cm izq, 2.5cm der/sup/inf)
+\usepackage{geometry}
+\geometry{
+  top=2.5cm,
+  bottom=2.5cm,
+  left=3.0cm,
+  right=2.5cm,
+  headheight=15pt,
+  headsep=20pt,
+  footskip=25pt
+}
+
+% Espaciado e interlineado
+\usepackage{setspace}
+\setstretch{1.15}
+\setlength{\parskip}{6pt}
+\setlength{\parindent}{0pt}
+
+% Vinetas redondas formales
+\usepackage{enumitem}
+\setlist[itemize,1]{label=\textbullet, leftmargin=1.5em, itemsep=2pt, parsep=0pt}
+\setlist[itemize,2]{label=\normalfont\bfseries\textperiodcentered, leftmargin=1.5em, itemsep=2pt, parsep=0pt}
+\setlist[enumerate]{leftmargin=1.5em, itemsep=2pt, parsep=0pt}
+
+% Color del texto y paleta institucional
+\usepackage{xcolor}
+\definecolor{espochBlue}{RGB}{0,51,102}
+\definecolor{espochRed}{RGB}{192,0,0}
+\definecolor{techGray}{RGB}{245,247,250}
+\definecolor{borderGray}{RGB}{209,213,219}
+
+% Tablas profesionales segun estandares ISO/APA
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{caption}
+\captionsetup[table]{position=top,skip=6pt,font={small,bf},labelfont=bf}
+\captionsetup[figure]{position=bottom,skip=6pt,font={small,bf},labelfont=bf}
+
+% Listados de codigo preformateado
+\usepackage{listings}
+\lstset{
+  basicstyle=\small\ttfamily,
+  frame=single,
+  rulecolor=\color{black},
+  framerule=0.5pt,
+  breaklines=true,
+  numbers=none,
+  backgroundcolor=\color{white},
+  tabsize=2,
+  inputencoding=utf8,
+  extendedchars=true,
+  literate=
+    {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'{\i}}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+    {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+    {ñ}{{\~n}}1 {Ñ}{{\~N}}1 {ü}{{\"u}}1 {Ü}{{\"U}}1
+}
+
+% Encabezados y pies de pagina formales
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\nouppercase{\leftmark}}
+\fancyhead[R]{\small ESPOCH - Metáfora y Stack Tecnológico}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% Formato de titulos
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+  {\normalfont\Large\bfseries}{\chaptertitlename\ \thechapter}{10pt}{\huge\bfseries}
+\titlespacing*{\chapter}{0pt}{-10pt}{15pt}
+
+\titleformat{\section}
+  {\normalfont\large\bfseries}{\thesection}{1em}{}
+\titlespacing*{\section}{0pt}{12pt}{4pt}
+
+\titleformat{\subsection}
+  {\normalfont\normalsize\bfseries}{\thesubsection}{1em}{}
+\titlespacing*{\subsection}{0pt}{10pt}{3pt}
+
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\bfseries}{\thesubsubsection}{1em}{}
+\titlespacing*{\subsubsection}{0pt}{8pt}{2pt}
+
+% Enlaces sin color pero navegables
+\usepackage{hyperref}
+\hypersetup{
+  hidelinks=true,
+  pdfauthor={Equipo de Ingenieria de Desarrollo y Aseguramiento Tecnico - ESPOCH},
+  pdftitle={Documento de Metáfora y Stack Tecnológico - ESPOCH},
+  pdfsubject={Proyecto Integrador de Saberes - Quinto Semestre}
+}
+
+\begin{document}
+
+% PORTADA ACADEMICA INSTITUCIONAL
+\begin{titlepage}
+  \centering
+  \thispagestyle{empty}
+  \vspace*{0.3cm}
+
+  \includegraphics[width=3.2cm]{LogoESPOCH.png}\\[0.4cm]
+
+  {\normalsize\bfseries ESCUELA SUPERIOR POLITÉCNICA DE CHIMBORAZO}\\[0.2cm]
+  {\small\bfseries FACULTAD DE INFORMÁTICA Y ELECTRÓNICA}\\[0.1cm]
+  {\small\bfseries CARRERA DE TECNOLOGÍAS DE LA INFORMACIÓN}\\[1.0cm]
+
+  {\large\bfseries SISTEMA WEB DE MONITOREO Y GESTIÓN\\[0.15cm]
+  DE LA INFRAESTRUCTURA DE REDES - ESPOCH}\\[0.7cm]
+
+  {\normalsize\bfseries DOCUMENTO DE METÁFORA, ARQUITECTURA DIRIGIDA POR EVENTOS\\[0.15cm]
+  Y SELECCIÓN DEL STACK TECNOLÓGICO}\\[0.15cm]
+  {\small Arquitectura Reactiva en Tiempo Real, Ecosistema de Herramientas y Justificación Técnica}\\[1.0cm]
+
+  \begin{minipage}[t]{0.45\textwidth}
+    {\small\textbf{Roles de Ingeniería:}}\\[0.25cm]
+    \begin{itemize}[leftmargin=1.2em,itemsep=2pt,parsep=0pt]
+      \small
+      \item Líder Técnico y Arquitecto Backend
+      \item Desarrollador Frontend y Diseñador UI/UX
+      \item Especialista en Bases de Datos y QA Lead
+      \item Ingeniero DevOps y Redes
+    \end{itemize}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.50\textwidth}
+    {\small\textbf{Asignaturas y Docentes Responsables:}}\\[0.25cm]
+    \begin{itemize}[leftmargin=1.2em,itemsep=2pt,parsep=0pt]
+      \small
+      \item Infraestructura TI: Ing. Tatiana Landivar
+      \item Tecnología Web: Ing. Pedro Aguilar
+      \item Conmutación y Enrutamiento: Ing. Juan Pazmiño
+      \item Big Data: Ing. Geovanny Silva
+      \item Diseño y Multimedia: Ing. Ramiro Bonilla
+    \end{itemize}
+  \end{minipage}
+
+  \vfill
+
+  {\small\textbf{Período Académico:} Quinto Semestre (PAO 5)}\\[0.05cm]
+  {\small\textbf{Documento Oficial de Ingeniería de Software (Versión 2.0 - Arquitectura EDA)}}\\[0.6cm]
+
+  {\small Orellana - Ecuador}\\[0.15cm]
+  {\small Noviembre de 2026}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\listoffigures
+\newpage
+
+\listoftables
+\newpage
+
+\chapter{Fundamentos y Metáfora del Sistema}
+
+\section{Metáfora Conceptual: Centro de Operaciones de Red (NOC)}
+La metáfora del sistema proporciona un modelo mental claro y unificado del funcionamiento de la plataforma:
+\begin{itemize}
+  \item \textbf{Consola de Visualización (Frontend):} Proyecta en pantallas interactivas el mapa de topología, indicadores clave de desempeño (KPIs) y el panel de alertas acústico-visuales.
+  \item \textbf{Canal de Telemetría (WebSockets):} Enlace bidireccional continuo que transmite métricas y notificaciones en tiempo real sin requerir peticiones periódicas.
+  \item \textbf{Centro de Control y Despacho (Backend API y Bus de Eventos):} Procesa peticiones administrativas seguras (autenticación JWT, gestión de usuarios, configuración) y gestiona el flujo asíncrono de eventos internos.
+  \item \textbf{Motor de Sondeo (Servicio de Monitoreo):} Servicio autónomo en segundo plano que ejecuta comprobaciones periódicas de Capa 2 (ARP) y Capa 3 (ICMP ping) sobre los equipos registrados.
+  \item \textbf{Almacén Central (MongoDB):} Repositorio documental que guarda inventario, métricas agregadas y bitácora histórica de eventos con políticas de retención automática (TTL).
+\end{itemize}
+
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[
+    scale=0.92, every node/.style={transform shape},
+    box/.style={rectangle, draw=black, thick, fill=white, rounded corners=3pt, align=center, minimum height=1.1cm, text width=6.5cm, font=\small},
+    bus/.style={rectangle, draw=espochBlue, very thick, fill=espochBlue!8, rounded corners=4pt, align=center, minimum height=1.1cm, text width=8.5cm, font=\small\bfseries},
+    subbox/.style={rectangle, draw=black, thick, fill=techGray, rounded corners=3pt, align=center, minimum height=1.1cm, text width=4.5cm, font=\small},
+    arrow/.style={-{Stealth[scale=0.95]}, thick},
+    biarrow/.style={{Stealth[scale=0.95]}-{Stealth[scale=0.95]}, thick}
+  ]
+    % Nivel 1: Frontend
+    \node[box] (ui) at (0, 7.0) {\textbf{Consola NOC}\newline \footnotesize Frontend React 18 + Socket.io Client};
+
+    % Nivel 2: API
+    \node[box] (api) at (0, 5.0) {\textbf{Servidor de Aplicación}\newline \footnotesize API REST Express / Middlewares};
+
+    % Nivel 3: Bus Central
+    \node[bus] (bus) at (0, 3.0) {Bus Central de Eventos\newline \footnotesize \texttt{EventEmitter} en Node.js (Desacoplamiento)};
+
+    % Nivel 4: Motores de Soporte (Monitoreo izq, Persistencia der)
+    \node[subbox, draw=espochRed] (daemon) at (-3.2, 1.0) {\textbf{Motor de Sondeo}\newline \footnotesize ICMP Ping / ARP-Scan};
+    \node[subbox, draw=espochBlue] (db) at (3.2, 1.0) {\textbf{Base de Datos}\newline \footnotesize MongoDB 7.0 (Índices TTL)};
+
+    % Nivel 5: Red Local
+    \node[subbox] (lan) at (-3.2, -1.0) {\textbf{Infraestructura LAN}\newline \footnotesize Switches, Routers, Hosts};
+
+    % Conexiones
+    \draw[arrow] (ui.south west) -- node[left, font=\scriptsize] {HTTP REST (Auth / CRUD)} (api.north west);
+    \draw[biarrow] (ui.south east) -- node[right, font=\scriptsize] {WebSockets (Telemetría)} (api.north east);
+    
+    \draw[arrow] (api) -- node[right, font=\scriptsize] {Despacha peticiones} (bus);
+    
+    \draw[arrow] (daemon.north) to[bend left=15] node[left, font=\scriptsize] {Emite métricas} (bus.south west);
+    \draw[arrow] (bus.south east) to[bend left=15] node[right, font=\scriptsize] {Persiste BSON} (db.north);
+    
+    \draw[arrow] (daemon.south west) -- node[left, font=\scriptsize] {Sondeos ICMP/ARP} (lan.north west);
+    \draw[arrow] (lan.north east) -- node[right, font=\scriptsize] {Respuestas} (daemon.south east);
+
+  \end{tikzpicture}
+  \caption{Diagrama de interacción general de los componentes del sistema}\label{fig:arquitectura_general}
+\end{figure}
+
+\newpage
+\chapter{Arquitectura Dirigida por Eventos (EDA)}
+
+\section{Estructura del Flujo Reactivo}
+El monitoreo de red opera sobre condiciones asíncronas: caídas de enlace, fluctuaciones de latencia e incorporación de nuevos hosts. La Arquitectura Dirigida por Eventos desacopla la detección de anomalías de su procesamiento y visualización, garantizando que el sistema reaccione en milisegundos sin bloquear el servidor web.
+
+\begin{landscape}
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  scale=0.92, every node/.style={transform shape},
+  arrow/.style={-{Stealth[scale=0.88]}, thick},
+  actor/.style={circle, draw=black, thick, fill=white, minimum size=0.55cm},
+  comp/.style={rectangle, draw=black, thick, fill=techGray, rounded corners=3pt, minimum height=1.35cm, text width=3.6cm, align=center, font=\small},
+  subcomp/.style={rectangle, draw=black, thick, fill=white, rounded corners=3pt, minimum height=1.1cm, text width=5.5cm, align=center, font=\small},
+  buspipe/.style={rectangle, draw=espochBlue, very thick, fill=espochBlue!8, rounded corners=6pt, minimum height=1.15cm, text width=22.2cm, align=center, font=\normalsize\bfseries}
+]
+
+  % 1. ACTOR EN LA CIMA
+  \node[actor] (head) at (0,7.7) {};
+  \draw[thick] (0,7.42) -- (0,6.65); % cuerpo
+  \draw[thick] (-0.35,7.05) -- (0.35,7.05); % brazos
+  \draw[thick] (0,6.65) -- (-0.28,5.85); % pierna izq
+  \draw[thick] (0,6.65) -- (0.28,5.85); % pierna der
+  \node[font=\footnotesize\bfseries] at (0,5.4) {Operador / Administrador NOC};
+
+  % 2. FRONTEND WEB
+  \node[subcomp] (front) at (0,4.2) {\textbf{Frontend Web}\newline \footnotesize React 18 + Socket.io Client};
+
+  % 3. CONTROLADOR REST
+  \node[subcomp] (api) at (0,2.4) {\textbf{ModuloControlador}\newline \footnotesize API REST Express / Middlewares};
+
+  % 4. BROKER CENTRAL (BUS DE EVENTOS)
+  \node[buspipe] (bus) at (0,0.6) {Broker de Eventos Central (\texttt{EventEmitter} en Node.js)};
+
+  % 5. 5 MODULOS HORIZONTALES (x = -9.2, -4.6, 0.0, 4.6, 9.2)
+  \node[comp] (m1) at (-9.2,-2.3) {{\footnotesize\textbf{ModuloMonitoreo}}\newline \scriptsize Ping ICMP / ARP-Scan\newline \tiny\textcolor{black!60}{(Sondeo continuo)}};
+  \node[comp] (m2) at (-4.6,-2.3) {{\footnotesize\textbf{ModuloAlertas}}\newline \scriptsize Reglas de Umbrales\newline \tiny\textcolor{black!60}{(Evaluación reglas)}};
+  \node[comp] (m3) at (0.0,-2.3) {{\footnotesize\textbf{ModuloPersistencia}}\newline \scriptsize MongoDB ODM (TTL)\newline \tiny\textcolor{black!60}{(Persistencia BSON)}};
+  \node[comp] (m4) at (4.6,-2.3) {{\footnotesize\textbf{ModuloNotificaciones}}\newline \scriptsize Socket.io Gateway\newline \tiny\textcolor{black!60}{(Emisión WebSocket)}};
+  \node[comp] (m5) at (9.2,-2.3) {{\footnotesize\textbf{ModuloSeguridad}}\newline \scriptsize Auditoría y Bloqueo\newline \tiny\textcolor{black!60}{(Bloqueo tras 5x)}};
+
+  % FLUJO SUPERIOR
+  \draw[arrow] (0,5.15) -- node[right, font=\scriptsize] {Interacción UI} (front.north);
+  \draw[arrow] (front.south) -- node[right, font=\scriptsize] {Petición HTTP} (api.north);
+  \draw[arrow] (api.south) -- node[right, font=\scriptsize] {Evento Disparado} (bus.north);
+
+  % FLECHAS MODULOS <-> BROKER
+  % Modulo 1 -> Broker
+  \draw[arrow] (m1.north) to[bend left=8] node[left, font=\scriptsize] {Evento PingResult} (-9.2,0.05);
+
+  % Broker -> Modulo 2 -> Broker
+  \draw[arrow] (-4.9,0.05) to[bend right=10] node[left, font=\scriptsize] {Consume PingResult} (m2.north west);
+  \draw[arrow] (m2.north east) to[bend right=10] node[right, font=\scriptsize] {Evento Alerta} (-4.3,0.05);
+
+  % Broker -> Modulo 3
+  \draw[arrow] (0,0.05) -- node[right, font=\scriptsize] {Consume Telemetría} (m3.north);
+
+  % Broker -> Modulo 4
+  \draw[arrow] (4.6,0.05) -- node[right, font=\scriptsize] {Consume Alertas / Estado} (m4.north);
+
+  % Modulo 4 -> Frontend Web (WebSocket push en tiempo real)
+  \draw[arrow, draw=espochBlue, thick, dashed] (m4.north east) to[out=55,in=-10,looseness=1.1] node[pos=0.55, right=4pt, font=\scriptsize, align=left] {Canal WebSocket (Socket.io)\newline Push en Tiempo Real} (front.east);
+
+  % Broker -> Modulo 5
+  \draw[arrow] (9.2,0.05) to[bend left=8] node[right, font=\scriptsize] {Consume IntentoFallido} (m5.north);
+
+\end{tikzpicture}
+\caption{Diagrama de componentes y flujo de eventos del sistema (EDA)}\label{fig:diagrama_eventos}
+\end{figure}
+\end{landscape}
+
+\section{Catálogo Estandarizado de Eventos}
+El bus de eventos opera mediante constantes inmutables para impedir el uso de cadenas mágicas y asegurar tipado estricto en el backend:
+
+\begin{table}[htbp]
+\centering
+\caption{Catálogo de eventos del bus interno}\label{tab:catalogo_eventos}
+\small
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash\ttfamily\footnotesize}p{3.8cm} >{\raggedright\arraybackslash\small}p{2.9cm} >{\raggedright\arraybackslash\small}p{3.4cm} >{\raggedright\arraybackslash\small}X}
+\toprule
+\textbf{\textnormal{\textsf{\textbf{Evento Tipado}}}} & \textbf{\textnormal{\textsf{\textbf{Productor}}}} & \textbf{\textnormal{\textsf{\textbf{Consumidor(es)}}}} & \textbf{\textnormal{\textsf{\textbf{Acción Desencadenada}}}} \\
+\midrule
+NETWORK\_PING\_RESULT & ModuloMonitoreo & ModuloAlertas, ModuloPersistencia & Evalúa umbrales de latencia y persiste la telemetría en MongoDB. \\
+\midrule
+DEVICE\_STATUS\_CHANGED & ModuloMonitoreo & ModuloAlertas, ModuloNotificaciones & Actualiza estado (\texttt{online}, \texttt{warning}, \texttt{offline}) y emite por WebSocket. \\
+\midrule
+DEVICE\_DISCOVERED & ModuloMonitoreo & ModuloNotificaciones & Notifica descubrimiento de un nuevo host no inventariado en el segmento LAN. \\
+\midrule
+ALERT\_TRIGGERED & ModuloAlertas & ModuloNotificaciones, ModuloPersistencia & Emite alerta visual y acústica al operador y crea el ticket en base de datos. \\
+\midrule
+AUTH\_LOGIN\_FAILED & ModuloControlador & ModuloSeguridad & Incrementa contador de fallos; tras 5 intentos ejecuta bloqueo atómico temporal. \\
+\midrule
+TOPOLOGY\_LINK\_CHANGED & ModuloControlador & ModuloNotificaciones & Actualiza aristas del grafo de red en tiempo real en la vista de topología. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\newpage
+\chapter{Desglose Técnico del Stack Tecnológico}
+
+\section{Componentes Seleccionados y Funciones}
+A continuación se detalla la función técnica específica de cada tecnología seleccionada:
+
+\begin{itemize}
+  \item \textbf{React 18.2+ con Vite 5:} Interfaz reactiva concurrente. Actualiza el mapa de red y paneles métricos en tiempo real sin recargar la página.
+  \item \textbf{Socket.io (v4.8 Backend / v4.7 Frontend):} Canal WebSocket persistente para transmisión bidireccional en tiempo real con reconexión automática y latencia inferior a 50 ms.
+  \item \textbf{React Flow (@xyflow/react v12):} Motor de visualización para grafos interactivos de topología de red con nodos personalizados, aristas dinámicas, zoom y arrastre.
+  \item \textbf{Node.js v20 LTS y Express v4.21+:} Entorno asíncrono no bloqueante con microframework para gestión de rutas REST, validación Zod y middlewares de seguridad (Helmet, CORS).
+  \item \textbf{Bus de Eventos Interno (\texttt{EventEmitter}):} Despachador de mensajes en memoria que desacopla la captura de métricas, el motor de alertas y la persistencia.
+  \item \textbf{Mecanismos de Red Nativos (\texttt{arp-scan} y \texttt{ping}):} Ejecución eficiente mediante procesos del kernel de Linux con pool de concurrencia (\texttt{p-limit} a 15 sockets simultáneos).
+  \item \textbf{MongoDB 7.0 con Mongoose 8.9+:} Base de datos NoSQL documental con índices TTL para purga automática de sesiones y métricas históricas a 30 y 90 días.
+  \item \textbf{Nginx 1.22+ y Systemd en Debian 12:} Servidor web inverso con terminación SSL y proxy WebSocket, orquestado como servicio nativo con política \texttt{Restart=always}.
+\end{itemize}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  scale=0.88, every node/.style={transform shape},
+  layer/.style={rectangle, draw=black, thick, fill=techGray, rounded corners=3pt, minimum height=1.2cm, minimum width=13.0cm, align=left, font=\small}
+]
+
+  % Capas tecnologicas
+  \node[layer, fill=white, draw=espochBlue] (l1) at (0,3.6) {\textbf{Capa de Presentación Web:}\newline React 18 $\cdot$ Vite $\cdot$ React Flow (@xyflow) $\cdot$ Tailwind CSS $\cdot$ Socket.io Client};
+
+  \node[layer, fill=white, draw=espochBlue] (l2) at (0,1.8) {\textbf{Capa de Negocio y Eventos:}\newline Node.js v20 $\cdot$ Express $\cdot$ Socket.io Server $\cdot$ EventEmitter $\cdot$ Zod $\cdot$ JWT Dual};
+
+  \node[layer, fill=white, draw=espochRed] (l3) at (0,0.0) {\textbf{Capa de Monitoreo de Red:}\newline Daemon Linux $\cdot$ \texttt{arp-scan} (Capa 2) $\cdot$ ICMP Ping (Capa 3) $\cdot$ \texttt{p-limit} Concurrencia};
+
+  \node[layer, fill=white, draw=espochBlue] (l4) at (0,-1.8) {\textbf{Capa de Persistencia e Infraestructura:}\newline MongoDB 7.0 (Índices TTL) $\cdot$ Mongoose $\cdot$ Debian 12 $\cdot$ Nginx $\cdot$ Systemd};
+
+  % Flechas entre capas
+  \draw[-{Stealth[scale=1.0]}, thick] (l1.south) -- (l2.north);
+  \draw[-{Stealth[scale=1.0]}, thick] (l2.south) -- (l3.north);
+  \draw[-{Stealth[scale=1.0]}, thick] (l3.south) -- (l4.north);
+
+\end{tikzpicture}
+\caption{Capas técnicas y distribución de responsabilidades del stack}\label{fig:stack_layers}
+\end{figure}
+
+\newpage
+\chapter{Matriz de Justificación Técnica y Alternativas Descartadas}
+
+\begin{table}[htbp]
+\centering
+\caption{Matriz comparativa de arquitectura, tiempo real y desarrollo web}\label{tab:comparativa_software}
+\small
+\begin{tabularx}{\textwidth}{p{2.6cm} p{2.8cm} p{3.8cm} X}
+\toprule
+\textbf{Capa / Componente} & \textbf{Tecnología Elegida} & \textbf{Alternativas Evaluadas} & \textbf{Criterio y Justificación de Decisión} \\
+\midrule
+\textbf{Patrón Arquitectural} & \textbf{Monolito Modular Dirigido por Eventos (EDA)} & Microservicios distribuidos, Monolito síncrono N-capas & Microservicios introduce sobrecarga de latencia de red entre servicios y complejidad innecesaria para un equipo de 4 personas. El monolito síncrono no puede responder en tiempo real a eventos de red. EDA modular ofrece el equilibrio óptimo entre desacoplamiento y simplicidad operativa. \\
+\midrule
+\textbf{Comunicación en Tiempo Real} & \textbf{WebSockets (Socket.io)} & HTTP Polling periódico, Server-Sent Events (SSE) & HTTP Polling satura la red con peticiones vacías cada pocos segundos y genera latencia inaceptable. SSE solo permite flujo unidireccional servidor-cliente. Socket.io ofrece transporte bidireccional, reconexión inteligente, salas de aislamiento y latencia inferior a 50 ms. \\
+\midrule
+\textbf{Frontend Web} & \textbf{React 18 + Vite} & Angular, Vue.js, Plantillas Server-Side (EJS/Django) & React cuenta con el ecosistema de visualización de grafos de red más maduro (@xyflow/react). Vite ofrece compilaciones ultrarrápidas y menor consumo de memoria en desarrollo que Webpack. \\
+\midrule
+\textbf{Backend \& API} & \textbf{Node.js + Express} & Python (Django/FastAPI), Java (Spring Boot) & El modelo de I/O asíncrono no bloqueante de Node.js es superior al manejar cientos de comprobaciones concurrentes de red sin levantar hilos pesados del sistema operativo. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{Matriz comparativa de persistencia, monitoreo de red e infraestructura}\label{tab:comparativa_infra}
+\small
+\begin{tabularx}{\textwidth}{p{2.6cm} p{2.8cm} p{3.8cm} X}
+\toprule
+\textbf{Capa / Componente} & \textbf{Tecnología Elegida} & \textbf{Alternativas Evaluadas} & \textbf{Criterio y Justificación de Decisión} \\
+\midrule
+\textbf{Base de Datos} & \textbf{MongoDB 7.0} & PostgreSQL, MySQL, SQLite & La estructura de los dispositivos de red es polimórfica (un router tiene tablas de rutas; un switch puertos y VLANs; una PC no). Los documentos BSON modelan esta jerarquía sin tablas relacionales artificiales. Dispone de índices TTL nativos. \\
+\midrule
+\textbf{Daemon de Red} & \textbf{Node.js Daemon + arp-scan/ping} & Python Scapy, C/C++ raw sockets & `arp-scan` y `ping` son binarios del sistema altamente optimizados por el kernel de Linux. Integrarlos con Node.js proporciona equilibrio entre velocidad de ejecución en bajo nivel y facilidad de lógica de negocio. \\
+\midrule
+\textbf{Despliegue} & \textbf{Systemd + Nginx en Debian} & Docker Compose en VM, Kubernetes & En la máquina física del laboratorio asignada para el proyecto, capas pesadas de virtualización consumen memoria RAM innecesaria. La ejecución como servicio nativo Systemd garantiza el 100\% del rendimiento del hardware. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\end{document}

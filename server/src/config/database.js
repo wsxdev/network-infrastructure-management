@@ -43,3 +43,5 @@ export async function connectDatabase() {
     console.error('❌ Error en el hilo de MongoDB:', err.message);
   });
 }
+
+export const connectDB = connectDatabase;

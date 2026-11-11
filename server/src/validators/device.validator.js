@@ -6,6 +6,22 @@
  */
 
 import { z } from 'zod';
+import { DEVICE_TYPES } from '../config/constants.js';
+
+/** Tipos de dispositivos admitidos en el inventario (catálogo canónico + enum del sistema) */
+export const ADMITTED_DEVICE_TYPES = Array.from(new Set([
+  ...Object.values(DEVICE_TYPES),
+  'desktop',
+  'laptop',
+  'server',
+  'router',
+  'switch_managed',
+  'switch_unmanaged',
+  'access_point',
+  'network_printer',
+  'smartphone',
+  'other'
+]));
 
 /**
  * Expresión regular estricta para direcciones IPv4 en notación decimal con puntos (RFC 791).
@@ -73,7 +89,9 @@ export const createDeviceSchema = z
     type: z
       .string({ required_error: 'El tipo de dispositivo es obligatorio.' })
       .trim()
-      .min(1, 'Debe seleccionar un tipo de dispositivo válido del catálogo.'),
+      .refine(val => ADMITTED_DEVICE_TYPES.includes(val), {
+        message: 'Tipo de dispositivo no válido en el catálogo del sistema.'
+      }),
 
     ipAddress: z
       .string()
@@ -151,7 +169,13 @@ export const createDeviceSchema = z
 export const updateDeviceSchema = z
   .object({
     name: z.string().trim().min(1, 'El nombre no puede estar vacío.').max(120).optional(),
-    type: z.string().trim().min(1, 'Debe seleccionar un tipo de dispositivo válido.').optional(),
+    type: z
+      .string()
+      .trim()
+      .refine(val => ADMITTED_DEVICE_TYPES.includes(val), {
+        message: 'Tipo de dispositivo no válido en el catálogo del sistema.'
+      })
+      .optional(),
     ipAddress: z
       .string()
       .nullable()

@@ -1,10 +1,11 @@
-# Dependency directories
+# Dependencies
 node_modules/
 .pnp
 .pnp.js
 
 # Production build artifacts
 dist/
+client/dist/
 build/
 
 # Environment files
@@ -37,6 +38,7 @@ Thumbs.db
 # Testing and coverage
 coverage/
 .nyc_output/
+test-results/
 
 # Temporary files
 tmp/

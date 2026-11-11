@@ -1,0 +1,473 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-nodecimaldot,es-tabla,es-noquoting]{babel}
+
+% Graficos y diagramas
+\usepackage{graphicx}
+\graphicspath{{../img/}{img/}}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric,shapes.misc,arrows.meta,positioning,calc,fit,backgrounds,shadows.blur}
+
+% Tipografia Times New Roman estandar en 12pt
+\usepackage{newtxtext,newtxmath}
+
+% Margenes estandar (3cm izq, 2.5cm der/sup/inf)
+\usepackage{geometry}
+\geometry{
+  top=2.5cm,
+  bottom=2.5cm,
+  left=3.0cm,
+  right=2.5cm,
+  headheight=15pt,
+  headsep=20pt,
+  footskip=25pt
+}
+
+% Espaciado e interlineado
+\usepackage{setspace}
+\setstretch{1.15}
+\setlength{\parskip}{6pt}
+\setlength{\parindent}{0pt}
+
+% Viñetas redondas formales
+\usepackage{enumitem}
+\setlist[itemize,1]{label=\textbullet, leftmargin=1.5em, itemsep=2pt, parsep=0pt}
+\setlist[itemize,2]{label=\normalfont\bfseries\textperiodcentered, leftmargin=1.5em, itemsep=2pt, parsep=0pt}
+\setlist[enumerate]{leftmargin=1.5em, itemsep=2pt, parsep=0pt}
+
+% Paleta de colores formal
+\usepackage{xcolor}
+\definecolor{espochBlue}{RGB}{0,51,102}
+\definecolor{espochRed}{RGB}{192,0,0}
+\definecolor{techGray}{RGB}{245,247,250}
+\definecolor{codeKw}{RGB}{124,58,237}
+\definecolor{codeStr}{RGB}{16,185,129}
+\definecolor{codeCom}{RGB}{107,114,128}
+
+% Tablas profesionales segun estandares ISO/APA
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{caption}
+\captionsetup[table]{position=top,skip=6pt,font={small,bf},labelfont=bf}
+
+% Listados de codigo preformateado
+\usepackage{listings}
+\lstdefinelanguage{JavaScript}{
+  keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break, const, let, async, await, export, import, from, class, default, extends},
+  sensitive=true,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]',
+  morestring=[b]"
+}
+\lstset{
+  basicstyle=\small\ttfamily,
+  frame=single,
+  rulecolor=\color{black},
+  framerule=0.5pt,
+  breaklines=true,
+  numbers=none,
+  backgroundcolor=\color{white},
+  tabsize=2,
+  inputencoding=utf8,
+  extendedchars=true,
+  literate=
+    {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'{\i}}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+    {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+    {ñ}{{\~n}}1 {Ñ}{{\~N}}1 {ü}{{\"u}}1 {Ü}{{\"U}}1
+}
+
+% Encabezados y pies de pagina
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\nouppercase{\leftmark}}
+\fancyhead[R]{\small ESPOCH - Estándares de Programación}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% Formato de titulos
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+  {\normalfont\Large\bfseries}{\chaptertitlename\ \thechapter}{10pt}{\huge\bfseries}
+\titlespacing*{\chapter}{0pt}{-10pt}{15pt}
+
+\titleformat{\section}
+  {\normalfont\large\bfseries}{\thesection}{1em}{}
+\titlespacing*{\section}{0pt}{12pt}{4pt}
+
+\titleformat{\subsection}
+  {\normalfont\normalsize\bfseries}{\thesubsection}{1em}{}
+\titlespacing*{\subsection}{0pt}{10pt}{3pt}
+
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\bfseries}{\thesubsubsection}{1em}{}
+\titlespacing*{\subsubsection}{0pt}{8pt}{2pt}
+
+\usepackage{hyperref}
+\hypersetup{
+  hidelinks=true,
+  pdfauthor={Equipo de Ingenieria de Desarrollo y Aseguramiento Tecnico - ESPOCH},
+  pdftitle={Estándar de Programación y Guía de Estilo - ESPOCH},
+  pdfsubject={Proyecto Integrador de Saberes - Quinto Semestre}
+}
+
+\begin{document}
+
+% PORTADA ACADEMICA
+\begin{titlepage}
+  \centering
+  \thispagestyle{empty}
+  \vspace*{0.3cm}
+
+  \includegraphics[width=3.2cm]{LogoESPOCH.png}\\[0.4cm]
+
+  {\normalsize\bfseries ESCUELA SUPERIOR POLITÉCNICA DE CHIMBORAZO}\\[0.2cm]
+  {\small\bfseries FACULTAD DE INFORMÁTICA Y ELECTRÓNICA}\\[0.1cm]
+  {\small\bfseries CARRERA DE TECNOLOGÍAS DE LA INFORMACIÓN}\\[1.0cm]
+
+  {\large\bfseries SISTEMA WEB DE MONITOREO Y GESTIÓN\\[0.15cm]
+  DE LA INFRAESTRUCTURA DE REDES - ESPOCH}\\[0.7cm]
+
+  {\normalsize\bfseries DOCUMENTO DE ESTÁNDAR DE PROGRAMACIÓN Y GUÍA DE ESTILO}\\[0.15cm]
+  {\small Convenciones de Nomenclatura, Arquitectura Limpia, Manejo Asíncrono y Seguridad de Código}\\[1.0cm]
+
+  \begin{minipage}[t]{0.45\textwidth}
+    {\small\textbf{Roles de Ingeniería:}}\\[0.25cm]
+    \begin{itemize}[leftmargin=1.2em,itemsep=2pt,parsep=0pt]
+      \small
+      \item Líder Técnico y Arquitecto Backend
+      \item Desarrollador Frontend y Diseñador UI/UX
+      \item Especialista en Bases de Datos y QA Lead
+      \item Ingeniero DevOps y Redes
+    \end{itemize}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.50\textwidth}
+    {\small\textbf{Asignaturas y Docentes Responsables:}}\\[0.25cm]
+    \begin{itemize}[leftmargin=1.2em,itemsep=2pt,parsep=0pt]
+      \small
+      \item Infraestructura TI: Ing. Tatiana Landivar
+      \item Tecnología Web: Ing. Pedro Aguilar
+      \item Conmutación y Enrutamiento: Ing. Juan Pazmiño
+      \item Big Data: Ing. Geovanny Silva
+      \item Diseño y Multimedia: Ing. Ramiro Bonilla
+    \end{itemize}
+  \end{minipage}
+
+  \vfill
+
+  {\small\textbf{Período Académico:} Quinto Semestre (PAO 5)}\\[0.05cm]
+  {\small\textbf{Documento Oficial de Ingeniería de Software (Versión 1.0)}}\\[0.6cm]
+
+  {\small Orellana - Ecuador}\\[0.15cm]
+  {\small Octubre de 2026}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\listoftables
+\newpage
+
+\chapter{Metáfora de la Programación: La Fábrica de Precisión Mecánica}
+
+\section{Concepto de la Metáfora: La Fábrica de Precisión}
+En la ingeniería de software moderna, el código fuente no es simplemente un conjunto de instrucciones ejecutables por un procesador, sino un documento formal que debe ser leído, comprendido y mantenido por personas. Conforme al requerimiento no funcional \textbf{RNF-12 (Mantenibilidad y modularidad)}, se adopta la metáfora de:
+\begin{center}
+  \textbf{\large ``La Fábrica de Mecanizado de Precisión e Instrumental Quirúrgico''}
+\end{center}
+
+Bajo esta analogía de calidad:
+\begin{itemize}
+  \item \textbf{Piezas Estandarizadas con Grabado Láser (Nomenclatura):} Cada tornillo, engranaje o sensor en la fábrica posee un código de serie y dimensiones exactas grabadas con láser (\textit{camelCase}, \textit{PascalCase}, etc.). Un mecánico no puede tomar una pieza genérica etiquetada como \texttt{x} o \texttt{data1} e instalarla en la línea de combustible; cada componente debe revelar con precisión milimétrica su función y tolerancia.
+  \item \textbf{Células de Fabricación Aisladas (Arquitectura en Capas):} La sección de forja pesada (Daemon y red de bajo nivel) no está mezclada con la sala de pulido estético (Frontend React) ni con el almacén contable (Base de datos MongoDB). Cada estación cumple una única responsabilidad estricta y se comunica con las demás mediante pasarelas estandarizadas (APIs REST).
+  \item \textbf{Válvulas de Seguridad y Fusibles (Manejo de Excepciones):} Si una sobrecarga de presión ocurre en una tubería secundaria (un timeout en una comprobación ICMP a una PC apagada), el fusible local se dispara de forma controlada sin reventar la caldera principal de la fábrica (el daemon de monitoreo continúa vigilando al resto de los 30 dispositivos sin detenerse jamás, cumpliendo RNF-03 y RNF-15).
+  \item \textbf{Control de Calidad en Banda (Linters y Validaciones):} Antes de embalar cualquier instrumento, pasa por un sensor óptico (ESLint y esquemas Zod) que detecta cualquier fisura o desviación milimétrica en el grosor del material antes de que llegue a manos del cliente.
+\end{itemize}
+
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[
+    layer/.style={rectangle, draw=black, thick, fill=white, rounded corners=3pt, align=center, minimum height=1.1cm, minimum width=10.5cm, font=\small},
+    pipe/.style={-{Stealth[scale=1.1]}, thick, draw=espochBlue}
+  ]
+    \node[layer, fill=espochBlue!10] (routes) at (0,3.6) {\textbf{Capa de Transporte y Controladores} (\texttt{src/controllers})\\[2pt]\footnotesize Extracción de parámetros HTTP, validación con esquemas Zod y códigos de estado};
+    \node[layer, fill=espochRed!10] (services) at (0,1.8) {\textbf{Capa de Lógica de Negocio Pura} (\texttt{src/services})\\[2pt]\footnotesize Reglas de quórum de switches (8.1), correlación de alertas (8.2) y cálculo de disponibilidad};
+    \node[layer, fill=techGray] (models) at (0,0) {\textbf{Capa de Acceso a Datos / ODM} (\texttt{src/models})\\[2pt]\footnotesize Esquemas de Mongoose, índices TTL automáticos (8.4) y agregaciones Big Data};
+
+    \draw[pipe] (routes) -- node[right, font=\footnotesize] {Llamada asíncrona validada} (services);
+    \draw[pipe] (services) -- node[right, font=\footnotesize] {Operaciones BSON Mongoose} (models);
+  \end{tikzpicture}
+  \caption{Flujo unidireccional estricto entre capas en la arquitectura limpia del backend}\label{fig:capas_backend}
+\end{figure}
+
+\newpage
+\chapter{Convenciones Estrictas de Nomenclatura}
+
+Para evitar ambigüedades y garantizar la homogeneidad del código desarrollado por los cuatro integrantes del equipo, se establecen las siguientes convenciones de tipografía de identificadores:
+
+\begin{table}[htbp]
+\centering
+\caption{Matriz de convenciones de nomenclatura en el proyecto}\label{tab:nomenclatura}
+\small
+\begin{tabularx}{\textwidth}{p{3.2cm} p{3.2cm} p{4.2cm} X}
+\toprule
+\textbf{Estilo Tipográfico} & \textbf{Elementos del Código} & \textbf{Ejemplos Correctos} & \textbf{Ejemplos Incorrectos (Prohibidos)} \\
+\midrule
+\textbf{camelCase} & Variables locales, propiedades de objetos JSON, nombres de funciones y métodos & \texttt{ipAddress}\newline \texttt{activeDeviceCount}\newline \texttt{calculateAvailability()}\newline \texttt{isServiceRunning} & \texttt{ip\_address} (snake)\newline \texttt{ActiveDeviceCount}\newline \texttt{CalcAvail()}\newline \texttt{flag1} \\
+\midrule
+\textbf{PascalCase} & Componentes React, clases, modelos de Mongoose, interfaces y tipos Zod & \texttt{NetworkTopologyGraph}\newline \texttt{DeviceCard}\newline \texttt{DeviceModel}\newline \texttt{UserCreateSchema} & \texttt{networkTopologyGraph}\newline \texttt{device\_card}\newline \texttt{deviceModel} \\
+\midrule
+\textbf{UPPER\_SNAKE\_CASE} & Constantes globales inmutables, variables de entorno y límites de seguridad & \texttt{DEFAULT\_PING\_TIMEOUT\_MS}\newline \texttt{MAX\_CONCURRENT\_TASKS}\newline \texttt{JWT\_ACCESS\_SECRET}\newline \texttt{MIN\_PING\_INTERVAL\_SEC} & \texttt{defaultPingTimeout}\newline \texttt{maxTasks}\newline \texttt{jwtSecret} \\
+\midrule
+\textbf{kebab-case} & Nombres de archivos JS/JSX, directorios, rutas de endpoints REST y ramas Git & \texttt{device-controller.js}\newline \texttt{network-scanner.service.js}\newline \texttt{/api/v1/network-devices}\newline \texttt{feature/auth-jwt-refresh} & \texttt{DeviceController.js}\newline \texttt{networkScanner.js}\newline \texttt{/api/v1/networkDevices}\newline \texttt{Feature/Auth} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Reglas Semánticas para Variables y Funciones}
+\begin{itemize}
+  \item \textbf{Variables Booleanas:} Deben iniciar obligatoriamente con prefijos verbales auxiliares que denoten estado afirmativo o negativo:
+  \begin{lstlisting}[language=JavaScript]
+// Correcto:
+const isReachable = true;
+const hasCustomIp = false;
+const canEditTopology = userRole === 'admin';
+
+// Prohibido:
+const status = true; // Que tipo de estado?
+const edit = true;   // Es accion o bandera?
+const reachable = true;
+  \end{lstlisting}
+
+  \item \textbf{Funciones y Métodos:} Deben iniciar con un verbo infinitivo en inglés que describa de manera inequívoca la acción ejecutada:
+  \begin{itemize}
+    \item \texttt{get...} / \texttt{fetch...}: Obtención de datos sin modificar el estado (ej. \texttt{getDeviceById}).
+    \item \texttt{create...} / \texttt{register...}: Creación o registro de nuevas entidades (ej. \texttt{registerDevice}).
+    \item \texttt{update...}: Modificación de entidades existentes (ej. \texttt{updateDeviceConfiguration}).
+    \item \texttt{delete...} / \texttt{remove...}: Eliminación o baja lógica (ej. \texttt{deactivateUserAccount}).
+    \item \texttt{check...} / \texttt{verify...}: Comprobación de condición booleana o prueba de red (ej. \texttt{checkHostAvailability}).
+  \end{itemize}
+
+  \item \textbf{Prohibición Absoluta de Nombres Mágicos o de una Letra:} Quedan terminantemente prohibidos identificadores como \texttt{x}, \texttt{d}, \texttt{arr}, \texttt{temp}, \texttt{obj}, salvo el índice \texttt{i} en bucles numéricos simples de conteo.
+\end{itemize}
+
+\newpage
+\chapter{Estructura de Directorios y Modularidad (RNF-12)}
+
+El proyecto debe organizarse en dos raíces claramente desacopladas: el directorio \texttt{server/} (Backend y Daemon) y el directorio \texttt{client/} (Frontend React).
+
+\section{Estructura del Backend (\texttt{server/})}
+\begin{lstlisting}[language=bash]
+server/
+|-- src/
+|   |-- config/
+|   |   |-- database.js            # Conexion a MongoDB con reconexion automatica
+|   |   |-- environment.js         # Carga y validacion de variables de entorno
+|   |   `-- constants.js           # Limites seguros (guardrails) de la Seccion 8.7
+|   |-- controllers/
+|   |   |-- auth.controller.js     # Login, logout, refresh token, recuperacion
+|   |   |-- device.controller.js   # CRUD de inventario, bajas logicas
+|   |   |-- alert.controller.js    # Listado, reconocimiento y cierre de alertas
+|   |   |-- metric.controller.js   # Estadisticas de disponibilidad (RF-11)
+|   |   `-- config.controller.js   # Configuracion de intervalos y restablecimiento
+|   |-- daemon/
+|   |   |-- ping-worker.js         # Daemon autonomo ICMP con p-limit a 15 tareas
+|   |   |-- arp-scanner.js         # Descubrimiento nativo con arp-scan en Linux
+|   |   `-- quorum-evaluator.js    # Evaluacion de quorums del 70% en switches (8.1)
+|   |-- middlewares/
+|   |   |-- auth.middleware.js     # Verificacion de firma de Access Token JWT
+|   |   |-- role.middleware.js     # Verificacion de roles RBAC (admin vs operador)
+|   |   |-- validate.middleware.js # Middleware generico de validacion Zod
+|   |   `-- error.middleware.js    # Capturador centralizado de excepciones
+|   |-- models/
+|   |   |-- device.model.js        # Esquema polimorfico de dispositivos
+|   |   |-- check.model.js         # Comprobaciones brutas con indice TTL 30d
+|   |   |-- event.model.js         # Eventos historicos con indice TTL 90d
+|   |   |-- alert.model.js         # Alertas operativas (abierta, reconocida, cerrada)
+|   |   |-- user.model.js          # Usuarios, roles y password hashes
+|   |   `-- audit.model.js         # Auditoria inmutable de acciones administrativas
+|   |-- services/
+|   |   |-- auth.service.js        # Logica de generacion y rotacion de tokens
+|   |   |-- device.service.js      # Prevencion de duplicados y cambios de IP
+|   |   `-- topology.service.js    # Calculo de relaciones confirmadas e inferidas
+|   `-- app.js                     # Inicializacion de Express y rutas base
+|-- tests/                         # Pruebas unitarias y de integracion con Jest
+|-- .env.example
+|-- package.json
+`-- server.js                      # Punto de entrada HTTP y arranque del daemon
+\end{lstlisting}
+
+\section{Estructura del Frontend (\texttt{client/})}
+\begin{lstlisting}[language=bash]
+client/
+|-- src/
+|   |-- assets/                    # Logotipos oficiales ESPOCH y vectores SVG
+|   |-- components/
+|   |   |-- common/                # Botones accesibles, modales, badges de estado
+|   |   |-- layout/                # Barra superior con campana, menu lateral
+|   |   |-- dashboard/             # Tarjetas de resumen NOC y actividad reciente
+|   |   |-- topology/              # Lienzo interactivo React Flow y nodos de red
+|   |   `-- inventory/             # Tablas con filtros combinados y paginacion
+|   |-- context/
+|   |   |-- AuthContext.jsx        # Estado de sesion, rol y auto-refresh de token
+|   |   `-- AlertContext.jsx       # Notificaciones flotantes (toasts) y sonido
+|   |-- hooks/
+|   |   |-- useDevices.js          # Polling controlado a /api/devices cada 5s
+|   |   `-- useInterval.js         # Temporizador declarativo seguro contra memory-leaks
+|   |-- pages/
+|   |   |-- LoginPage.jsx
+|   |   |-- DashboardPage.jsx
+|   |   |-- TopologyPage.jsx
+|   |   |-- InventoryPage.jsx
+|   |   `-- SettingsPage.jsx
+|   |-- services/
+|   |   `-- api.js                 # Instancia Axios con interceptor de JWT
+|   |-- App.jsx
+|   `-- main.jsx
+|-- tailwind.config.js
+|-- vite.config.js
+`-- package.json
+\end{lstlisting}
+
+\newpage
+\chapter{Manejo Asíncrono y Tratamiento Centralizado de Excepciones}
+
+El sistema ejecuta continuas operaciones de red y base de datos. Para evitar bloqueos del bucle de eventos (\textit{Event Loop}) y garantizar respuestas rápidas (RNF-01), se establecen las siguientes reglas:
+
+\section{Regla de Asincronía: Exclusividad de \texttt{async/await}}
+\begin{itemize}
+  \item Queda terminantemente prohibido el anidamiento descontrolado de llamadas \texttt{.then().then().catch()} (antipatrón conocido como \textit{Callback Hell}).
+  \item Todas las operaciones asíncronas deben declararse con \texttt{async} y consumirse mediante \texttt{await}.
+  \item Para operaciones concurrentes independientes (ejemplo: comprobar varios dispositivos a la vez), se debe utilizar \textbf{\texttt{Promise.allSettled()}} en combinación con un limitador de concurrencia (\texttt{p-limit}), impidiendo que la falla de un dispositivo cancele las comprobaciones de los demás (RF-04.09 y RF-05.10).
+\end{itemize}
+
+\begin{lstlisting}[language=JavaScript]
+// Ejemplo correcto de ejecucion concurrente controlada:
+import pLimit from 'p-limit';
+
+export async function pingDeviceBatch(devices, timeoutMs) {
+  // Limite estricto de 15 comprobaciones simultaneas segun RNF-15
+  const limit = pLimit(15);
+
+  const checkPromises = devices.map(device => 
+    limit(() => pingSingleDevice(device.ipAddress, timeoutMs))
+  );
+
+  // allSettled garantiza que ningun error individual aborte a los otros
+  const results = await Promise.allSettled(checkPromises);
+  return results.map(res => res.status === 'fulfilled' ? res.value : null);
+}
+\end{lstlisting}
+
+\section{Manejo Centralizado de Excepciones en Express}
+Los controladores de la API no deben capturar errores para simplemente imprimir \texttt{console.log(error)}. Deben utilizar una función envoltorio asíncrona (\textit{asyncHandler}) que canalice automáticamente cualquier fallo hacia el middleware central de errores:
+
+\begin{lstlisting}[language=JavaScript]
+// src/middlewares/async-handler.js
+export const asyncHandler = (fn) => (req, res, next) => {
+  Promise.resolve(fn(req, res, next)).catch(next);
+};
+
+// src/controllers/device.controller.js
+export const getDeviceDetails = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const device = await deviceService.findDeviceById(id);
+  
+  if (!device) {
+    return res.status(404).json({
+      success: false,
+      message: `Dispositivo con identificador ${id} no encontrado.`
+    });
+  }
+
+  return res.status(200).json({ success: true, data: device });
+});
+\end{lstlisting}
+
+\newpage
+\chapter{Seguridad del Código y Validación Defensiva}
+
+Conforme a los estándares de desarrollo seguro ISO/IEC 27001, se aplican técnicas de codificación defensiva en todas las capas:
+
+\section{Prevención Inflexible de Inyección de Comandos en Linux}
+Dado que el sistema ejecuta utilitarios del sistema operativo (\texttt{ping}, \texttt{arp-scan}, \texttt{nmap}), \textbf{queda terminantemente prohibido utilizar \texttt{child\_process.exec()} con cadenas concatenadas}, ya que un atacante podría enviar una dirección IP manipulada como \texttt{"192.168.1.1; rm -rf /"}.
+
+\textbf{Estándar de Seguridad Obligatorio:}
+\begin{enumerate}
+  \item Validar rigurosamente la dirección IP con una expresión regular RFC antes de cualquier invocación.
+  \item Utilizar de manera exclusiva \textbf{\texttt{child\_process.spawn()}} o \textbf{\texttt{execFile()}}, pasando los argumentos como un vector de cadenas independientes (\textit{array}), neutralizando cualquier intento de inyección de comandos en la shell:
+\end{enumerate}
+
+\begin{lstlisting}[language=JavaScript]
+import { spawn } from 'child_process';
+import net from 'net';
+
+export function executeSafePing(ipAddress, timeoutSeconds = 3) {
+  return new Promise((resolve, reject) => {
+    // 1. Validacion defensiva estricta de IP antes de tocar el sistema
+    if (!net.isIP(ipAddress)) {
+      return reject(new Error(`Direccion IP no valida: ${ipAddress}`));
+    }
+
+    // 2. Invocacion segura pasando parametros en array sin invocar shell
+    const pingProcess = spawn('ping', ['-c', '1', '-W', String(timeoutSeconds), ipAddress]);
+
+    pingProcess.on('close', (exitCode) => {
+      // Codigo 0 = respuesta exitosa; Codigo 1 = timeout / host inalcanzable
+      resolve({ isAlive: exitCode === 0, exitCode });
+    });
+
+    pingProcess.on('error', (err) => {
+      reject(new Error(`Fallo interno del binario ping: ${err.message}`));
+    });
+  });
+}
+\end{lstlisting}
+
+\section{Validación de Datos en Entrada con Esquemas Zod}
+Toda petición POST o PUT debe validarse contra un esquema inmutable antes de procesar la lógica de negocio:
+
+\begin{lstlisting}[language=JavaScript]
+import { z } from 'zod';
+
+export const UpdateConfigSchema = z.object({
+  pingIntervalSec: z.number().int().min(10).max(300),
+  discoveryIntervalMin: z.number().int().min(2).max(60),
+  pingTimeoutMs: z.number().int().min(1000).max(10000),
+  consecutiveFailuresForDown: z.number().int().min(2).max(10),
+  consecutiveSuccessesForUp: z.number().int().min(1).max(5),
+  maxConcurrentPings: z.number().int().min(5).max(50)
+});
+\end{lstlisting}
+
+\newpage
+\chapter{Estándar de Documentación de Código (JSDoc)}
+
+Para garantizar la analizabilidad de la norma ISO/IEC 25010, todas las funciones exportadas, clases y modelos deben contener un bloque JSDoc estructurado:
+
+\begin{lstlisting}[language=JavaScript]
+/**
+ * Evalua el estado de quorun colectivo para switches no administrables sin IP.
+ * Si mas del 70% de los dispositivos dependientes estan caidos, se genera
+ * una alerta consolidada de infraestructura (Seccion 8.1 de la especificacion).
+ *
+ * @param {string} switchId - Identificador interno unico del switch padre.
+ * @param {Array<Object>} connectedDevices - Lista de dispositivos conectados al switch.
+ * @returns {Promise<Object>} Resultado de la evaluacion y estado de la alerta.
+ * @throws {DatabaseError} Si falla la consulta a la coleccion de alertas activas.
+ */
+export async function evaluateSwitchQuorum(switchId, connectedDevices) {
+  // Implementacion...
+}
+\end{lstlisting}
+
+\chapter{Conclusiones}
+El cumplimiento sistemático de este estándar de programación garantiza que la solución de software no sufra de degradación técnica con el paso del tiempo. Al aplicar nomenclatura homogénea, modularidad estricta, manejo asíncrono con límites de concurrencia y validaciones de seguridad infranqueables, el equipo de desarrollo de la ESPOCH entregará una plataforma de monitoreo robusta, escalable y mantenible.
+
+\end{document}
