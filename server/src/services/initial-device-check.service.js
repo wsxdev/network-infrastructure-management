@@ -1,5 +1,14 @@
 import { isIP } from "node:net";
+import { Queue } from "bullmq";
 
+export const INITIAL_DEVICE_CHECK_QUEUE = "initial-device-checks";
+
+export function createInitialDeviceCheckQueue({
+  name = INITIAL_DEVICE_CHECK_QUEUE,
+  connection = { host: "127.0.0.1", port: 6379 },
+} = {}) {
+  return new Queue(name, { connection });
+}
 export function canCheckDevice(device) {
   const isMonitorable = device?.isMonitorable ?? device?.isManaged;
   const ipAddress = device?.ipAddress?.trim() ?? "";
