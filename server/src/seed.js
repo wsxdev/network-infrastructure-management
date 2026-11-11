@@ -2,12 +2,36 @@ import mongoose from 'mongoose';
 import { connectDatabase } from './config/database.js';
 import { User } from './models/user.model.js';
 import { Device } from './models/device.model.js';
+import { DeviceType } from './models/deviceType.model.js';
 import { USER_ROLES, DEVICE_TYPES, DEVICE_STATUS } from './config/constants.js';
+
+/** Catálogo canónico de tipos de dispositivos — T-03.01.01 */
+const DEVICE_TYPE_CATALOG = [
+  { code: 'desktop',          label: 'Computadora de escritorio',    order: 1 },
+  { code: 'laptop',           label: 'Laptop',                       order: 2 },
+  { code: 'server',           label: 'Servidor',                     order: 3 },
+  { code: 'router',           label: 'Router',                       order: 4 },
+  { code: 'switch_managed',   label: 'Switch administrable',         order: 5 },
+  { code: 'switch_unmanaged', label: 'Switch no administrable',      order: 6 },
+  { code: 'access_point',     label: 'Punto de acceso inalámbrico',  order: 7 },
+  { code: 'network_printer',  label: 'Impresora de red',             order: 8 },
+  { code: 'smartphone',       label: 'Smartphone',                   order: 9 },
+  { code: 'other',            label: 'Otro',                         order: 10 }
+];
 
 export async function seedDatabase() {
   await connectDatabase();
 
   console.log('🌱 Inicializando siembra de datos (Seed)...');
+
+  // 0. Catálogo de tipos de dispositivos — T-03.01.01
+  const typesCount = await DeviceType.countDocuments();
+  if (typesCount === 0) {
+    await DeviceType.insertMany(DEVICE_TYPE_CATALOG);
+    console.log(`📋 ${DEVICE_TYPE_CATALOG.length} tipos de dispositivos sembrados en device_types.`);
+  } else {
+    console.log(`📋 Catálogo device_types ya existe (${typesCount} tipos). Omitiendo siembra.`);
+  }
 
   // 1. Usuarios predeterminados
   const adminExists = await User.findOne({ email: 'admin@espoch.edu.ec' });

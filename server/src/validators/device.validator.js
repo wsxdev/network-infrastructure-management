@@ -6,7 +6,6 @@
  */
 
 import { z } from 'zod';
-import { DEVICE_TYPES } from '../config/constants.js';
 
 /**
  * Expresión regular estricta para direcciones IPv4 en notación decimal con puntos (RFC 791).
@@ -71,9 +70,10 @@ export const createDeviceSchema = z
       .min(1, 'El nombre no puede estar vacío.')
       .max(120, 'El nombre no puede exceder 120 caracteres.'),
 
-    type: z.enum(Object.values(DEVICE_TYPES), {
-      errorMap: () => ({ message: 'Tipo de dispositivo no válido en el catálogo del sistema.' })
-    }),
+    type: z
+      .string({ required_error: 'El tipo de dispositivo es obligatorio.' })
+      .trim()
+      .min(1, 'Debe seleccionar un tipo de dispositivo válido del catálogo.'),
 
     ipAddress: z
       .string()
@@ -151,7 +151,7 @@ export const createDeviceSchema = z
 export const updateDeviceSchema = z
   .object({
     name: z.string().trim().min(1, 'El nombre no puede estar vacío.').max(120).optional(),
-    type: z.enum(Object.values(DEVICE_TYPES)).optional(),
+    type: z.string().trim().min(1, 'Debe seleccionar un tipo de dispositivo válido.').optional(),
     ipAddress: z
       .string()
       .nullable()
